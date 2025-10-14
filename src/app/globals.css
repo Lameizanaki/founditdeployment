@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/* Works for Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 12px;              /* width of vertical scrollbar */
+  height: 12px;             /* height of horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;       /* track background */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1, #ec4899); /* indigo → pink */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4338ca, #db2777); /* darker on hover */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #f1f1f1; /* thumb | track */
+}
