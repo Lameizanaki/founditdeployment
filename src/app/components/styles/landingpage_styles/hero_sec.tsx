@@ -47,26 +47,41 @@ const VideoCard: React.FC<VideoCardProps> = ({
             <div className="relative z-10 h-full flex flex-col bg-black/35">
                 <div className="grid grid-rows-[40%_60%] h-full">
                     <div className="pl-4 pt-4 w-fit">
-                        <p className="bg-[#000000CC] px-3 py-1 rounded-xl text-white">
+                        <p className="xl:bg-[#000000CC] xl:px-3 xl:py-1 xl:rounded-xl xl:text-white xl:text-lg
+                                      lg:bg-[#000000CC] lg:px-3 lg:py-1 lg:rounded-xl lg:text-white lg:text-sm
+                                      sm:bg-[#000000CC] sm:px-3 sm:py-1 sm:rounded-xl sm:text-white sm:text-xs">
                             {types}
                         </p>
                     </div>
-                    <div className="pl-4 pt-12 flex flex-col justify-between pr-4 pb-4">
+                    <div className="
+                            sm:pl-4 sm:-mt-2 sm:flex sm:flex-col sm:justify-between sm:pr-4 sm:pb-4
+                            lg:pl-4 lg:pt-1 lg:flex lg:flex-col lg:justify-between lg:pr-4 lg:pb-4
+                            xl:pl-4 xl:-12 xl:flex xl:flex-col xl:justify-between xl:pr-4 xl:pb-4
+                        ">
                         
                         <div>
-                            <p className="text-white text-xl font-bold">
+                            <p className="xl:text-white xl:text-xl xl:font-bold
+                                          lg:text-white lg:text-lg lg:font-bold
+                                          sm:text-white sm:text-xs sm:font-bold
+                            ">
                                 {truncateText(onType)}
                             </p>
-                            <p className="text-white text-lg opacity-80">
+                            <p className="xl:text-white xl:text-lg xl:opacity-80
+                                          lg:text-white lg:text-sm lg:opacity-80
+                                          sm:text-white sm:text-xs sm:opacity-80
+                            ">
                                 {truncateText(positionType)}
                             </p>
-                            <p className="text-white text-md italic opacity-60">
+                            <p className="xl:text-white xl:text-md xl:italic xl:opacity-60
+                                          lg:text-white lg:text-sm lg:italic lg:opacity-60
+                                          sm:text-white sm:text-xs sm:italic sm:opacity-60
+                            ">
                                 by {truncateText(author)}
                             </p>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-white">${price.toFixed(2)}</span>
-                            <span className="text-white">⭐ {rate.toFixed(1)}</span>
+                            <span className="text-white xl:text-lg lg:text-sm sm:text-xs">${price.toFixed(2)}</span>
+                            <span className="text-white xl:text-lg lg:text-sm sm:text-xs">⭐ {rate.toFixed(1)}</span>
                         </div>
                     </div>
                 </div>
@@ -267,25 +282,40 @@ export default function HeroSection (
                             }].map((v, i) => (
                             <div key={i} className="grid grid-rows-[40%_60%] h-full">
                                 <div className="pl-4 pt-4 w-fit">
-                                    <p className="bg-[#000000CC] px-3 py-1 rounded-xl text-white">
+                                    <p className="xl:bg-[#000000CC] xl:px-3 xl:py-1 xl:rounded-xl xl:text-white xl:text-lg
+                                                  lg:bg-[#000000CC] lg:px-3 lg:py-1 lg:rounded-xl lg:text-white lg:text-sm
+                                                  sm:bg-[#000000CC] sm:px-3 sm:py-1 sm:rounded-xl sm:text-white sm:text-xs
+                                    ">
                                         {v.types}
                                     </p>
                                 </div>
-                                <div className="pl-4 pt-12 flex flex-col justify-between pr-4 pb-4">
+                                <div className="xl:pl-4 xl:pt-12 xl:flex xl:flex-col xl:justify-between xl:pr-4 xl:pb-4
+                                                lg:pl-4 lg:pt-1 lg:flex lg:flex-col lg:justify-between lg:pr-4 lg:pb-4
+                                                sm:pl-4 sm:-mt-2 sm:flex sm:flex-col sm:justify-between sm:pr-4 sm:pb-4
+                                ">
                                     <div>
-                                        <p className="text-white text-xl font-bold">
+                                        <p className="xl:text-white xl:text-xl xl:font-bold
+                                                      lg:text-white lg:text-lg lg:font-bold
+                                                      sm:text-white sm:text-xs sm:font-bold
+                                        ">
                                         {truncateText(v.onType)}
                                         </p>
-                                        <p className="text-white text-lg opacity-80">
+                                        <p className="xl:text-white xl:text-lg xl:opacity-80
+                                                      lg:text-white lg:text-sm lg:opacity-80
+                                                      sm:text-white sm:text-xs sm:opacity-80
+                                        ">
                                         {truncateText(v.positionType)}
                                         </p>
-                                        <p className="text-white text-md italic opacity-60">
+                                        <p className="xl:text-white xl:text-md xl:italic xl:opacity-60
+                                                      lg:text-white lg:text-sm lg:italic lg:opacity-60
+                                                      sm:text-white sm:text-xs sm:italic sm:opacity-60
+                                        ">
                                         by {truncateText(v.author)}
                                         </p>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-white">${v.price.toFixed(2)}</span>
-                                        <span className="text-white">⭐ {v.rate.toFixed(1)}</span>
+                                        <span className="text-white xl:text-lg lg:text-sm sm:text-xs">${v.price.toFixed(2)}</span>
+                                        <span className="text-white xl:text-lg lg:text-sm sm:text-xs">⭐ {v.rate.toFixed(1)}</span>
                                     </div>
                                 </div>
                             </div>
