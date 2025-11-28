@@ -134,7 +134,7 @@ export default function ChoosePlan(): React.ReactElement {
                         <p
                             className={`cursor-pointer rounded-full px-4 py-2 pt-2 mt-3 transition-all ${
                                 billing === "monthly"
-                                    ? "text-white bg-[#101828] shadow-sm hover:bg-black"
+                                    ? "text-white bg-[#D92AD0] shadow-sm hover:bg-[#D92AD0]"
                                     : "opacity-70 hover:opacity-100 hover:text-black"
                             }`}
                             onClick={() => setBilling("monthly")}
@@ -145,7 +145,7 @@ export default function ChoosePlan(): React.ReactElement {
                         <p
                             className={`cursor-pointer rounded-full px-4 py-2 mt-3 transition-all ${
                                 billing === "annual"
-                                    ? "text-white bg-[#101828] shadow-sm hover:bg-black"
+                                    ? "text-white bg-[#D92AD0] shadow-sm hover:bg-[#D92AD0]"
                                     : "opacity-70 hover:opacity-100 hover:text-black"
                             }`}
                             onClick={() => setBilling("annual")}
@@ -178,14 +178,14 @@ export default function ChoosePlan(): React.ReactElement {
                         >
                             {/* "Most Popular" label only on the Pro card */}
                             {emphasized && (
-                                <span className="absolute left-1/2 top-0 z-10 -translate-y-1/2 -translate-x-1/2 rounded-full bg-gray-900 px-3 py-1 text-xs font-medium text-white transition-colors group-hover:bg-black">
+                                <span className="absolute left-1/2 top-0 z-10 -translate-y-1/2 -translate-x-1/2 rounded-full bg-[#D92AD0] px-3 py-1 text-xs font-medium text-white transition-colors group-hover:bg-[#D92AD0]">
                                     Most Popular
                                 </span>
                             )}
 
                             {/* START */}
                             <div className="p-6">
-                                <h3 className="text-sm font-medium text-gray-900 transition-colors group-hover:text-black">
+                                <h3 className="text-sm font-medium text-gray-900 transition-colors group-hover:text-[#D92AD0]">
                                     {tier.name}
                                 </h3>
                                 <p className="mt-1 max-w-xs text-xs leading-relaxed text-gray-500">
@@ -208,8 +208,8 @@ export default function ChoosePlan(): React.ReactElement {
                                             className={[
                                                 "block w-full rounded-md px-4 py-2 text-center text-sm font-medium !no-underline hover:!no-underline focus:!no-underline transition-all",
                                                 tier.cta.variant === "solid"
-                                                    ? "bg-gray-900 text-white hover:bg-black group-hover:bg-black"
-                                                    : "border border-gray-300 text-gray-900 hover:bg-gray-50 group-hover:border-gray-400 group-hover:text-black",
+                                                    ? "bg-[#D92AD0] text-white hover:bg-[#D92AD0] group-hover:bg-[#D92AD0]"
+                                                    : "border border-gray-600 text-gray-900 hover:bg-gray-50 group-hover:border-gray-400 group-hover:text-black",
                                             ].join(" ")}
                                         >
                                             {tier.cta.label}
@@ -220,7 +220,7 @@ export default function ChoosePlan(): React.ReactElement {
                                                 "w-full rounded-md px-4 py-2 text-sm font-medium transition-all",
                                                 tier.cta.variant === "solid"
                                                     ? "bg-gray-900 text-white hover:bg-black group-hover:bg-black"
-                                                    : "border border-gray-300 text-gray-900 hover:bg-gray-50 group-hover:border-gray-400 group-hover:text-black",
+                                                    : "border border-gray-600 text-gray-900 hover:bg-gray-50 group-hover:border-gray-400 group-hover:text-black",
                                             ].join(" ")}
                                         >
                                             {tier.cta.label}

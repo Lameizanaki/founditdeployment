@@ -107,7 +107,7 @@ export default function Footer(): React.ReactElement {
                   placeholder="your@email.com"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                 />
-                <p className="inline-flex shrink-0 items-center rounded-md bg-gray-900 mt-3 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+                <p className="inline-flex shrink-0 items-center rounded-md bg-[#D92AD0] mt-3 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
                   Subscribe
                 </p>
               </form>

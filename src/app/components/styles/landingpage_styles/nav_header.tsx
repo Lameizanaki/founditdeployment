@@ -1,94 +1,9 @@
-// "use client";
-// import React, { useState } from 'react';
-// interface MenuItem {
-//   name: string;
-//   subcategories: string[];
-// }
-
-// interface NavHeaderProps {
-//     logoSrc?: string;
-//     logoAlt?: string;
-//     menuItems?: MenuItem[];
-// }
-
-// const defaultMenuItems: MenuItem[] = [
-//         { name: 'Hire', subcategories: ['Freelancers', 'Contractors', 'Full-Time'] },
-//         { name: 'Buy', subcategories: ['Electronics', 'Clothing', 'Furniture'] },
-//         { name: 'Sell', subcategories: ['Post Item', 'Auction', 'Bulk Sales'] },
-//         { name: 'Explore', subcategories: [] },
-//         { name: 'Categories', subcategories: ['Home', 'Fashion', 'Tech', 'Books'] },
-//         { name: 'About', subcategories: ['Our Story', 'Team', 'Contact'] },
-//     ];
-
-// export default function NavHeader (
-//     { 
-//         logoSrc = 'favicon.ico',
-//         logoAlt = 'FoundIt Logo',
-//         menuItems = defaultMenuItems,
-//     }:NavHeaderProps){
-
-//     const [activeIndex] = useState<number | null>(null);
-//     const [isBurgerOpen, setBurgerOpen] = React.useState(false);
-
-//     return (
-//         <nav className='flex items-center shadow-md -ml-6 p-3 justify-between
-//                         sm:flex sm:items-center sm:justify-between sm:shadow-md sm:p-3
-//                         lg:flex lg:items-center lg:justify-between lg:shadow-md lg:p-3
-//                         xl:flex xl:items-center xl:justify-between xl:shadow-md xl:p-3
-//         '>
-//             <div className='hidden items-center gap-x-3 pl-4
-//                             xl:flex xl:items-center xl:gap-x-3 xl:pl-4
-//             '>
-//                 <img className="w-fit h-12" src= {logoSrc} alt= {logoAlt}/>
-//             </div>
-
-//         {/* //------------------ Menu Items ------------------// */}
-//             <div className='pt-3 relative'>
-//                 <ul className='flex items-center gap-x-2 hover:cursor-pointer
-//                                sm:flex sm:items-center sm:gap-x-4 sm:text-lg 
-//                                lg:flex lg:items-center lg:gap-x-8 lg:text-xl
-//                                xl:flex xl:items-center xl:gap-x-12 xl:text-2xl 
-//                 '>
-//                     {menuItems.map((arr, index) => {
-//                         const isOpen = activeIndex === index;
-//                         return (                           
-//                             <li key={`${arr.name}-${index}`} 
-//                                 className={`relative text-gray-700 
-//                                             transition-colors duration-200" 
-//                                             ${isOpen ? "text-gray-900 after:w-full" : "hover:text-gray-900 hover:after:w-full"}
-//                                             after:content-[''] after:absolute after:left-0 after:bottom-0
-//                                             after:h-[2px] after:w-0 after:bg-emerald-500
-//                                             after:transition-[width] after:duration-300 after:ease-out
-//                                             focus:outline-none focus:after:w-full
-//                                         `}>                                
-//                                 {arr.name}
-//                             </li>
-//                         )
-//                     })}
-//                 </ul>
-//             </div>
-            
-//             <div className='flex items-center gap-x-3 text-sm pr-2
-//                             sm:flex sm:items-center sm:gap-x-6 sm:text-lg sm:pr-4
-//                             lg:flex lg:items-center lg:gap-x-6 lg:text-lg lg:pr-4
-//                             xl:flex xl:items-center xl:gap-x-6 xl:text-xl xl:pr-4
-//             '>
-//                 <button className="hover:opacity-75">
-//                     Sign in
-//                 </button>
-//                 <div className='rounded-2xl bg-[#00A63E] px-3 py-2 hover:bg-[#008530] transition-colors'>
-//                     <button className='text-white'>Join</button>
-//                 </div>
-//             </div>
-//         </nav>
-//     )
-// }
-
 "use client";
 import React, { useState } from 'react';
 
 interface MenuItem {
   name: string;
+  id: string;
   subcategories: string[]; // No subcategories needed for this version
 }
 
@@ -99,12 +14,12 @@ interface NavHeaderProps {
 }
 
 const defaultMenuItems: MenuItem[] = [
-  { name: 'Hire', subcategories: [] },
-  { name: 'Buy', subcategories: [] },
-  { name: 'Sell', subcategories: [] },
-  { name: 'Explore', subcategories: [] },
-  { name: 'Categories', subcategories: [] },
-  { name: 'About', subcategories: [] },
+  { name: 'Hire', id:'#hire', subcategories: [] },
+  { name: 'Job', id:'#feature', subcategories: [] },
+  { name: 'Sell', id:'#ready', subcategories: [] },
+  { name: 'Explore', id:'#', subcategories: [] },
+  { name: 'Categories', id:'#', subcategories: [] },
+  { name: 'About', id:'#', subcategories: [] },
 ];
 
 export default function NavHeader({
@@ -114,6 +29,16 @@ export default function NavHeader({
 }: NavHeaderProps) {
   const [isBurgerOpen, setBurgerOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  const handleScrollToSection = (id: string) => {
+    const element = document.querySelector(id);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start', 
+      });
+    }
+  };
 
   return (
     <nav className="flex items-center shadow-md -ml-6 p-3 justify-between sm:flex sm:items-center sm:justify-between sm:shadow-md sm:p-3 lg:flex lg:items-center lg:justify-between lg:shadow-md lg:p-3 xl:flex xl:items-center xl:justify-between xl:shadow-md xl:p-3">
@@ -172,8 +97,13 @@ export default function NavHeader({
                 {menuItems.map((arr, index) => (
                     <li
                     key={`${arr.name}-${index}`}
-                    className="text-gray-700 py-2"
-                    onClick={() => setActiveIndex(index)} // Handle item click
+                    className={`text-gray-700 py-2${arr.id}-${index}`}
+                    onClick={() => {
+                      setActiveIndex(index);
+                      handleScrollToSection(arr.id); 
+                      setBurgerOpen(false); 
+                    }}
+                    
                     >
                     {arr.name}
                     </li>
@@ -192,8 +122,14 @@ export default function NavHeader({
           return (
             <li
               key={`${arr.name}-${index}`}
-              className={`relative text-gray-700 transition-colors duration-200 ${isOpen ? 'text-gray-900 after:w-full' : 'hover:text-gray-900 hover:after:w-full'} after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-emerald-500 after:transition-[width] after:duration-300 after:ease-out focus:outline-none focus:after:w-full`}
-              onClick={() => setActiveIndex(index)} 
+              className={`relative text-gray-700 transition-colors duration-200 
+                ${isOpen ? 'text-gray-900 after:w-full' : 
+                           'hover:text-gray-900 hover:after:w-full'} 
+                           after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[#D92AD0] after:transition-[width] after:duration-300 after:ease-out focus:outline-none focus:after:w-full`}
+              onClick={() => {
+                setActiveIndex(index);
+                handleScrollToSection(arr.id);
+              }} 
             >
               {arr.name}
             </li>
@@ -204,7 +140,7 @@ export default function NavHeader({
       {/* Sign In & Join buttons */}
       <div className="flex items-center gap-x-3 text-sm pr-2 sm:flex sm:items-center sm:gap-x-6 sm:text-lg sm:pr-4 lg:flex lg:items-center lg:gap-x-6 lg:text-lg lg:pr-4 xl:flex xl:items-center xl:gap-x-6 xl:text-xl xl:pr-4">
         <button className="hover:opacity-75">Sign in</button>
-        <div className="rounded-2xl bg-[#00A63E] px-3 py-2 hover:bg-[#008530] transition-colors">
+        <div className="rounded-2xl bg-[#D92AD0] px-3 py-2 transition-colors">
           <button className="text-white">Join</button>
         </div>
       </div>

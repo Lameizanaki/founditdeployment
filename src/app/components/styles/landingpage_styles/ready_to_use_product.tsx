@@ -155,7 +155,7 @@ export default function ReadyToUseProducts() {
           <h2 className="text-[15px] font-medium text-gray-700">Ready-to-use products</h2>
           <p className="text-sm text-gray-500">Instant download. Start using in minutes.</p>
         </div>
-        <a href="#/marketplace" className="text-lg font-medium !text-emerald-600 hover:text-gray-900 !no-underline">
+        <a href="#/marketplace" className="text-lg font-medium !text-black hover:text-gray-900 !no-underline">
           Browse marketplace →
         </a>
       </div>
@@ -171,7 +171,7 @@ export default function ReadyToUseProducts() {
               className={[
                 "rounded-[10px] border-2 px-3.5 py-1.5 text-sm transition",
                 isActive
-                  ? "border-gray-900 bg-gray-900 text-white shadow"
+                  ? "border-[#D92AD033] bg-[#D92AD0] text-white shadow"
                   : "border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50",
               ].join(" ")}
             >

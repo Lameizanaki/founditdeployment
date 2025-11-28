@@ -141,7 +141,7 @@ const TalentCard: React.FC<TalentCardProps> = ({
             </div>
             <div className="flex flex-col items-end gap-1 mt-2">
               {availableNow && (
-                <span className="text-lg font-medium text-emerald-600">
+                <span className="text-lg font-medium text-[#D92AD0]">
                   Available now
                 </span>
               )}
@@ -153,7 +153,7 @@ const TalentCard: React.FC<TalentCardProps> = ({
                 <p className="text-[18px] font-medium text-[#6B7280]">{title}</p>
             </div>
             <div>
-              <p className="mt-1 inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 py-2 text-lg font-semibold text-white hover:bg-emerald-600 transition">
+              <p className="mt-1 inline-flex items-center justify-center rounded-xl bg-[#D92AD0] px-4 py-2 text-lg font-semibold text-white hover:bg-emerald-600 transition">
                 Hire
               </p>
             </div>
@@ -232,7 +232,7 @@ const HireTalent: React.FC = () => {
                     Vetted professionals ready to start immediately
                 </p>
             </div>
-            <p className="text-lg font-medium text-emerald-600 hover:text-emerald-700 inline-flex items-center gap-1 pr-4">
+            <p className="text-lg font-medium !text-black inline-flex items-center gap-1 pr-4">
                 See all <span>→</span>
             </p>
         </div>
