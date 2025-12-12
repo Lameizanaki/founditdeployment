@@ -21,7 +21,7 @@ export default function LandingPage() {
             <NavHeader/>
             <Search/>
             <HeroSection/>
-            <OneLineContent/>
+            <OneLineContent/>+
             <ChooseYourPlat/>
             <PopularCategories/>
             <section id='feature' className='scroll-mt-24'>

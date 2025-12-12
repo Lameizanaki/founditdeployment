@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 interface MenuItem {
   name: string;
   id: string;
-  subcategories: string[]; // No subcategories needed for this version
+  subcategories: string[]; 
 }
 
 interface NavHeaderProps {

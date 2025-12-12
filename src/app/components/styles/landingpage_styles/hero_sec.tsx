@@ -172,7 +172,7 @@ export default function HeroSection (
                                       hover:bg-[#D92AD0] hover:text-white duration-300 ease-out hover:cursor-pointer hover:font-bold
                         "
                             onMouseEnter={() => setIsHoveredSVG1(false)}
-                            onMouseLeave={() => setIsHoveredSVG1(true)}
+                            onMouseLeave={() => setIsHoveredSVG1(true)}                           
                         >
                         { isHoveredSVG1 ? (
                                 <svg className="xl:h-6 xl:w-6 lg:h-4 lg:w-4 sm:h-4 sm:w-4 h-6 w-6" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
