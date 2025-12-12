@@ -41,7 +41,7 @@ export default function NavHeader({
   };
 
   return (
-    <nav className="flex items-center shadow-md -ml-6 p-2 justify-between sm:flex sm:items-center sm:justify-between sm:shadow-md sm:p-3 lg:flex lg:items-center lg:justify-between lg:shadow-md lg:p-3 xl:flex xl:items-center xl:justify-between xl:shadow-md xl:p-3">
+    <nav className="flex items-center shadow-md -ml-3 p-2 justify-between sm:flex sm:items-center sm:justify-between sm:shadow-md sm:p-3 lg:flex lg:items-center lg:justify-between lg:shadow-md lg:p-3 xl:flex xl:items-center xl:justify-between xl:shadow-md xl:p-3">
       <div className="hidden items-center gap-x-3 pl-4 xl:flex xl:items-center xl:gap-x-3 xl:pl-4">
         <img className="w-fit h-8" src={logoSrc} alt={logoAlt} />
       </div>
