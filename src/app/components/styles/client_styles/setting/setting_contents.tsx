@@ -6,6 +6,9 @@ import ContractsAndCompliance from './setting_right_side3';
 import InvoicesAndReceipts from './setting_right_side4';
 import Notifications from './setting_right_side5';
 import Account from './setting_right_side6';
+import {Security} from './setting_right_side7';
+import Privacy from './setting_right_side8';
+import ConnectedApp from './setting_right_side9';
 
 const ClientContent: React.FC = () => {
   
@@ -15,7 +18,7 @@ const ClientContent: React.FC = () => {
       <LeftSidebar />
       {/* Right Content Area */}
       {/* 1 */}
-      {/* <ClientAndBilling/> */}
+      <ClientAndBilling/>
       {/* 2 */}
       {/* <HiringPreferences /> */}
       {/* 3 */}
@@ -25,7 +28,13 @@ const ClientContent: React.FC = () => {
       {/* 5 */}
       {/* <Notifications /> */}
       {/* 6 */}
-      <Account />
+      {/* <Account /> */}
+      {/* 7 */}
+      {/* <Security /> */}
+      {/* 8 */}
+      {/* <Privacy /> */}
+      {/* 9 */}
+      {/* <ConnectedApp /> */}
     </div>
   );
 };

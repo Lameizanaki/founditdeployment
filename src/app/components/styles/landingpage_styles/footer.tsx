@@ -122,7 +122,7 @@ export default function Footer(): React.ReactElement {
           {GROUPS.map((group) => (
             <div key={group.title}>
               <div className="text-sm font-semibold text-gray-900">{group.title}</div>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-3 space-y-2 -ml-8">
                 {group.links.map((l) => (
                   <li key={l.label}>
                     <a href={l.href} className="text-sm !text-gray-600 hover:text-gray-900 !no-underline hover:!no-underline focus:!no-underline">

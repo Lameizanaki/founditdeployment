@@ -1,6 +1,6 @@
 export default function ClientNavHeader(){
     return (
-        <div className="flex p-3 -ml-1 pt-2 pb-2 justify-between items-center border-b-1 border-black bg-white top-0 z-50 sticky">
+        <div className="flex p-3 -ml-1 pt-2 pb-2 justify-between items-center pb- bg-white top-0 z-50 sticky">
             <div className="flex w-full items-center gap-x-8 space-x-4">
             <img className="w-fit h-8" src="/favicon.ico" alt="logo"/>
             <div className='flex w-3xl items-center gap-x-2 h-12 border-t-1 border-b-1 border-[#F3F3F5] bg-gray-100 p-3 rounded-2xl'>
