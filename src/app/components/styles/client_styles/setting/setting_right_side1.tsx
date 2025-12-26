@@ -41,6 +41,11 @@ const ClientAndBilling: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFocused1, setIsFocused1] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
+  // State to manage modal visibility
+  const [showModal, setShowModal] = useState(false);
+
+  // Function to toggle modal visibility
+  const toggleModal = () => setShowModal(!showModal);
 
   return (
     <div className="w-full ml-4 mr-4">
@@ -74,8 +79,139 @@ const ClientAndBilling: React.FC = () => {
           <div>
             <div className='flex items-center justify-between'>
               <p className="block text-xl mt-2">Payment Methods</p>
-              <p className='w-fit px-3 py-2 border-1 border-gray-300 rounded-2xl text-[#00BC7D]'>+ Add Card</p>
+              <p className='w-fit px-3 py-2 border-1 border-gray-300 rounded-2xl text-[#00BC7D] active:opacity-30 hover:text-white hover:bg-[#00BC7D] hover:cursor-pointer'  onClick={toggleModal}>+ Add Card</p>
             </div>
+
+            {/* ===================== */}
+            {showModal && (
+              <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                <div className="w-full max-w-lg bg-white rounded-xl p-8 shadow-lg">
+                  {/* Modal Content */}
+                  <div className="text-center mb-8">
+                    <div className="text-xl font-semibold text-gray-800 mb-2">Add Payment Method</div>
+                    <div className="text-sm text-gray-500">Secured & encrypted</div>
+                  </div>
+
+                  {/* Select Payment Method */}
+                  <div className="mb-6">
+                    <div className="flex justify-between">
+                      <div className="flex items-center">
+                        <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          {/* Replace with your own SVG if needed */}
+                          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.03 20 4 16.97 4 12C4 7.03 7.03 4 12 4C16.97 4 20 7.03 20 12C20 16.97 16.97 20 12 20Z" fill="#99A1AF" />
+                        </svg>
+                        <span className="text-lg text-gray-800">Card</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-gray-500">Visa, MasterCard, etc.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Form Fields */}
+                  <div className="mb-4">
+                    <div className="flex flex-col mb-4">
+                      <input
+                        type="text"
+                        placeholder="Card Number"
+                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                      />
+                    </div>
+                    <div className="flex flex-col mb-4">
+                      <input
+                        type="text"
+                        placeholder="Name on card"
+                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                      />
+                    </div>
+                    <div className="flex justify-between mb-4">
+                      <div className="w-1/2 pr-2">
+                        <input
+                          type="text"
+                          placeholder="Expiry (MM/YY)"
+                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                        />
+                      </div>
+                      <div className="w-1/2 pl-2">
+                        <input
+                          type="text"
+                          placeholder="CVC"
+                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col mb-4">
+                      <select
+                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                      >
+                        <option value="country">United States</option>
+                        {/* Add more countries dynamically */}
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col mb-4">
+                      <input
+                        type="text"
+                        placeholder="Street Address"
+                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                      />
+                    </div>
+                    <div className="flex justify-between mb-4">
+                      <div className="w-1/2 pr-2">
+                        <input
+                          type="text"
+                          placeholder="City"
+                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                        />
+                      </div>
+                      <div className="w-1/2 pl-2">
+                        <input
+                          type="text"
+                          placeholder="State"
+                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col mb-4">
+                      <input
+                        type="text"
+                        placeholder="Postal Code"
+                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
+                      />
+                    </div>
+
+                    <div className="flex items-center mb-4">
+                      <input type="checkbox" id="savePayment" className="mr-2" />
+                      <label htmlFor="savePayment" className="text-gray-600 text-sm">
+                        Save for future payments
+                      </label>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-500">No extra fee. Charged in USD.</span>
+                      <div>
+                        <button
+                          onClick={toggleModal}
+                          className="py-2 px-4 bg-[#D0FAE5] rounded-2xl text-[#007A55] text-sm"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={toggleModal}
+                          className="py-2 px-4 bg-[#00BC7D] text-white rounded-2xl text-sm ml-3"
+                        >
+                          Save & Continue
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ===================== */}
+
             {/* Card Number Input  */}
             <div>             
               <div className={`flex items-center w-full px-3 py-3 gap-x-4 rounded-2xl ${

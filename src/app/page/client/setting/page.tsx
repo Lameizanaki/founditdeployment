@@ -8,7 +8,7 @@ import ClientFooter from "@/app/components/styles/client_styles/setting/setting_
 
 const SettingsPage: React.FC = () => {
   return (
-    <div className="w-full h-screen bg-[#F9FAFB]">
+    <div className="w-full h-screen bg-[#F9FAFB] overflow-x-hidden">
       <ClientNavHeader />
       <SettingSubHeader />
       <ClientContent/>

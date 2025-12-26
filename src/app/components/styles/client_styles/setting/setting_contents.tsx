@@ -6,35 +6,47 @@ import ContractsAndCompliance from './setting_right_side3';
 import InvoicesAndReceipts from './setting_right_side4';
 import Notifications from './setting_right_side5';
 import Account from './setting_right_side6';
-import {Security} from './setting_right_side7';
+import { Security } from './setting_right_side7';
 import Privacy from './setting_right_side8';
 import ConnectedApp from './setting_right_side9';
 
 const ClientContent: React.FC = () => {
-  
+  const [activeSection, setActiveSection] = useState<string>('client-billing');
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'client-billing':
+        return <ClientAndBilling />;
+      case 'hiring-preferences':
+        return <HiringPreferences />;
+      case 'contracts-compliance':
+        return <ContractsAndCompliance />;
+      case 'invoices-receipts':
+        return <InvoicesAndReceipts />;
+      case 'notifications':
+        return <Notifications />;
+      case 'account':
+        return <Account />;
+      case 'security':
+        return <Security />;
+      case 'privacy':
+        return <Privacy />;
+      case 'connected-apps':
+        return <ConnectedApp />;
+      default:
+        return <ClientAndBilling />;
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Left Sidebar */}
-      <LeftSidebar />
+      <LeftSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      
       {/* Right Content Area */}
-      {/* 1 */}
-      <ClientAndBilling/>
-      {/* 2 */}
-      {/* <HiringPreferences /> */}
-      {/* 3 */}
-      {/* <ContractsAndCompliance /> */}
-      {/* 4 */}
-      {/* <InvoicesAndReceipts /> */}
-      {/* 5 */}
-      {/* <Notifications /> */}
-      {/* 6 */}
-      {/* <Account /> */}
-      {/* 7 */}
-      {/* <Security /> */}
-      {/* 8 */}
-      {/* <Privacy /> */}
-      {/* 9 */}
-      {/* <ConnectedApp /> */}
+      <div className="flex-1">
+        {renderContent()}
+      </div>
     </div>
   );
 };
