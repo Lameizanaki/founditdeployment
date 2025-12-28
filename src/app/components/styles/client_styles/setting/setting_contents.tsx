@@ -44,7 +44,7 @@ const ClientContent: React.FC = () => {
       <LeftSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       
       {/* Right Content Area */}
-      <div className="flex-1">
+      <div className="w-full mr-10">
         {renderContent()}
       </div>
     </div>
