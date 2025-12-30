@@ -43,9 +43,54 @@ const ClientAndBilling: React.FC = () => {
   const [isFocused2, setIsFocused2] = useState(false);
   // State to manage modal visibility
   const [showModal, setShowModal] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState('');
 
   // Function to toggle modal visibility
   const toggleModal = () => setShowModal(!showModal);
+
+    const paymentMethods = [
+    {
+      id: 'card',
+      name: 'Card',
+      subtitle: 'Visa, Mastercard',
+      icon: (
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 6H1M1 4.2L1 11.8C1 12.9201 1 13.4802 1.21799 13.908C1.40973 14.2843 1.71569 14.5903 2.09202 14.782C2.51984 15 3.07989 15 4.2 15L17.8 15C18.9201 15 19.4802 15 19.908 14.782C20.2843 14.5903 20.5903 14.2843 20.782 13.908C21 13.4802 21 12.9201 21 11.8V4.2C21 3.0799 21 2.51984 20.782 2.09202C20.5903 1.7157 20.2843 1.40974 19.908 1.21799C19.4802 1 18.9201 1 17.8 1L4.2 1C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40973 1.40973 1.71569 1.21799 2.09202C1 2.51984 1 3.07989 1 4.2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    {
+      id: 'bank',
+      name: 'Bank Account',
+      subtitle: 'ACH / SEPA',
+      icon: (
+        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 19.9104H19M4 16.9104V8.91038M8 16.9104V8.91038M12 16.9104V8.91038M16 16.9104V8.91038M18 5.91038L10.424 1.17538C10.2702 1.07924 10.1933 1.03117 10.1108 1.01243C10.0379 0.995857 9.96214 0.995857 9.88921 1.01243C9.80673 1.03117 9.72982 1.07924 9.576 1.17538L2 5.91038H18Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    {
+      id: 'paypal',
+      name: 'PayPal',
+      subtitle: 'Fast checkout',
+      icon: (
+        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.36 1H2.49333C1.66859 1 1.00178 1.88664 1.00101 2.8C1 4 1.66859 5.18667 2.49333 5.18667H18.0667C19.2449 5.18667 20.2 4.94179 20.2 6.12V16.36C20.2 17.7738 19.0538 18.92 17.64 18.92H3.56C2.14615 18.92 1 17.7738 1 16.36V3.4M15.0967 11.2233L15.08 11.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    {
+      id: 'apple',
+      name: 'Apple / Google Pay',
+      subtitle: 'Device wallet',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 5.44033V2.50033C10 2.27931 10.0878 2.06735 10.2441 1.91107C10.4004 1.75479 10.6123 1.66699 10.8333 1.66699" stroke="currentColor" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M15.1978 17.5002C17.2305 15.2015 18.3467 12.2354 18.3337 9.16688C18.3337 8.20168 18.0543 7.25711 17.5292 6.4472C17.0042 5.63729 16.256 4.99665 15.3749 4.60262C14.4938 4.20859 13.5174 4.078 12.5637 4.22663C11.61 4.37526 10.7198 4.79675 10.0003 5.44022C9.28092 4.79675 8.39064 4.37526 7.43695 4.22663C6.48326 4.078 5.50693 4.20859 4.62582 4.60262C3.74471 4.99665 2.99648 5.63729 2.47145 6.4472C1.94642 7.25711 1.66703 8.20168 1.66701 9.16688C1.66175 12.234 2.77689 15.1974 4.80284 17.5002C5.17593 17.9176 5.67832 18.1977 6.22952 18.2956C6.78072 18.3935 7.34883 18.3036 7.84284 18.0402C8.50681 17.686 9.24779 17.5007 10.0003 17.5007C10.7529 17.5007 11.4939 17.686 12.1578 18.0402C12.6519 18.3036 13.22 18.3935 13.7712 18.2956C14.3224 18.1977 14.8248 17.9176 15.1978 17.5002Z" stroke="currentColor" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    }
+  ];
 
   return (
     <div className="w-full ml-4 mr-4">
@@ -83,133 +128,216 @@ const ClientAndBilling: React.FC = () => {
             </div>
 
             {/* ===================== */}
+            {/* Improved Modal */}
             {showModal && (
-              <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-                <div className="w-full max-w-lg bg-white rounded-xl p-8 shadow-lg">
+              <div className="fixed h-screen inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                <div className="w-full mt-3 h-screen overflow-y-auto max-w-md bg-white rounded-xl shadow-2xl relative">
+                  {/* Close Button */}
+                  <p 
+                    onClick={toggleModal}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:cursor-pointer active:opacity-30"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </p>
+
+                  {/* Modal Header */}
+                  <div className="text-center pt-6 pb-4 px-6 border-b border-gray-100">
+                    <p className="text-2xl text-gray-900 mb-1">Add payment method</p>
+                    <p className="text-sm text-gray-500 flex items-center justify-center gap-1">
+                      <svg className='w-3 h-3' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 9V6C15 3.23858 12.7614 1 10 1C7.23858 1 5 3.23858 5 6V9M5.8 19H14.2C15.8802 19 16.7202 19 17.362 18.673C17.9265 18.3854 18.3854 17.9265 18.673 17.362C19 16.7202 19 15.8802 19 14.2V13.8C19 12.1198 19 11.2798 18.673 10.638C18.3854 10.0735 17.9265 9.6146 17.362 9.32698C16.7202 9 15.8802 9 14.2 9H5.8C4.11984 9 3.27976 9 2.63803 9.32698C2.07354 9.6146 1.6146 10.0735 1.32698 10.638C1 11.2798 1 12.1198 1 13.8V14.2C1 15.8802 1 16.7202 1.32698 17.362C1.6146 17.9265 2.07354 18.3854 2.63803 18.673C3.27976 19 4.11984 19 5.8 19Z" stroke="#717182" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      Secured & encrypted
+                    </p>
+                  </div>
+
                   {/* Modal Content */}
-                  <div className="text-center mb-8">
-                    <div className="text-xl font-semibold text-gray-800 mb-2">Add Payment Method</div>
-                    <div className="text-sm text-gray-500">Secured & encrypted</div>
-                  </div>
-
-                  {/* Select Payment Method */}
-                  <div className="mb-6">
-                    <div className="flex justify-between">
-                      <div className="flex items-center">
-                        <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          {/* Replace with your own SVG if needed */}
-                          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.03 20 4 16.97 4 12C4 7.03 7.03 4 12 4C16.97 4 20 7.03 20 12C20 16.97 16.97 20 12 20Z" fill="#99A1AF" />
-                        </svg>
-                        <span className="text-lg text-gray-800">Card</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="text-gray-500">Visa, MasterCard, etc.</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Form Fields */}
-                  <div className="mb-4">
-                    <div className="flex flex-col mb-4">
-                      <input
-                        type="text"
-                        placeholder="Card Number"
-                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                      />
-                    </div>
-                    <div className="flex flex-col mb-4">
-                      <input
-                        type="text"
-                        placeholder="Name on card"
-                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                      />
-                    </div>
-                    <div className="flex justify-between mb-4">
-                      <div className="w-1/2 pr-2">
-                        <input
-                          type="text"
-                          placeholder="Expiry (MM/YY)"
-                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                        />
-                      </div>
-                      <div className="w-1/2 pl-2">
-                        <input
-                          type="text"
-                          placeholder="CVC"
-                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                        />
+                  <div className="p-6">
+                    {/* Select Payment Method */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Select payment method</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {paymentMethods.map((method) => (
+                          <div
+                            key={method.id}
+                            onClick={() => setSelectedMethod(method.id)}
+                            className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                              selectedMethod === method.id
+                                ? 'border-gray-900 bg-gray-50'
+                                : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                          >
+                            <div className="flex flex-col items-start">
+                              <div className={`mb-2 ${selectedMethod === method.id ? 'text-gray-900' : 'text-gray-400'}`}>
+                                {method.icon}
+                              </div>
+                              <div className="text-sm font-medium text-gray-900">{method.name}</div>
+                              <div className="text-xs text-gray-500">{method.subtitle}</div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
-                    <div className="flex flex-col mb-4">
-                      <select
-                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                      >
-                        <option value="country">United States</option>
-                        {/* Add more countries dynamically */}
-                      </select>
+                    {/* Notice */}
+                    <div className="mb-6 px-3 pt-3 bg-blue-50 rounded-lg flex items-start gap-2">
+                      <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.30201 20.218C8.5234 20.3471 8.6341 20.4117 8.79032 20.4452C8.91156 20.4712 9.08844 20.4712 9.20968 20.4452C9.3659 20.4117 9.4766 20.3471 9.69799 20.218C11.646 19.0815 17 15.5115 17 10.6031V6.80309C17 5.7292 17 5.19225 16.8345 4.8111C16.6662 4.4237 16.4986 4.21761 16.1536 3.974C15.8141 3.73432 15.1486 3.59592 13.8177 3.31912C12.3508 3.01403 11.2243 2.46313 10.1944 1.66641C9.70051 1.28436 9.45357 1.09334 9.26034 1.04123C9.05644 0.986256 8.94356 0.986256 8.73966 1.04123C8.54643 1.09334 8.29949 1.28436 7.80562 1.66641C6.77572 2.46313 5.6492 3.01403 4.1823 3.31912C2.85137 3.59592 2.18591 3.73432 1.84645 3.974C1.50142 4.21761 1.33379 4.4237 1.16554 4.8111C1 5.19225 1 5.7292 1 6.80309V10.6031C1 15.5115 6.35396 19.0815 8.30201 20.218Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <p className="text-sm text-gray-700">We never store your full card number (PCI-DSS)</p>
                     </div>
 
-                    <div className="flex flex-col mb-4">
-                      <input
-                        type="text"
-                        placeholder="Street Address"
-                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                      />
-                    </div>
-                    <div className="flex justify-between mb-4">
-                      <div className="w-1/2 pr-2">
-                        <input
-                          type="text"
-                          placeholder="City"
-                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                        />
-                      </div>
-                      <div className="w-1/2 pl-2">
-                        <input
-                          type="text"
-                          placeholder="State"
-                          className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col mb-4">
-                      <input
-                        type="text"
-                        placeholder="Postal Code"
-                        className="w-full p-3 border border-gray-300 bg-[#F3F3F5] rounded-lg"
-                      />
-                    </div>
-
-                    <div className="flex items-center mb-4">
-                      <input type="checkbox" id="savePayment" className="mr-2" />
-                      <label htmlFor="savePayment" className="text-gray-600 text-sm">
-                        Save for future payments
-                      </label>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-500">No extra fee. Charged in USD.</span>
+                    {/* Form Fields */}
+                    <div className="space-y-4">
                       <div>
-                        <button
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Card number</label>
+                        <input
+                          type="text"
+                          placeholder="1234 5678 9012 3456"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Name on card</label>
+                        <input
+                          type="text"
+                          placeholder="John Doe"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Expiry</label>
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                          <input
+                            type="text"
+                            placeholder="123"
+                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Billing address</label>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">Country</label>
+                            <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                              <option>United States</option>
+                              <option>Canada</option>
+                              <option>United Kingdom</option>
+                            </select>
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">Street address</label>
+                            <input
+                              type="text"
+                              placeholder="123 Main St"
+                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs text-gray-600 mb-1">City</label>
+                              <input
+                                type="text"
+                                placeholder="San Francisco"
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-gray-600 mb-1">State</label>
+                              <input
+                                type="text"
+                                placeholder="CA"
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">Postal code</label>
+                            <input
+                              type="text"
+                              placeholder="94105"
+                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="6" cy="6" r="5" stroke="currentColor"/>
+                            <path d="M6 3V6L8 8" stroke="currentColor" strokeLinecap="round"/>
+                          </svg>
+                          <p className='mt-3'>No extra fee. Charged in USD</p>
+                      </div>
+
+                      {/* Checkboxes */}
+                      <div className="-space-y-3">
+                        <label className="cursor-pointer">
+                          <div className='flex items-center gap-x-2'>
+                            <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900" />
+                            <div>
+                              <p className="pt-3 text-sm text-gray-700">Make this my default payment method</p>
+                            </div>
+                          </div>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <div className='flex items-center gap-x-2'>
+                            <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900" />
+                            <div>
+                              <p className="pt-3 text-sm text-gray-700">Save for future payments</p>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className=" pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between mb-4">
+                        
+                        <div className="flex items-center gap-x-6 text-xs text-gray-400">
+                          <span>PCI-DSS</span>
+                          <span>256-bit SSL</span>
+                          <span>Tokenized by Stripe</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-x-3">
+                        <p
                           onClick={toggleModal}
-                          className="py-2 px-4 bg-[#D0FAE5] rounded-2xl text-[#007A55] text-sm"
+                          className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 text-center font-medium hover:bg-gray-50 transition-colors"
                         >
                           Cancel
-                        </button>
-                        <button
+                        </p>
+                        <p
                           onClick={toggleModal}
-                          className="py-2 px-4 bg-[#00BC7D] text-white rounded-2xl text-sm ml-3"
+                          className="flex-1 py-2.5 bg-[#10B981] text-white rounded-lg font-medium text-center hover:bg-[#059669] transition-colors"
                         >
                           Save & Continue
-                        </button>
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
-
             {/* ===================== */}
 
             {/* Card Number Input  */}
@@ -257,6 +385,7 @@ const ClientAndBilling: React.FC = () => {
             ))}
           </div>
         </div>
+
         <div className='w-full h-[1.5px] mt-6 mb-6 bg-slate-200'/>
 
         {/* Account Statistics */}
@@ -325,3 +454,4 @@ const ClientAndBilling: React.FC = () => {
 }
 
 export default ClientAndBilling;
+
