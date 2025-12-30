@@ -19,38 +19,38 @@ interface IntegrationSection {
 }
 
 const CalendarIcon = (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
   </svg>
 );
 
 const CloudIcon = (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
   </svg>
 );
 
 const CodeIcon = (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
   </svg>
 );
 
 const ChatIcon = (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
   </svg>
 );
 
 const ExternalLinkIcon = (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
   </svg>
 );
 
 const InfoIcon = (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  <svg className="w-7 h-7" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8.30201 20.218C8.5234 20.3471 8.6341 20.4117 8.79032 20.4452C8.91156 20.4712 9.08844 20.4712 9.20968 20.4452C9.3659 20.4117 9.4766 20.3471 9.69799 20.218C11.646 19.0815 17 15.5115 17 10.6031V6.80309C17 5.7292 17 5.19225 16.8345 4.8111C16.6662 4.4237 16.4986 4.21761 16.1536 3.974C15.8141 3.73432 15.1486 3.59592 13.8177 3.31912C12.3508 3.01403 11.2243 2.46313 10.1944 1.66641C9.70051 1.28436 9.45357 1.09334 9.26034 1.04123C9.05644 0.986256 8.94356 0.986256 8.73966 1.04123C8.54643 1.09334 8.29949 1.28436 7.80562 1.66641C6.77572 2.46313 5.6492 3.01403 4.1823 3.31912C2.85137 3.59592 2.18591 3.73432 1.84645 3.974C1.50142 4.21761 1.33379 4.4237 1.16554 4.8111C1 5.19225 1 5.7292 1 6.80309V10.6031C1 15.5115 6.35396 19.0815 8.30201 20.218Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 );
 
@@ -65,16 +65,16 @@ const IntegrationCard: React.FC<{
         <div className="mt-0.5 text-gray-600">{integration.icon}</div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-medium text-gray-900">{integration.name}</span>
+            <span className="text-lg text-gray-900">{integration.name}</span>
             {integration.connected && (
               <span className="px-2 py-0.5 text-xs font-medium text-green-700 bg-green-50 rounded-full">
                 Connected
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-500 mb-1">{integration.description}</p>
+          <p className="text-md text-gray-500 mb-1">{integration.description}</p>
           {integration.scopes && (
-            <p className="text-xs text-gray-400">Scopes: {integration.scopes}</p>
+            <p className="text-md text-gray-400">Scopes: {integration.scopes}</p>
           )}
         </div>
       </div>
@@ -185,11 +185,7 @@ export default function ConnectedApp() {
           name: 'Figma',
           description: 'Share design files',
           connected: false,
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v14a2 2 0 01-2 2h-4zM7 21h4a2 2 0 002-2v-4a2 2 0 00-2-2H7m0-4h.01M7 10h4a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v3a2 2 0 002 2z" />
-            </svg>
-          ),
+          icon: CodeIcon,
         },
         {
           id: 'bitbucket',
@@ -212,25 +208,36 @@ export default function ConnectedApp() {
           description: 'Get notifications in Slack channels',
           scopes: 'chat:write, channels:read',
           connected: true,
-          icon: ChatIcon,
+          icon: CodeIcon,
         },
       ],
       additionalContent: (
         <div className="mt-4 space-y-3">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="text-sm font-medium text-gray-900 mb-2">Channel Mapping</div>
-            <p className="text-sm text-gray-500 mb-3">
-              Send notifications to specific Slack channels
-            </p>
-            <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
-              <span className="text-sm text-gray-700">#orders</span>
-              <span className="text-xs text-gray-500">→ Order updates</span>
+          <div className="bg-white rounded-lg">
+            <div className='-space-y-3'>
+              <div>
+                <p className="text-lg text-gray-900">Channel Mapping</p>
+              </div>
+              <div>
+                <p className="text-lg text-gray-500 mb-3">
+                  Send notifications to specific Slack channels
+                </p>
+              </div>
+            </div>
+
+            <div className='flex items-center gap-x-5'>
+              <div className="w-[90%] pt-3 pl-3 bg-white border border-gray-200 rounded-lg">
+                <p className="text-sm text-gray-700">#orders</p>
+              </div>
+              <div className='w-[10%] mt-2'>
+                <p className="text-md text-gray-500">→ Order updates</p>
+              </div>
             </div>
           </div>
           <div className="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
             <div className="flex items-start gap-3">
               <span className="text-gray-600">{ChatIcon}</span>
-              <span className="text-sm font-medium text-gray-900">Connect Discord</span>
+              <span className="text-lg font-medium text-gray-900">Connect Discord</span>
             </div>
           </div>
         </div>
@@ -276,8 +283,8 @@ export default function ConnectedApp() {
     <div className="w-full h-screen overflow-y-auto py-2 px-4 sm:px-6 lg:px-8">
       <div className="w-full space-y-6">
         {/* Info Alert */}
-        <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-100 rounded-lg">
-          <div className="text-blue-600 mt-0.5">{InfoIcon}</div>
+        <div className="flex items-start gap-x-3 pt-3 pl-3 bg-blue-50 border border-blue-100 rounded-lg">
+          <div className="text-blue-600">{InfoIcon}</div>
           <p className="text-sm text-gray-700">
             OAuth scopes are shown for each integration. You can revoke access at any time.
           </p>
@@ -289,10 +296,10 @@ export default function ConnectedApp() {
             <div className="flex items-start gap-3 mb-4">
               <div className="text-gray-700 mt-1">{section.icon}</div>
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-1">
-                  {section.title}
+                <div>
+                  <p className="text-lg text-gray-900 mb-1">{section.title}</p>                 
                 </div>
-                <p className="text-sm text-gray-500">{section.description}</p>
+                <p className="text-lg text-gray-500">{section.description}</p>
               </div>
             </div>
 

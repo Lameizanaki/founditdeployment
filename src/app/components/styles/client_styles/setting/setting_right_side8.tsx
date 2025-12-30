@@ -36,11 +36,11 @@ const Select: React.FC<SelectProps> = ({ value, options, onChange, icon }) => {
     <div className="relative w-full">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full px-4 py-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+        className="flex items-center justify-between w-full px-4 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
       >
         <div className="flex items-center gap-3">
           {icon && <span className="text-gray-600">{icon}</span>}
-          <span className="text-sm text-gray-900">{value}</span>
+          <span className="text-lg text-gray-900">{value}</span>
         </div>
         <svg
           className={`w-5 h-5 text-gray-400 transition-transform ${
@@ -54,7 +54,7 @@ const Select: React.FC<SelectProps> = ({ value, options, onChange, icon }) => {
         </svg>
       </div>
       {isOpen && (
-        <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
           {options.map((option, index) => (
             <div
               key={index}
@@ -82,13 +82,13 @@ interface SettingItemProps {
 
 const SettingItem: React.FC<SettingItemProps> = ({ title, description, control, icon }) => {
   return (
-    <div className="flex items-start justify-between py-4 gap-4">
+    <div className="flex items-start justify-between gap-4">
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-1">
           {icon && <span className="text-gray-600">{icon}</span>}
-          <span className="text-sm font-medium text-gray-900">{title}</span>
+          <span className="text-lg text-gray-900">{title}</span>
         </div>
-        <p className="text-sm text-gray-500">{description}</p>
+        <p className="text-lg text-gray-500">{description}</p>
       </div>
       <div className="flex-shrink-0">{control}</div>
     </div>
@@ -120,14 +120,10 @@ export default function Privacy() {
   };
 
   const GlobeIcon = (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
+    <svg className='w-6 h-6' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 11H21M1 11C1 16.5228 5.47715 21 11 21M1 11C1 5.47715 5.47715 1 11 1M21 11C21 16.5228 16.5228 21 11 21M21 11C21 5.47715 16.5228 1 11 1M11 1C13.5013 3.73835 14.9228 7.29203 15 11C14.9228 14.708 13.5013 18.2616 11 21M11 1C8.49872 3.73835 7.07725 7.29203 7 11C7.07725 14.708 8.49872 18.2616 11 21" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
+
   );
 
   const SearchIcon = (
@@ -165,9 +161,9 @@ export default function Privacy() {
 
   return (
     <div className="w-full h-screen ml-4 mr-4">
-      <div className="w-full h-screen space-y-6">
+      <div className="w-full h-screen space-y-6 ">
         {/* Profile Visibility Section */}
-        <div className="bg-white rounded-2xl shadow-sm px-3 py-4">
+        <div className="bg-white rounded-2xl shadow-sm px-3 py-4 border border-gray-200">
           <div>
             <div>
               <p className="text-2xl">
@@ -181,9 +177,9 @@ export default function Privacy() {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             <div>
-              <div className="text-sm font-medium text-gray-900 mb-3">
+              <div className="text-lg text-gray-900 mb-3">
                 Profile Visibility
               </div>
               <Select
@@ -236,18 +232,20 @@ export default function Privacy() {
         </div>
 
         {/* Communication Preferences Section */}
-        <div className="bg-white h-80 rounded-2xl mt-9 shadow-sm px-3 py-3">
-          <div className="mb-6">
-            <div className="text-lg font-semibold text-gray-900 mb-1">
-              Communication Preferences
+        <div className="bg-white h-fit border border-gray-200 rounded-2xl mt-10 shadow-sm px-3 py-3">
+          <div className="-space-y-1">
+            <div>
+              <p className="text-2xl text-gray-900">Communication Preferences</p>
             </div>
-            <p className="text-sm text-gray-500">Manage who can contact you</p>
+            <div>
+              <p className="text-lg text-gray-500">Manage who can contact you</p>
+            </div>
           </div>
 
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-gray-600">{MessageIcon}</span>
-              <span className="text-sm font-medium text-gray-900">
+              <span className="text-lg text-gray-900">
                 Allow Direct Messages From
               </span>
             </div>

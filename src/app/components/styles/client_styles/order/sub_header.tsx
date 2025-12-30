@@ -149,12 +149,12 @@ export default function SubHeader({
 
             {/* Tabs */}
             <div className="px-3 mt-4 border-b border-gray-300">
-                <div className="flex items-center gap-x-6 overflow-x-auto">
+                <div className="flex items-center justify-center gap-x-8 overflow-x-auto">
                     {tabs.map((tab) => (
                         <div
                             key={tab.label}
                             onClick={() => onTabChange(tab.label)}
-                            className={`px-8 py-3 justify-between text-lg flex items-center text-center gap-x-2 border-b-2 transition cursor-pointer whitespace-nowrap ${
+                            className={`px-20 py-3 justify-between text-lg flex items-center text-center gap-x-2 border-b-2 transition cursor-pointer whitespace-nowrap ${
                                 activeTab === tab.label
                                 ? `border-[#009966] border-t border-b border-r border-l text-[#009966] ${tab.variant === "danger" ? "text-red-600 border-[#E7000B]" : ""}`
                                 : "border-transparent text-gray-600 hover:text-gray-900"
