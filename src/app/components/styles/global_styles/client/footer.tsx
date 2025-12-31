@@ -61,7 +61,7 @@ export default function ClientFooter(){
     return(
         <div className="flex p-2 pt-2 pb-2 items-center justify-center space-x-12 bg-white border-t border-gray-200 mt-12 sticky bottom-0 z-10">
           {footerMap.map((item, index) => (
-            <div key={index} className="flex items-center justify-center gap-x-3 cursor-pointer">
+            <div key={index} className="flex items-center justify-center gap-x-3 cursor-pointer ">
               {item.icon}
               <p className="mt-3 active:opacity-30">{item.name}</p>
             </div>
@@ -69,3 +69,4 @@ export default function ClientFooter(){
         </div>
     )
 }
+
