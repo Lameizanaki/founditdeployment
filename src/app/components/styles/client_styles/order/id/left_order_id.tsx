@@ -196,29 +196,29 @@ export default function LeftOrderId({ selectedMemberId = 'user_002' }: LeftOrder
   ];
 
   return (
-    <div className="w-full bg-white rounded-lg border border-gray-200 min-h-screen">
+    <div className="w-full h-screen">
       {/* Tab Bar */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border border-gray-200">
         {tabs.map((tab) => (
           <div
             key={tab.id}
             onClick={() => setCurrentTab(tab.id as any)}
             className={`flex-1 px-6 py-4 text-center font-medium text-sm sm:text-base cursor-pointer transition-all relative ${
-              currentTab === tab.id ? 'text-emerald-600' : 'text-gray-600 hover:text-gray-900'
+              currentTab === tab.id ? 'border-[#009966] border-b-2 border-t border-r border-l text-[#009966]' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             {tab.label}
-            {currentTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />}
+            
           </div>
         ))}
       </div>
 
-      <div className="p-6 sm:p-8">
+      <div className="bg-white h-screen overflow-y-auto">
         {currentTab === 'timeline' && (
           <div className="space-y-8">
             {/* Deliverables */}
-            <div>
-              <div className="text-xl font-semibold text-gray-900 mb-6">Deliverables</div>
+            <div className='mt-3 rounded-2xl border border-gray-200 p-6'>
+              <div className="text-xl text-gray-900 mb-6">Deliverables</div>
               <div className="space-y-6">
                 {data.deliveries.map((delivery, index) => (
                   <div
@@ -226,17 +226,24 @@ export default function LeftOrderId({ selectedMemberId = 'user_002' }: LeftOrder
                     className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-shadow"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                      <div>
-                        <div className="font-semibold text-gray-900 text-lg">
-                          {delivery.version} • {delivery.user}
+                      <div className='flex items-center gap-x-3'>
+                        <div className="flex items-center gap-x-2 text-gray-900">
+                          <p className='px-3 py-1 border broder-gray-300 rounded-2xl text-sm text-gray-600'>{delivery.version}</p>
                         </div>
-                        <div className="text-sm text-gray-500 mt-1">{delivery.date}</div>
+                        <div className='-space-y-3'>
+                          <div>
+                            <p className='text-lg'>{delivery.user}</p> 
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">{delivery.date}</p>
+                          </div>
+                        </div>
                       </div>
-                      <span className="bg-emerald-100 text-emerald-700 text-xs font-medium px-3 py-1.5 rounded-full">
+                      <div className="bg-emerald-100 text-emerald-700 text-xs font-medium px-3 py-1.5 -mt-4 rounded-full">
                         Approved
-                      </span>
+                      </div>
                     </div>
-                    <div className="text-gray-600 mb-5 leading-relaxed">{delivery.description}</div>
+                    <div className="text-gray-600 mb-5 text-lg leading-relaxed">{delivery.description}</div>
                     <div className="space-y-3">
                       {delivery.files.map((file, fIndex) => (
                         <div
@@ -272,21 +279,21 @@ export default function LeftOrderId({ selectedMemberId = 'user_002' }: LeftOrder
             </div>
 
             {/* Milestones */}
-            <div className="space-y-6">
-              <div className="text-xl font-semibold text-gray-900">Milestones</div>
-              <div className="text-sm text-gray-600 mb-6">
+            <div className="space-y-3 p-6">
+              <div className="text-2xl text-gray-900">Milestones</div>
+              <div className="text-sm text-gray-600">
                 ${data.released.toLocaleString()} of ${data.total.toLocaleString()} released
               </div>
-              <div className="grid gap-5">
+              <div className="grid gap-y-4 pb-3">
                 {data.milestones.map((milestone, index) => (
                   <div key={index} className="bg-gray-50 rounded-xl p-5 border border-gray-200">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <div className="font-semibold text-gray-900">{milestone.phase}</div>
+                        <div className="text-lg text-gray-900">{milestone.phase}</div>
                         <div className="text-sm text-gray-500 mt-1">Due {milestone.due}</div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="text-2xl font-bold text-emerald-600">${milestone.amount.toLocaleString()}</div>
+                        <div className="text-lg font-bold text-emerald-600">${milestone.amount.toLocaleString()}</div>
                         <span
                           className={`px-4 py-2 rounded-full text-sm font-medium ${
                             milestone.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' :
@@ -300,7 +307,9 @@ export default function LeftOrderId({ selectedMemberId = 'user_002' }: LeftOrder
                     </div>
                   </div>
                 ))}
+              <div className='w-full h-[1px] bg-gray-200 mb-2'></div>
               </div>
+
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="font-semibold text-gray-900">Overall progress</div>
@@ -318,8 +327,8 @@ export default function LeftOrderId({ selectedMemberId = 'user_002' }: LeftOrder
         )}
 
         {currentTab === 'files' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
+          <div className="space-y-6 mt-3 rounded-2xl border border-gray-200 p-6">
+            <div className="flex items-center justify-between ">
               <div className="text-xl font-semibold text-gray-900">All Files</div>
               <div className="flex items-center gap-2 text-emerald-600 font-medium cursor-pointer hover:text-emerald-700 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -369,7 +378,7 @@ export default function LeftOrderId({ selectedMemberId = 'user_002' }: LeftOrder
         )}
 
         {currentTab === 'invoices' && (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-3 rounded-2xl border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div className="text-xl font-semibold text-gray-900">Invoices</div>
               <div className="flex items-center gap-2 text-emerald-600 font-medium cursor-pointer hover:text-emerald-700 transition-colors">

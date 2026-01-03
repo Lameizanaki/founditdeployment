@@ -101,22 +101,13 @@ export default function SubHeaderOrderId({
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4 flex-wrap">
             <div
-              className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer transition-colors"
+              className="flex items-center gap-x-5 text-gray-700 hover:text-gray-900 cursor-pointer transition-colors"
               onClick={onBackClick}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
+              <svg className='w-4 h-4' viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 7H1M1 7L7 13M1 7L7 1" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
+
               <span className="text-sm sm:text-base font-medium">Back to Orders</span>
             </div>
             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,33 +116,26 @@ export default function SubHeaderOrderId({
             <span className="text-sm sm:text-base text-gray-600">Order #{orderId}</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-2 gap-x-3">
             <div
-              className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer transition-colors"
+              className="flex items-center border border-gray-200 px-3 py-2 rounded-xl gap-2 text-gray-700 hover:text-gray-900 cursor-pointer transition-colors"
               onClick={onMessageClick}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
+              <svg className='w-5 h-5 mt-1' viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 5.8C1 4.11984 1 3.27976 1.32698 2.63803C1.6146 2.07354 2.07354 1.6146 2.63803 1.32698C3.27976 1 4.11984 1 5.8 1H14.2C15.8802 1 16.7202 1 17.362 1.32698C17.9265 1.6146 18.3854 2.07354 18.673 2.63803C19 3.27976 19 4.11984 19 5.8V11.2C19 12.8802 19 13.7202 18.673 14.362C18.3854 14.9265 17.9265 15.3854 17.362 15.673C16.7202 16 15.8802 16 14.2 16H7.68375C7.0597 16 6.74767 16 6.44921 16.0613C6.18443 16.1156 5.9282 16.2055 5.68749 16.3285C5.41617 16.4671 5.17252 16.662 4.68521 17.0518L2.29976 18.9602C1.88367 19.2931 1.67563 19.4595 1.50054 19.4597C1.34827 19.4599 1.20422 19.3906 1.10923 19.2716C1 19.1348 1 18.8684 1 18.3355V5.8Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
+
               <span className="text-sm sm:text-base font-medium hidden sm:inline">Message</span>
             </div>
+
             <div
-              className="flex items-center gap-2 text-red-600 hover:text-red-700 cursor-pointer transition-colors"
+              className="flex items-center border border-gray-200 px-3 py-2 rounded-xl gap-2 text-red-600 hover:text-red-700 cursor-pointer transition-colors"
               onClick={onReportClick}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
-                />
+              <svg className='w-5 h-5 mt-1' viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 14C1 14 2 13 5 13C8 13 10 15 13 15C16 15 17 14 17 14V3C17 3 16 4 13 4C10 4 8 2 5 2C2 2 1 3 1 3M1 21L1 1" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
+
               <span className="text-sm sm:text-base font-medium hidden sm:inline">Report issue</span>
             </div>
           </div>
@@ -160,12 +144,12 @@ export default function SubHeaderOrderId({
 
       {/* Project Title */}
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
-        <div className="text-xl sm:text-2xl font-semibold text-gray-900">{projectTitle}</div>
+        <div className="text-xl sm:text-2xl text-gray-900">{projectTitle}</div>
       </div>
 
       {/* Team Members Section */}
       <div className="w-full px-4 sm:px-6 lg:px-8 pb-6">
-        <div className="bg-emerald-50 rounded-lg p-4 mb-6">
+        <div className="bg-emerald-50 rounded-xl border-2 border-[#A4F4CF] p-4 mb-6">
           <div className="flex items-center gap-2 text-emerald-800">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -203,13 +187,13 @@ export default function SubHeaderOrderId({
                 className={`
                   bg-white rounded-xl p-6 flex-shrink-0 w-[280px] sm:w-[320px] cursor-pointer transition-all duration-300
                   ${isSelected 
-                    ? 'border-4 border-emerald-500 shadow-xl ring-4 ring-emerald-100' 
+                    ? 'border-2 border-emerald-500 ring-4 ring-emerald-100' 
                     : 'border-2 border-emerald-200 hover:border-emerald-400 hover:shadow-lg'
                   }
                 `}
               >
                 {/* Member Info */}
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="relative">
                     {member.avatarUrl ? (
                       <img
@@ -246,6 +230,8 @@ export default function SubHeaderOrderId({
                   </div>
                 </div>
 
+                <div className='w-full h-[0.8px] bg-gray-200 mb-2'></div>
+
                 {/* Budget */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-600">Budget</span>
@@ -267,18 +253,6 @@ export default function SubHeaderOrderId({
                     />
                   </div>
                 </div>
-
-                {/* Selected Indicator */}
-                {isSelected && (
-                  <div className="mt-4 text-center">
-                    <span className="inline-flex items-center gap-2 bg-emerald-500 text-white text-xs font-medium px-4 py-2 rounded-full">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      Viewing this member
-                    </span>
-                  </div>
-                )}
               </div>
             );
           })}
