@@ -22,7 +22,7 @@ interface SubHeaderOrderIdProps {
   nda?: boolean;
   onBackClick?: () => void;
   onMessageClick?: () => void;
-  onReportClick?: () => void;
+  
 }
 
 export default function SubHeaderOrderId({
@@ -36,12 +36,15 @@ export default function SubHeaderOrderId({
   nda = true,
   onBackClick,
   onMessageClick,
-  onReportClick,
 }: SubHeaderOrderIdProps) {
   // Internal state if not controlled externally
   const [internalSelectedId, setInternalSelectedId] = useState<string>('default-1');
   const selectedId = externalSelectedId ?? internalSelectedId;
   const setSelectedId = onMemberSelect ?? setInternalSelectedId;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);  // Manage modal visibility
+  const [issueCategory, setIssueCategory] = useState('');  // Issue category state
+  const [description, setDescription] = useState('');  // Description state
 
   const defaultMembers: TeamMember[] = [
     {
@@ -94,6 +97,21 @@ export default function SubHeaderOrderId({
     return colors[status as keyof typeof colors] || colors.Active;
   };
 
+  const handleReportClick = () => {
+    setIsModalOpen(true);  // Open the report issue modal
+  };
+
+  const handleCancelReport = () => {
+    setIsModalOpen(false);  // Close the modal without submitting
+  };
+
+  const handleSubmitReport = () => {
+    // Add your form submission logic here
+    console.log('Report Submitted:', { issueCategory, description });
+    setIsModalOpen(false);  // Close the modal after submission
+  };
+
+
   return (
     <div className="w-full bg-white">
       {/* Header Navigation */}
@@ -130,7 +148,7 @@ export default function SubHeaderOrderId({
 
             <div
               className="flex items-center border border-gray-200 px-3 py-2 rounded-xl gap-2 text-red-600 hover:text-red-700 cursor-pointer transition-colors"
-              onClick={onReportClick}
+              onClick={handleReportClick}
             >
               <svg className='w-5 h-5 mt-1' viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 14C1 14 2 13 5 13C8 13 10 15 13 15C16 15 17 14 17 14V3C17 3 16 4 13 4C10 4 8 2 5 2C2 2 1 3 1 3M1 21L1 1" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -141,6 +159,65 @@ export default function SubHeaderOrderId({
           </div>
         </div>
       </div>
+
+      {/* Report Issue Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-2xl w-1/3">
+            <p className="text-2xl font-bold mb-4">Report an Issue</p>
+            <p className="text-lg text-gray-500 mb-4">Describe the issue you're experiencing with this order. Our support team will review your report and get back to you.</p>
+            
+            {/* Issue Category */}
+            <div className="mb-4">
+              <label htmlFor="issueCategory" className="block text-md">Issue category</label>
+              <select
+                id="issueCategory"
+                value={issueCategory}
+                onChange={(e) => setIssueCategory(e.target.value)}
+                className="w-full mt-2 px-3 py-2 border border-gray-300 bg-[#F3F3F5] rounded-xl"
+              >
+                <option value="">Select an issue category</option>
+                <option value="Technical Issue">Technical Issue</option>
+                <option value="Billing Issue">Billing Issue</option>
+                <option value="Delivery Issue">Delivery Issue</option>
+              </select>
+            </div>
+
+            {/* Description */}
+            <div className="mb-4">
+              <label htmlFor="description" className="block text-md">Description</label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                className="w-full mt-2 px-3 py-2 border border-gray-300 bg-[#F3F3F5] rounded-xl focus:outline-none"
+                placeholder="Please provide detailed information about the issue..."
+              ></textarea>
+              <p className='text-gray-500 text-sm mt-2'>Be specific and include relevant details to help us resolve the issue quickly.</p>
+            </div>
+
+            {/* What happens next */}
+            <div className="bg-blue-50 border border-blue-400 rounded-2xl pt-3 pl-3 mb-4">
+              <p className="text-sm text-blue-700">
+                <p>What happens next:</p>
+                <ul className="list-disc pl-4">
+                  <li>Our support team will review your report within 24 hours</li>
+                  <li>You'll receive updates via email and notifications</li>
+                  <li>We may contact you for additional information</li>
+                </ul>
+              </p>
+            </div>
+
+            <div className="flex text-center justify-end gap-x-4 cursor-pointer">
+              <p onClick={handleCancelReport} className="w-fit px-3 py-2 rounded-lg border border-gray-300 text-gray-700 active:opacity-30">Cancel</p>
+              <p onClick={handleSubmitReport} className="w-fit px-3 py-2 rounded-lg bg-[#D4183D] text-white active:opacity-30">Submit Report</p>
+            </div>
+          </div>
+        </div>
+      )}
+ 
+
 
       {/* Project Title */}
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6">

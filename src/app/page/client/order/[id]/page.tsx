@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import SubHeaderOrderId from "@/app/components/styles/client_styles/order/id/subhead_order_id";
 import RightOrderId from "@/app/components/styles/client_styles/order/id/right_order_id";
 import LeftOrderId from "@/app/components/styles/client_styles/order/id/left_order_id";
+import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
+import { Loading } from "@/app/components/styles/global_styles/loading/loading";
 
 const OrdersIdPage: React.FC = () => {
   const [orderData, setOrderData] = useState<any>(null);
@@ -37,17 +39,20 @@ const OrdersIdPage: React.FC = () => {
       await new Promise((r) => setTimeout(r, 500));
       const data = mockOrdersData[0];
       setOrderData(data);
-      setSelectedMemberId(data.teamMembers[0].id); // Default to first member
+      setSelectedMemberId(data.teamMembers[0].id); 
       setLoading(false);
     };
     fetchData();
   }, []);
 
-  if (loading) return <div className="h-screen flex items-center justify-center">Loading...</div>;
+  if (loading) 
+    return <Loading/>;
+
   if (!orderData || !selectedMemberId) return <div>Order not found</div>;
 
   return (
     <div className="w-full min-h-screen bg-[#F9FAFB]">
+      <ClientNavHeader />
       <SubHeaderOrderId
         orderId={orderData.orderId}
         projectTitle={orderData.projectTitle}

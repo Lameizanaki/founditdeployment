@@ -604,7 +604,7 @@ export default function OrdersPage() {
   }, [filteredGigs, sortBy]);
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen overflow-y-auto">
       {/* Header Section */}
       <SubHeader
         searchQuery={searchQuery}

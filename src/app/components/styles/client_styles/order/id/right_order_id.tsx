@@ -181,7 +181,7 @@ export default function RightOrderId({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-gray-900 text-sm sm:text-base text-teal-600 truncate">
+                      <div className="font-medium text-gray-900 text-sm sm:text-base truncate">
                         {member.name}
                       </div>
                       <div className="flex items-center gap-1 mt-0.5">

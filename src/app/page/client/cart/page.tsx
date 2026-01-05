@@ -1,15 +1,15 @@
 'use client';
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
-import OrderGigs from "@/app/components/styles/client_styles/order/order_gigs";
+import Cart from "@/app/components/styles/client_styles/cart/cart";
 import ClientFooter from "@/app/components/styles/global_styles/client/footer";
 
-const OrdersPage: React.FC = () => {
+const OrdersCartPage: React.FC = () => {
   return (
     <div className="w-full h-screen bg-[#F9FAFB]">
         <ClientNavHeader />
-        <OrderGigs />
+        <Cart />
         <ClientFooter/>
     </div>
   )
 }
-export default OrdersPage;
+export default OrdersCartPage;
