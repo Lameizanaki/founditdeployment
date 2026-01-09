@@ -6,6 +6,7 @@ import RightOrderId from "@/app/components/styles/client_styles/order/id/right_o
 import LeftOrderId from "@/app/components/styles/client_styles/order/id/left_order_id";
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
 import { Loading } from "@/app/components/styles/global_styles/loading/loading";
+import ClientFooter from "@/app/components/styles/global_styles/client/footer";
 
 const OrdersIdPage: React.FC = () => {
   const [orderData, setOrderData] = useState<any>(null);
@@ -80,6 +81,7 @@ const OrdersIdPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <ClientFooter/>
     </div>
   );
 };
