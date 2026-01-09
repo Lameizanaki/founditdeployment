@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { StatsItem } from "@/app/components/styles/admin/reports/mockData";
+import type { StatsItem } from "@/app/components/styles/admin_styles/reports/mockData";
 import { CheckCircleIcon, IconReport, XIcon } from "../Icon";
 
 function toneBox(tone: StatsItem["tone"]) {

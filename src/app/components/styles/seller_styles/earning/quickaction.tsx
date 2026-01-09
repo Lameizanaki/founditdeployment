@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/earning/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/earning/utils";
 
 type Item = {
   id: string;

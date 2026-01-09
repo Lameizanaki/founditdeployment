@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/profile/editpf/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/profile/editpf/utils";
 
 export default function TagInput({
   label,

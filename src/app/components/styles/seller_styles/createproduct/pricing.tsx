@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, Input, handleKeyboardActivate } from "@/app/components/styles/seller/createproduct/ui";
+import { Card, Input, handleKeyboardActivate } from "@/app/components/styles/seller_styles/createproduct/ui";
 
 function BenefitRow({ text }: { text: string }) {
   return (

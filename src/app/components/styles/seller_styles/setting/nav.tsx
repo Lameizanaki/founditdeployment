@@ -2,8 +2,8 @@
 
 import React from "react";
 import type { TabId } from "@/app/page/seller/setting/page";
-import { cn, handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
-import { IconShield } from "../../admin/Icon";
+import { cn, handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
+import { IconShield } from "@/app/components/styles/admin_styles/Icon";
 
 type NavItem =
   | { id: "identity"; label: string; sublabel?: string; pill?: string; disabled?: boolean }

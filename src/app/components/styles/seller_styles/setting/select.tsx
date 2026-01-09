@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { cn, handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
+import { cn, handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
 import { ChevronDown } from "lucide-react";
 
 export default function Select({

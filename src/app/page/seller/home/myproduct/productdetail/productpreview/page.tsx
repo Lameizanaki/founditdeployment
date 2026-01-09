@@ -2,11 +2,11 @@
 
 import React from "react";
 
-import Gallery from "@/app/components/styles/seller/productpreview/gallery";
-import Pricebox from "@/app/components/styles/seller/productpreview/pricebox";
-import Tabarea from "@/app/components/styles/seller/productpreview/tabs";
-import Sellerbox from "@/app/components/styles/seller/productpreview/sellerbox";
-import Also from "@/app/components/styles/seller/productpreview/also";
+import Gallery from "@/app/components/styles/seller_styles/productpreview/gallery";
+import Pricebox from "@/app/components/styles/seller_styles/productpreview/pricebox";
+import Tabarea from "@/app/components/styles/seller_styles/productpreview/tabs";
+import Sellerbox from "@/app/components/styles/seller_styles/productpreview/sellerbox";
+import Also from "@/app/components/styles/seller_styles/productpreview/also";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

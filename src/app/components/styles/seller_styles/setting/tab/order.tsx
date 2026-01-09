@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import Select from "@/app/components/styles/seller/setting/select";
-import { cn, handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
+import Select from "@/app/components/styles/seller_styles/setting/select";
+import { cn, handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
 
 type Milestone = {
   id: string;

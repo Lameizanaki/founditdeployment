@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { IconStar } from "../../admin/Icon";
+import { IconStar } from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(e: React.KeyboardEvent, onActivate: () => void) {
   if (e.key === "Enter" || e.key === " ") {

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { cn, handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
+import { cn, handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

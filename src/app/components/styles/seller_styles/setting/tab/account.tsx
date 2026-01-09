@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import Select from "@/app/components/styles/seller/setting/select";
-import Toggle from "@/app/components/styles/seller/setting/toggle";
+import Select from "@/app/components/styles/seller_styles/setting/select";
+import Toggle from "@/app/components/styles/seller_styles/setting/toggle";
 import {
   cn,
   handleKeyboardActivate,
-} from "@/app/components/styles/seller/setting/utils";
+} from "@/app/components/styles/seller_styles/setting/utils";
 
 function SectionCard({
   title,

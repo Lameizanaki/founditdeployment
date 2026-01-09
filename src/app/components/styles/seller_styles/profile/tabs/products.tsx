@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ProjectCard, { type ProjectItem } from "@/app/components/styles/fav/ProjectCard";
+import ProjectCard, { type ProjectItem } from "@/app/components/styles/client_styles/fav/ProjectCard";
 
 export default function ProductsTab() {
   const items: ProjectItem[] = [

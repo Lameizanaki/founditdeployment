@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/earning/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/earning/utils";
 import { IconDoc } from "@/app/components/styles/client_styles/library/components/icons";
 
 export default function PayMethod({

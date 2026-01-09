@@ -2,13 +2,13 @@
 
 import React from "react";
 
-import Stat from "@/app/components/styles/seller/home/myproduct/stat";
-import Filter from "@/app/components/styles/seller/home/myproduct/filter";
-import Grid from "@/app/components/styles/seller/home/myproduct/grid";
+import Stat from "@/app/components/styles/seller_styles/home/myproduct/stat";
+import Filter from "@/app/components/styles/seller_styles/home/myproduct/filter";
+import Grid from "@/app/components/styles/seller_styles/home/myproduct/grid";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
-import { statsMock, productMock } from "@/app/components/styles/seller/home/myproduct/mock";
+import { statsMock, productMock } from "@/app/components/styles/seller_styles/home/myproduct/mock";
 
 export default function Page() {
   return (

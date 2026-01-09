@@ -5,7 +5,7 @@ import { DollarSign, ShoppingBag, Zap, Star } from "lucide-react";
 
 import ProjectCard, {
   type ProjectItem,
-} from "@/app/components/styles/fav/ProjectCard";
+} from "@/app/components/styles/client_styles/fav/ProjectCard";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

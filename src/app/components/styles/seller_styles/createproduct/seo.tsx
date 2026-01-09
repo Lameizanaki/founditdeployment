@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, Input, Textarea } from "@/app/components/styles/seller/createproduct/ui";
+import { Card, Input, Textarea } from "@/app/components/styles/seller_styles/createproduct/ui";
 
 export default function Seo() {
   const [desc, setDesc] = useState("");

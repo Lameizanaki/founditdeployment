@@ -10,7 +10,7 @@ import FreelancerCard, {
 import ProjectCard, {
   ProjectItem,
 } from "@/app/components/styles/client_styles/fav/ProjectCard";
-import BrowsingHistoryCard from "@/app/components/styles/seller/landingpage/BrowsingHistoryStrip";
+import BrowsingHistoryCard from "@/app/components/styles/seller_styles/landingpage/BrowsingHistoryStrip";
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
 import ClientFooter from "@/app/components/styles/global_styles/client/footer";
 import Footer from "@/app/components/styles/landingpage_styles/footer";

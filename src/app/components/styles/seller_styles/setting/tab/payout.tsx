@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
 
 function RightBtn({ label }: { label: string }) {
   return (

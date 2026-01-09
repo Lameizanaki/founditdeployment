@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MiniDocIcon } from "@/app/components/styles/seller/icons";
+import { MiniDocIcon } from "@/app/components/styles/seller_styles/icons";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

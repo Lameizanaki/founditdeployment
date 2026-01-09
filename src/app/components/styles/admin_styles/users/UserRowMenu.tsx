@@ -2,8 +2,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import type { UserStatus } from "@/app/components/styles/admin/users/type";
-import { handleKeyboardActivate } from "@/app/components/styles/admin/users/type";
+import type { UserStatus } from "@/app/components/styles/admin_styles/users/type";
+import { handleKeyboardActivate } from "@/app/components/styles/admin_styles/users/type";
 
 export default function UserRowMenu({
   userId,

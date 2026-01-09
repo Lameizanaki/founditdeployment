@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 
-import Top from "@/app/components/styles/seller/createproduct/top";
-import Basic from "@/app/components/styles/seller/createproduct/basic";
-import Media from "@/app/components/styles/seller/createproduct/media";
-import Files from "@/app/components/styles/seller/createproduct/files";
-import Pricing from "@/app/components/styles/seller/createproduct/pricing";
-import Setting from "@/app/components/styles/seller/createproduct/setting";
-import Seo from "@/app/components/styles/seller/createproduct/seo";
+import Top from "@/app/components/styles/seller_styles/createproduct/top";
+import Basic from "@/app/components/styles/seller_styles/createproduct/basic";
+import Media from "@/app/components/styles/seller_styles/createproduct/media";
+import Files from "@/app/components/styles/seller_styles/createproduct/files";
+import Pricing from "@/app/components/styles/seller_styles/createproduct/pricing";
+import Setting from "@/app/components/styles/seller_styles/createproduct/setting";
+import Seo from "@/app/components/styles/seller_styles/createproduct/seo";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn, handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
+import { cn, handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
 
 export default function Toggle({
   on,

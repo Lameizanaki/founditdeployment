@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/profile/editpf/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/profile/editpf/utils";
 
 import {
   User,

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Card, Dropdown, Input, Textarea, handleKeyboardActivate } from "@/app/components/styles/seller/createproduct/ui";
+import { Card, Dropdown, Input, Textarea, handleKeyboardActivate } from "@/app/components/styles/seller_styles/createproduct/ui";
 
 export default function Basic({
   tags,

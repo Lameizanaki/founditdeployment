@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, Input } from "@/app/components/styles/seller/createproduct/ui";
+import { Card, Input } from "@/app/components/styles/seller_styles/createproduct/ui";
 
 function Toggle({ on }: { on: boolean }) {
   return (

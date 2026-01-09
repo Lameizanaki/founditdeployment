@@ -12,17 +12,17 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 
-import EditProfileHeader from "@/app/components/styles/seller/profile/editpf/header";
+import EditProfileHeader from "@/app/components/styles/seller_styles/profile/editpf/header";
 import SectionSidebar, {
   type SectionItem,
   type SectionKey,
-} from "@/app/components/styles/seller/profile/editpf/sidebar";
-import MobileSectionsDrawer from "@/app/components/styles/seller/profile/editpf/drawer";
-import SectionCard from "@/app/components/styles/seller/profile/editpf/card";
-import TagInput from "@/app/components/styles/seller/profile/editpf/input";
-import TimezoneSelect from "@/app/components/styles/seller/profile/editpf/timezone";
-import ToggleRow from "@/app/components/styles/seller/profile/editpf/toggle";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/profile/editpf/utils";
+} from "@/app/components/styles/seller_styles/profile/editpf/sidebar";
+import MobileSectionsDrawer from "@/app/components/styles/seller_styles/profile/editpf/drawer";
+import SectionCard from "@/app/components/styles/seller_styles/profile/editpf/card";
+import TagInput from "@/app/components/styles/seller_styles/profile/editpf/input";
+import TimezoneSelect from "@/app/components/styles/seller_styles/profile/editpf/timezone";
+import ToggleRow from "@/app/components/styles/seller_styles/profile/editpf/toggle";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/profile/editpf/utils";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

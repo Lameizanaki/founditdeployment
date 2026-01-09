@@ -2,14 +2,14 @@
 
 import React, { useMemo, useState } from "react";
 
-import Shell from "@/app/components/styles/seller/setting/shell";
-import OverviewTab from "@/app/components/styles/seller/setting/tab/overview";
-import OrderTab from "@/app/components/styles/seller/setting/tab/order";
-import PayoutTab from "@/app/components/styles/seller/setting/tab/payout";
-import NotiTab from "@/app/components/styles/seller/setting/tab/noti";
-import AccountTab from "@/app/components/styles/seller/setting/tab/account";
-import SecurityTab from "@/app/components/styles/seller/setting/tab/security";
-import type { NavItem } from "@/app/components/styles/seller/setting/shell";
+import Shell from "@/app/components/styles/seller_styles/setting/shell";
+import OverviewTab from "@/app/components/styles/seller_styles/setting/tab/overview";
+import OrderTab from "@/app/components/styles/seller_styles/setting/tab/order";
+import PayoutTab from "@/app/components/styles/seller_styles/setting/tab/payout";
+import NotiTab from "@/app/components/styles/seller_styles/setting/tab/noti";
+import AccountTab from "@/app/components/styles/seller_styles/setting/tab/account";
+import SecurityTab from "@/app/components/styles/seller_styles/setting/tab/security";
+import type { NavItem } from "@/app/components/styles/seller_styles/setting/shell";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

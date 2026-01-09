@@ -2,9 +2,9 @@
 
 import React from "react";
 
-import type { UserItem, UserStatus } from "@/app/components/styles/admin/users/type";
-import { handleKeyboardActivate } from "@/app/components/styles/admin/users/type";
-import UserRowMenu from "@/app/components/styles/admin/users/UserRowMenu";
+import type { UserItem, UserStatus } from "@/app/components/styles/admin_styles/users/type";
+import { handleKeyboardActivate } from "@/app/components/styles/admin_styles/users/type";
+import UserRowMenu from "@/app/components/styles/admin_styles/users/UserRowMenu";
 
 export default function UsersTable({
   users,

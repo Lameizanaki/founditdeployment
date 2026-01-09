@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import ModalOverlay from "@/app/components/styles/admin/reports/ModalOverlay";
-import type { ReportItem } from "@/app/components/styles/admin/reports/mockData";
-import { handleKeyboardActivate } from "@/app/components/styles/admin/reports/utils";
+import ModalOverlay from "@/app/components/styles/admin_styles/reports/ModalOverlay";
+import type { ReportItem } from "@/app/components/styles/admin_styles/reports/mockData";
+import { handleKeyboardActivate } from "@/app/components/styles/admin_styles/reports/utils";
 
 function CloseIcon() {
   return (

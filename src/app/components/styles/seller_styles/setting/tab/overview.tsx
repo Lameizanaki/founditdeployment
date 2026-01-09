@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/app/components/styles/seller/setting/utils";
+import { cn } from "@/app/components/styles/seller_styles/setting/utils";
 
 function StatCard({
   title,

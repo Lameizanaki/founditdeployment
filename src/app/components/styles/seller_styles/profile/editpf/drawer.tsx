@@ -5,8 +5,8 @@ import { X, Menu } from "lucide-react";
 import {
   type SectionItem,
   type SectionKey,
-} from "@/app/components/styles/seller/profile/editpf/sidebar";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/profile/editpf/utils";
+} from "@/app/components/styles/seller_styles/profile/editpf/sidebar";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/profile/editpf/utils";
 
 export default function MobileSectionsDrawer({
   open,

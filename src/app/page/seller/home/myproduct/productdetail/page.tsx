@@ -2,14 +2,14 @@
 
 import React, { useMemo, useState } from "react";
 
-import Top from "@/app/components/styles/seller/home/myproduct/productdetail/top";
-import Kpi from "@/app/components/styles/seller/home/myproduct/productdetail/kpi";
-import Tab from "@/app/components/styles/seller/home/myproduct/productdetail/tab";
-import Overview from "@/app/components/styles/seller/home/myproduct/productdetail/overview";
-import Buyer from "@/app/components/styles/seller/home/myproduct/productdetail/buyer";
-import Revenue from "@/app/components/styles/seller/home/myproduct/productdetail/revenue";
-import Perf from "@/app/components/styles/seller/home/myproduct/productdetail/perf";
-import Modal from "@/app/components/styles/seller/home/myproduct/productdetail/modal";
+import Top from "@/app/components/styles/seller_styles/home/myproduct/productdetail/top";
+import Kpi from "@/app/components/styles/seller_styles/home/myproduct/productdetail/kpi";
+import Tab from "@/app/components/styles/seller_styles/home/myproduct/productdetail/tab";
+import Overview from "@/app/components/styles/seller_styles/home/myproduct/productdetail/overview";
+import Buyer from "@/app/components/styles/seller_styles/home/myproduct/productdetail/buyer";
+import Revenue from "@/app/components/styles/seller_styles/home/myproduct/productdetail/revenue";
+import Perf from "@/app/components/styles/seller_styles/home/myproduct/productdetail/perf";
+import Modal from "@/app/components/styles/seller_styles/home/myproduct/productdetail/modal";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

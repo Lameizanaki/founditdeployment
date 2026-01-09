@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/createproduct/ui";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/createproduct/ui";
 
 export default function Top() {
   return (

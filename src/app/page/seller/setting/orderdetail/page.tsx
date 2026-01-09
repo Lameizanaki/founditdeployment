@@ -8,7 +8,7 @@ import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 import {
   cn,
   handleKeyboardActivate,
-} from "@/app/components/styles/seller/setting/utils";
+} from "@/app/components/styles/seller_styles/setting/utils";
 
 function IconArrowLeft({ className = "" }: { className?: string }) {
   return (

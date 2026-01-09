@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import type { ProductItem } from "@/app/components/styles/seller/home/myproduct/mock";
-import Card from "@/app/components/styles/seller/home/myproduct/card";
+import type { ProductItem } from "@/app/components/styles/seller_styles/home/myproduct/mock";
+import Card from "@/app/components/styles/seller_styles/home/myproduct/card";
 
 export default function Grid({ items }: { items: ProductItem[] }) {
   return (

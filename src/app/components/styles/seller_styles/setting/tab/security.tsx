@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Toggle from "@/app/components/styles/seller/setting/toggle";
+import Toggle from "@/app/components/styles/seller_styles/setting/toggle";
 
 export default function SecurityTab() {
   const [auth, setAuth] = useState(true);

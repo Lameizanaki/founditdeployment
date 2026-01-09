@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { IconDoc } from "../../library/icons";
-import { IconMessage } from "../../application/icons";
-import { IconStar } from "../../admin/Icon";
+import { IconDoc } from "@/app/components/styles/client_styles/library/components/icons";
+import { IconMessage } from "@/app/components/styles/client_styles/application/icons";
+import { IconStar } from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

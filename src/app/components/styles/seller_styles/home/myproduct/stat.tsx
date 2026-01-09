@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import type { StatItem } from "@/app/components/styles/seller/home/myproduct/mock";
+import type { StatItem } from "@/app/components/styles/seller_styles/home/myproduct/mock";
 
 import {
   MiniMoneyIcon,
   MiniTagIcon,
   MiniUsersIcon,
   MiniDocIcon,
-} from "@/app/components/styles/seller/icons";
+} from "@/app/components/styles/seller_styles/icons";
 
 /*
 If any icon import is missing in your icons.tsx, tell me which one errors

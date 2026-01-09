@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import type { ReportItem } from "@/app/components/styles/admin/reports/mockData";
-import ReportCard from "@/app/components/styles/admin/reports/ReportsCard";
+import type { ReportItem } from "@/app/components/styles/admin_styles/reports/mockData";
+import ReportCard from "@/app/components/styles/admin_styles/reports/ReportsCard";
 
 export default function ReportsList({
   reports,

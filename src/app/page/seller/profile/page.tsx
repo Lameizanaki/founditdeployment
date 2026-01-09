@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import ProfileHeader from "@/app/components/styles/seller/profile/ProfileHeader";
-import ProfileTabs, { type ProfileTabKey } from "@/app/components/styles/seller/profile/ProfileTabs";
-import OverviewTab from "@/app/components/styles/seller/profile/tabs/overview";
-import ProductsTab from "@/app/components/styles/seller/profile/tabs/products";
-import ReviewsTab from "@/app/components/styles/seller/profile/tabs/review";
-import AboutTab from "@/app/components/styles/seller/profile/tabs/about";
+import ProfileHeader from "@/app/components/styles/seller_styles/profile/ProfileHeader";
+import ProfileTabs, { type ProfileTabKey } from "@/app/components/styles/seller_styles/profile/ProfileTabs";
+import OverviewTab from "@/app/components/styles/seller_styles/profile/tabs/overview";
+import ProductsTab from "@/app/components/styles/seller_styles/profile/tabs/products";
+import ReviewsTab from "@/app/components/styles/seller_styles/profile/tabs/review";
+import AboutTab from "@/app/components/styles/seller_styles/profile/tabs/about";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

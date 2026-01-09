@@ -3,10 +3,10 @@
 import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-import SellerStatsRow from "@/app/components/styles/seller/home/statrow";
-import SellerActiveProducts from "@/app/components/styles/seller/home/activeproduct";
-import SellerRecentOrders from "@/app/components/styles/seller/home/recentorder";
-import SellerRightRail from "@/app/components/styles/seller/home/rightrail";
+import SellerStatsRow from "@/app/components/styles/seller_styles/home/statrow";
+import SellerActiveProducts from "@/app/components/styles/seller_styles/home/activeproduct";
+import SellerRecentOrders from "@/app/components/styles/seller_styles/home/recentorder";
+import SellerRightRail from "@/app/components/styles/seller_styles/home/rightrail";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

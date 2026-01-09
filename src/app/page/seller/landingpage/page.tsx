@@ -6,14 +6,14 @@ import { SlidersHorizontal } from "lucide-react";
 import ProjectCard, {
   type ProjectItem,
 } from "@/app/components/styles/client_styles/fav/ProjectCard";
-import SellerHero from "@/app/components/styles/seller/landingpage/SellerHero";
-import SortDropdown from "@/app/components/styles/seller/landingpage/SortDropdown";
+import SellerHero from "@/app/components/styles/seller_styles/landingpage/SellerHero";
+import SortDropdown from "@/app/components/styles/seller_styles/landingpage/SortDropdown";
 import FiltersPanel, {
   type AccKey,
-} from "@/app/components/styles/seller/landingpage/FiltersPanel";
-import MobileFiltersDrawer from "@/app/components/styles/seller/landingpage/MobileFiltersDrawer";
+} from "@/app/components/styles/seller_styles/landingpage/FiltersPanel";
+import MobileFiltersDrawer from "@/app/components/styles/seller_styles/landingpage/MobileFiltersDrawer";
 import Footer from "@/app/components/styles/landingpage_styles/footer";
-import BrowsingHistoryCard from "@/app/components/styles/seller/landingpage/BrowsingHistoryStrip";
+import BrowsingHistoryCard from "@/app/components/styles/seller_styles/landingpage/BrowsingHistoryStrip";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

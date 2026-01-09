@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/admin/reports/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/admin_styles/reports/utils";
 
 function SearchIcon() {
   return (

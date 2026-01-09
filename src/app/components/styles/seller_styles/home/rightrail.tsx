@@ -9,7 +9,7 @@ import {
   MiniTagIcon,
   MiniSearchIcon,
   MiniBoltIcon,
-} from "@/app/components/styles/seller/icons";
+} from "@/app/components/styles/seller_styles/icons";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

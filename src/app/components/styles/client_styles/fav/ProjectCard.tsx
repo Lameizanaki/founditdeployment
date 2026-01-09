@@ -1,6 +1,6 @@
 "use client";
 
-import { IconStar } from "@/app/components/styles/admin/Icon";
+import { IconStar } from "@/app/components/styles/admin_styles/Icon";
 
 export type ProjectItem = {
   id: string;

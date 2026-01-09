@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import type {
   UserRole,
   UserStatus,
-} from "@/app/components/styles/admin/users/type";
+} from "@/app/components/styles/admin_styles/users/type";
 
 type RoleValue = "All" | UserRole;
 type StatusValue = "All" | UserStatus;

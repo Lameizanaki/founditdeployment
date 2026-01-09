@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import type { ReportItem } from "@/app/components/styles/admin/reports/mockData";
-import { handleKeyboardActivate } from "@/app/components/styles/admin/reports/utils";
+import type { ReportItem } from "@/app/components/styles/admin_styles/reports/mockData";
+import { handleKeyboardActivate } from "@/app/components/styles/admin_styles/reports/utils";
 import { CheckCircleIcon, IconCube, IconEye, XIcon } from "../Icon";
 import { IconMessage } from "@/app/components/styles/client_styles/application/icons";
 

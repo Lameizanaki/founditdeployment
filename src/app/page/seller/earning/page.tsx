@@ -3,18 +3,18 @@
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import Hero from "@/app/components/styles/seller/earning/hero";
-import StatRow from "@/app/components/styles/seller/earning/statrow";
-import Breakdown from "@/app/components/styles/seller/earning/breakdown";
-import QuickAction from "@/app/components/styles/seller/earning/quickaction";
-import PayMethod from "@/app/components/styles/seller/earning/paymethod";
-import Timeline from "@/app/components/styles/seller/earning/timeline";
-import RecentTx from "@/app/components/styles/seller/earning/recent";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/earning/utils";
+import Hero from "@/app/components/styles/seller_styles/earning/hero";
+import StatRow from "@/app/components/styles/seller_styles/earning/statrow";
+import Breakdown from "@/app/components/styles/seller_styles/earning/breakdown";
+import QuickAction from "@/app/components/styles/seller_styles/earning/quickaction";
+import PayMethod from "@/app/components/styles/seller_styles/earning/paymethod";
+import Timeline from "@/app/components/styles/seller_styles/earning/timeline";
+import RecentTx from "@/app/components/styles/seller_styles/earning/recent";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/earning/utils";
 import { IconDoc } from "@/app/components/styles/client_styles/library/components/icons";
-import { IconDownload } from "@/app/components/styles/admin/Icon";
-import WithdrawModal from "@/app/components/styles/seller/earning/withdrawmodal";
-import AddPayModal from "@/app/components/styles/seller/earning/addpaymodal";
+import { IconDownload } from "@/app/components/styles/admin_styles/Icon";
+import WithdrawModal from "@/app/components/styles/seller_styles/earning/withdrawmodal";
+import AddPayModal from "@/app/components/styles/seller_styles/earning/addpaymodal";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 

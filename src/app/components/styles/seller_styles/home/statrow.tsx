@@ -7,7 +7,7 @@ import {
   MiniTrendIcon,
   MiniUsersIcon,
   MiniWarnIcon,
-} from "@/app/components/styles/seller/icons";
+} from "@/app/components/styles/seller_styles/icons";
 
 type StatItem = {
   title: string;

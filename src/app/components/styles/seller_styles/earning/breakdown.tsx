@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/earning/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/earning/utils";
 
 type Row = {
   id: string;

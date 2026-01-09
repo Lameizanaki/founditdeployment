@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import type { ProductItem } from "@/app/components/styles/seller/home/myproduct/mock";
+import type { ProductItem } from "@/app/components/styles/seller_styles/home/myproduct/mock";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

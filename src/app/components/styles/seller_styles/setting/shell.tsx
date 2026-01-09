@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import Nav from "@/app/components/styles/seller/setting/nav";
+import Nav from "@/app/components/styles/seller_styles/setting/nav";
 import type { TabId } from "@/app/page/seller/setting/page";
-import { cn, handleKeyboardActivate } from "@/app/components/styles/seller/setting/utils";
-import { IconMenu } from "../../admin/Icon";
+import { cn, handleKeyboardActivate } from "@/app/components/styles/seller_styles/setting/utils";
+import { IconMenu } from "@/app/components/styles/admin_styles/Icon";
 
 export type NavItem =
   | { id: "identity"; label: string; sublabel?: string; pill?: string; disabled?: boolean }
