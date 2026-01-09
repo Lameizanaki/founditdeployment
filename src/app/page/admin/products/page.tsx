@@ -2,9 +2,9 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import AdminTopbar from "@/app/components/styles/admin/Topbar";
-import AdminSidebar from "@/app/components/styles/admin/Sidebar";
-import ModalShell from "@/app/components/styles/admin/ModalShell";
+import AdminTopbar from "@/app/components/styles/admin_styles/Topbar";
+import AdminSidebar from "@/app/components/styles/admin_styles/Sidebar";
+import ModalShell from "@/app/components/styles/admin_styles/ModalShell";
 import {
   adminNavItems,
   mockProducts,
