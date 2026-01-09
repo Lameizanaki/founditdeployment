@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import Modal from "@/app/components/styles/seller/earning/modal";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/earning/utils";
+import Modal from "@/app/components/styles/seller_styles/earning/modal";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/earning/utils";
 
 type Method = {
   id: string;

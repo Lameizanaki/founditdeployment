@@ -2,14 +2,14 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import AdminSidebar from "@/app/components/styles/admin/Sidebar";
-import AdminTopbar from "@/app/components/styles/admin/Topbar";
+import AdminSidebar from "@/app/components/styles/admin_styles/Sidebar";
+import AdminTopbar from "@/app/components/styles/admin_styles/Topbar";
 
 import {
   adminNavItems,
   dashboardStats,
   type AdminStatCard,
-} from "@/app/components/styles/admin/mockData";
+} from "@/app/components/styles/admin_styles/mockData";
 import {
   IconAlert,
   IconClipboard,
@@ -20,7 +20,7 @@ import {
   IconBox,
   IconCube,
   IconUser,
-} from "@/app/components/styles/admin/Icon";
+} from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(e: React.KeyboardEvent, onActivate: () => void) {
   if (e.key === "Enter" || e.key === " ") {

@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AdminTopbar from "@/app/components/styles/admin/Topbar";
-import AdminSidebar from "@/app/components/styles/admin/Sidebar";
-import SettingSection from "@/app/components/styles/admin/SettingSection";
-import SettingGrid from "@/app/components/styles/admin/SettingGrid";
-import SettingField from "@/app/components/styles/admin/SettingField";
-import SettingToggle from "@/app/components/styles/admin/SettingToggle";
-import SettingDropdown from "@/app/components/styles/admin/SettingDropdown";
-import { adminNavItems } from "@/app/components/styles/admin/mockData";
+import AdminTopbar from "@/app/components/styles/admin_styles/Topbar";
+import AdminSidebar from "@/app/components/styles/admin_styles/Sidebar";
+import SettingSection from "@/app/components/styles/admin_styles/SettingSection";
+import SettingGrid from "@/app/components/styles/admin_styles/SettingGrid";
+import SettingField from "@/app/components/styles/admin_styles/SettingField";
+import SettingToggle from "@/app/components/styles/admin_styles/SettingToggle";
+import SettingDropdown from "@/app/components/styles/admin_styles/SettingDropdown";
+import { adminNavItems } from "@/app/components/styles/admin_styles/mockData";
 import {
   IconGlobal,
   IconMoney,
@@ -16,7 +16,7 @@ import {
   IconBell,
   IconLock,
   IconMenu,
-} from "@/app/components/styles/admin/Icon";
+} from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

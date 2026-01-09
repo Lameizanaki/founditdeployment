@@ -3,7 +3,7 @@
 
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import type { AdminNavItem } from "@/app/components/styles/admin/mockData";
+import type { AdminNavItem } from "@/app/components/styles/admin_styles/mockData";
 import {
   IconBox,
   IconDashboard,
@@ -11,7 +11,7 @@ import {
   IconSettings,
   IconUsers,
   IconClose,
-} from "@/app/components/styles/admin/Icon";
+} from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(e: React.KeyboardEvent, onActivate: () => void) {
   if (e.key === "Enter" || e.key === " ") {

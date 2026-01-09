@@ -1,20 +1,20 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import AdminTopbar from "@/app/components/styles/admin/Topbar";
-import AdminSidebar from "@/app/components/styles/admin/Sidebar";
-import { adminNavItems } from "@/app/components/styles/admin/mockData";
+import AdminTopbar from "@/app/components/styles/admin_styles/Topbar";
+import AdminSidebar from "@/app/components/styles/admin_styles/Sidebar";
+import { adminNavItems } from "@/app/components/styles/admin_styles/mockData";
 
-import ReportsStats from "@/app/components/styles/admin/reports/ReportsStats";
-import ReportsFilters from "@/app/components/styles/admin/reports/ReportsFilters";
-import ReportsList from "@/app/components/styles/admin/reports/ReportsList";
-import ReviewReportModal from "@/app/components/styles/admin/reports/ReviewReportModal";
-import ResolveReportModal from "@/app/components/styles/admin/reports/ResolveReportModal";
-import DismissReportModal from "@/app/components/styles/admin/reports/DissmissReportModal";
+import ReportsStats from "@/app/components/styles/admin_styles/reports/ReportsStats";
+import ReportsFilters from "@/app/components/styles/admin_styles/reports/ReportsFilters";
+import ReportsList from "@/app/components/styles/admin_styles/reports/ReportsList";
+import ReviewReportModal from "@/app/components/styles/admin_styles/reports/ReviewReportModal";
+import ResolveReportModal from "@/app/components/styles/admin_styles/reports/ResolveReportModal";
+import DismissReportModal from "@/app/components/styles/admin_styles/reports/DissmissReportModal";
 
-import { reportsMock, statsMock } from "../../../components/styles/admin/reports/mockData";
-import type { ReportItem } from "../../../components/styles/admin/reports/mockData";
-import { IconMenu } from "@/app/components/styles/admin/Icon";
+import { reportsMock, statsMock } from "../../../components/styles/admin_styles/reports/mockData";
+import type { ReportItem } from "../../../components/styles/admin_styles/reports/mockData";
+import { IconMenu } from "@/app/components/styles/admin_styles/Icon";
 
 type ModalKey = null | "review" | "resolve" | "dismiss";
 

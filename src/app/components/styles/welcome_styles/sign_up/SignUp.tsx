@@ -57,7 +57,7 @@ export default function SignUp() {
         <img src="/favicon.ico" alt="logo" />
       </div>
 
-      <div className="w-7xl mx-auto h-[85%] bg-gray-50 flex flex-col lg:flex-row">
+      <div className="lg:w-7xl mx-auto h-[85%] bg-gray-50 lg:flex sm:flex-col lg:flex-row">
 
         {/* Left Section - Form */}
         <div className="w-full h-screen lg:w-1/2 flex items-center justify-center p-6 sm:p-8 lg:p-12 bg-white">
@@ -260,7 +260,7 @@ export default function SignUp() {
         <div className='w-[1.1px] h-[90%] my-auto bg-gray-200'></div>
 
         {/* Right Section - Illustration */}
-        <div className="w-full lg:w-1/2 bg-white flex items-center justify-center min-h-[300px]">
+        <div className="hidden w-full lg:w-1/2 bg-white lg:block xl:flex xl:items-center justify-center min-h-[300px]">
           <div className="w-full">
             <div className='flex w-full h-full items-center justify-center'>
               <img src="/landing.png" alt="logo" />

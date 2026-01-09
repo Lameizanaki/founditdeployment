@@ -3,24 +3,24 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import AdminTopbar from "@/app/components/styles/admin/Topbar";
-import AdminSidebar from "@/app/components/styles/admin/Sidebar";
-import { adminNavItems } from "@/app/components/styles/admin/mockData";
-import { IconMenu } from "@/app/components/styles/admin/Icon";
+import AdminTopbar from "@/app/components/styles/admin_styles/Topbar";
+import AdminSidebar from "@/app/components/styles/admin_styles/Sidebar";
+import { adminNavItems } from "@/app/components/styles/admin_styles/mockData";
+import { IconMenu } from "@/app/components/styles/admin_styles/Icon";
 
-import UserHeaderCard from "@/app/components/styles/admin/usersDetail/UserHeaderCard";
-import UserStatsStrip from "@/app/components/styles/admin/usersDetail/UserStatsStrip";
+import UserHeaderCard from "@/app/components/styles/admin_styles/usersDetail/UserHeaderCard";
+import UserStatsStrip from "@/app/components/styles/admin_styles/usersDetail/UserStatsStrip";
 import UserTabs, {
   UserTabKey,
-} from "@/app/components/styles/admin/usersDetail/usersTabs";
-import UserBioCard from "@/app/components/styles/admin/usersDetail/UserBioCard";
+} from "@/app/components/styles/admin_styles/usersDetail/usersTabs";
+import UserBioCard from "@/app/components/styles/admin_styles/usersDetail/UserBioCard";
 
-import OverviewPanels from "@/app/components/styles/admin/usersDetail/tabs/OverviewPanels";
-import ClientTabPanels from "@/app/components/styles/admin/usersDetail/tabs/ClientTabPanels";
-import SellerTabPanels from "@/app/components/styles/admin/usersDetail/tabs/SellerTabPanels";
-import ActivityLogTab from "@/app/components/styles/admin/usersDetail/tabs/ActivityLogTab";
-import FinancialTab from "@/app/components/styles/admin/usersDetail/tabs/FinancialTab";
-import FreelancerTabPanels from "@/app/components/styles/admin/usersDetail/tabs/FreelancerTabPanels";
+import OverviewPanels from "@/app/components/styles/admin_styles/usersDetail/tabs/OverviewPanels";
+import ClientTabPanels from "@/app/components/styles/admin_styles/usersDetail/tabs/ClientTabPanels";
+import SellerTabPanels from "@/app/components/styles/admin_styles/usersDetail/tabs/SellerTabPanels";
+import ActivityLogTab from "@/app/components/styles/admin_styles/usersDetail/tabs/ActivityLogTab";
+import FinancialTab from "@/app/components/styles/admin_styles/usersDetail/tabs/FinancialTab";
+import FreelancerTabPanels from "@/app/components/styles/admin_styles/usersDetail/tabs/FreelancerTabPanels";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

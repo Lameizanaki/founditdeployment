@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { handleKeyboardActivate } from "@/app/components/styles/seller/earning/utils";
+import { handleKeyboardActivate } from "@/app/components/styles/seller_styles/earning/utils";
 
 export default function Modal({
   open,

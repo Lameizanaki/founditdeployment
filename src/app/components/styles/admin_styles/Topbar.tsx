@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { IconBell, IconUserCircle } from "@/app/components/styles/admin/Icon";
+import { IconBell, IconUserCircle } from "@/app/components/styles/admin_styles/Icon";
 
 export default function AdminTopbar() {
   return (

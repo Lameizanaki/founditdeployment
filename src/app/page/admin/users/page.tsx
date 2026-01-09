@@ -7,17 +7,17 @@ import type {
   UserItem,
   UserRole,
   UserStatus,
-} from "@/app/components/styles/admin/users/type";
+} from "@/app/components/styles/admin_styles/users/type";
 
-import AdminTopbar from "@/app/components/styles/admin/Topbar";
-import AdminSidebar from "@/app/components/styles/admin/Sidebar";
-import { adminNavItems } from "@/app/components/styles/admin/mockData";
-import { IconMenu } from "@/app/components/styles/admin/Icon";
+import AdminTopbar from "@/app/components/styles/admin_styles/Topbar";
+import AdminSidebar from "@/app/components/styles/admin_styles/Sidebar";
+import { adminNavItems } from "@/app/components/styles/admin_styles/mockData";
+import { IconMenu } from "@/app/components/styles/admin_styles/Icon";
 
-import UsersStatsGrid from "@/app/components/styles/admin/users/UsersStatsGrid";
-import UsersFiltersCard from "@/app/components/styles/admin/users/UsersFiltersCard";
-import UsersTable from "@/app/components/styles/admin/users/UsersTable";
-import { handleKeyboardActivate } from "@/app/components/styles/admin/users/type";
+import UsersStatsGrid from "@/app/components/styles/admin_styles/users/UsersStatsGrid";
+import UsersFiltersCard from "@/app/components/styles/admin_styles/users/UsersFiltersCard";
+import UsersTable from "@/app/components/styles/admin_styles/users/UsersTable";
+import { handleKeyboardActivate } from "@/app/components/styles/admin_styles/users/type";
 
 export default function AdminSettingsPage() {
   const router = useRouter();

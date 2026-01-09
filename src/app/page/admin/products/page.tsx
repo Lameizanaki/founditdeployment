@@ -11,7 +11,7 @@ import {
   recentPurchases,
   salesTrend7Days,
   type ProductRow,
-} from "@/app/components/styles/admin/products/mockData";
+} from "@/app/components/styles/admin_styles/products/mockData";
 import {
   IconMore,
   IconDownload,
@@ -20,7 +20,7 @@ import {
   IconStar,
   IconTrash,
   IconTrendUp,
-} from "@/app/components/styles/admin/Icon";
+} from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,

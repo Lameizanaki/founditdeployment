@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { IconClose } from "@/app/components/styles/admin/Icon";
+import { IconClose } from "@/app/components/styles/admin_styles/Icon";
 
 function handleKeyboardActivate(e: React.KeyboardEvent, onActivate: () => void) {
   if (e.key === "Enter" || e.key === " ") {
