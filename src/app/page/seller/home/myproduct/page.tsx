@@ -5,6 +5,8 @@ import React from "react";
 import Stat from "@/app/components/styles/seller/home/myproduct/stat";
 import Filter from "@/app/components/styles/seller/home/myproduct/filter";
 import Grid from "@/app/components/styles/seller/home/myproduct/grid";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 import { statsMock, productMock } from "@/app/components/styles/seller/home/myproduct/mock";
 
@@ -12,7 +14,7 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* header/footer removed as requested */}
-
+      <SellerNavHeader />
       <main className="mx-auto w-full max-w-7xl px-4 md:px-6 py-6">
         {/* title */}
         <section>
@@ -37,6 +39,7 @@ export default function Page() {
           <Grid items={productMock} />
         </section>
       </main>
+      <SellerFooter />
     </div>
   );
 }

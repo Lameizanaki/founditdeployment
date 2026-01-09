@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
+      <SellerNavHeader />
       <main className="mx-auto w-full max-w-7xl px-4 md:px-6 py-6">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
@@ -103,28 +106,28 @@ export default function Page() {
           strokeLinejoin="round"
         >
           <path d="M12 17.3l-6.2 3.3 1.2-7-5-4.8 7-1 3-6.3 3 6.3 7 1-5 4.8 1.2 7z" />
-        </svg>
-      ),
-    },
-  ].map((kpi) => (
-    <div
-      key={kpi.title}
-      className="bg-white border border-gray-200 rounded-xl shadow-sm p-5"
-    >
-      {/* title + icon */}
-      <div className="flex items-start justify-between">
-        <div className="text-sm text-gray-500">{kpi.title}</div>
-        <div className="text-orange-500">{kpi.icon}</div>
+              </svg>
+            ),
+          },
+        ].map((kpi) => (
+          <div
+            key={kpi.title}
+            className="bg-white border border-gray-200 rounded-xl shadow-sm p-5"
+          >
+            {/* title + icon */}
+            <div className="flex items-start justify-between">
+              <div className="text-sm text-gray-500">{kpi.title}</div>
+              <div className="text-orange-500">{kpi.icon}</div>
+            </div>
+
+            {/* value */}
+            <div className="mt-2 text-xl font-semibold">{kpi.value}</div>
+
+            {/* sub text */}
+            <div className="mt-1 text-xs text-orange-600">{kpi.sub}</div>
+          </div>
+        ))}
       </div>
-
-      {/* value */}
-      <div className="mt-2 text-xl font-semibold">{kpi.value}</div>
-
-      {/* sub text */}
-      <div className="mt-1 text-xs text-orange-600">{kpi.sub}</div>
-    </div>
-  ))}
-</div>
 
         {/* Charts */}
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -269,6 +272,7 @@ export default function Page() {
           </div>
         </div>
       </main>
+      <SellerFooter />
     </div>
   );
 }

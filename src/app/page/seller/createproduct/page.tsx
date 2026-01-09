@@ -9,6 +9,8 @@ import Files from "@/app/components/styles/seller/createproduct/files";
 import Pricing from "@/app/components/styles/seller/createproduct/pricing";
 import Setting from "@/app/components/styles/seller/createproduct/setting";
 import Seo from "@/app/components/styles/seller/createproduct/seo";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 export default function Page() {
   // tags are the only “real” logic you asked for
@@ -18,7 +20,7 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* header/footer intentionally NOT included */}
-
+      <SellerNavHeader />
       <main className="mx-auto w-full max-w-6xl px-4 md:px-6 py-6">
         <Top />
 
@@ -103,6 +105,7 @@ export default function Page() {
           </div>
         </div>
       </main>
+      <SellerFooter />
     </div>
   );
 }

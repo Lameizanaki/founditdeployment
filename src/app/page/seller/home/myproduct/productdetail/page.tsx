@@ -10,6 +10,8 @@ import Buyer from "@/app/components/styles/seller/home/myproduct/productdetail/b
 import Revenue from "@/app/components/styles/seller/home/myproduct/productdetail/revenue";
 import Perf from "@/app/components/styles/seller/home/myproduct/productdetail/perf";
 import Modal from "@/app/components/styles/seller/home/myproduct/productdetail/modal";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 export default function Page() {
   const [tab, setTab] = useState<"overview" | "buyers" | "revenue" | "performance">(
@@ -58,7 +60,7 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* header/footer intentionally NOT included */}
-
+      <SellerNavHeader />
       <main className="mx-auto w-full max-w-7xl px-4 md:px-6 py-6">
         <Top onOpenUpdate={() => setUpdateOpen(true)} />
 
@@ -77,7 +79,7 @@ export default function Page() {
           {tab === "performance" ? <Perf /> : null}
         </div>
       </main>
-
+      <SellerFooter />
       {updateOpen ? <Modal buyersCount={0} onClose={() => setUpdateOpen(false)} /> : null}
     </div>
   );

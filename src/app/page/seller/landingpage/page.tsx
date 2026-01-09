@@ -14,6 +14,8 @@ import FiltersPanel, {
 import MobileFiltersDrawer from "@/app/components/styles/seller/landingpage/MobileFiltersDrawer";
 import Footer from "@/app/components/styles/landingpage_styles/footer";
 import BrowsingHistoryCard from "@/app/components/styles/seller/landingpage/BrowsingHistoryStrip";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 
 export default function SellerPage() {
@@ -243,6 +245,7 @@ export default function SellerPage() {
 
   return (
     <>
+    <SellerNavHeader />
     <main className="bg-gray-50">
       <SellerHero
         heroQuery={heroQuery}

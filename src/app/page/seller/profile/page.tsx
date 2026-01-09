@@ -9,6 +9,8 @@ import OverviewTab from "@/app/components/styles/seller/profile/tabs/overview";
 import ProductsTab from "@/app/components/styles/seller/profile/tabs/products";
 import ReviewsTab from "@/app/components/styles/seller/profile/tabs/review";
 import AboutTab from "@/app/components/styles/seller/profile/tabs/about";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 export default function SellerProfilePage() {
   const router = useRouter();
@@ -16,6 +18,7 @@ export default function SellerProfilePage() {
 
   return (
     <main className="bg-gray-50">
+      <SellerNavHeader />
       <section className="mx-auto w-full  px-4 py-6">
         <ProfileHeader
           onEditProfile={() => router.push("/page/seller/profile/editprofile")}
@@ -39,6 +42,7 @@ export default function SellerProfilePage() {
           {tab === "about" && <AboutTab />}
         </div>
       </section>
+      <SellerFooter />
     </main>
   );
 }

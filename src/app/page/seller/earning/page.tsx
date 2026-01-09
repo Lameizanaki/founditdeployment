@@ -15,6 +15,8 @@ import { IconDoc } from "@/app/components/styles/client_styles/library/component
 import { IconDownload } from "@/app/components/styles/admin/Icon";
 import WithdrawModal from "@/app/components/styles/seller/earning/withdrawmodal";
 import AddPayModal from "@/app/components/styles/seller/earning/addpaymodal";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 export default function Page() {
   const router = useRouter();
@@ -174,6 +176,7 @@ export default function Page() {
 
   return (
     <div className="bg-gray-50">
+      <SellerNavHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Back */}
         <div
@@ -304,7 +307,7 @@ export default function Page() {
           setAddPayOpen(true);
         }}
       />
-
+      <SellerFooter />
       <AddPayModal open={addPayOpen} onClose={() => setAddPayOpen(false)} />
     </div>
   );

@@ -23,6 +23,8 @@ import TagInput from "@/app/components/styles/seller/profile/editpf/input";
 import TimezoneSelect from "@/app/components/styles/seller/profile/editpf/timezone";
 import ToggleRow from "@/app/components/styles/seller/profile/editpf/toggle";
 import { handleKeyboardActivate } from "@/app/components/styles/seller/profile/editpf/utils";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 const HEADER_OFFSET = 80; // ONLY CHANGE THIS if alignment is off (try 72 / 80 / 88)
 const STICKY_GAP = 16;
@@ -232,6 +234,7 @@ export default function EditSellerProfilePage() {
 
   return (
     <main className="bg-gray-50">
+      <SellerNavHeader />
       <div className="mx-auto w-full max-w-6xl px-4 py-6">
         <EditProfileHeader
           title="Edit Seller Profile"
@@ -696,6 +699,7 @@ export default function EditSellerProfilePage() {
           </div>
         </div>
       </div>
+      <SellerFooter />
     </main>
   );
 }

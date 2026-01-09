@@ -19,7 +19,7 @@ import UsersFiltersCard from "@/app/components/styles/admin/users/UsersFiltersCa
 import UsersTable from "@/app/components/styles/admin/users/UsersTable";
 import { handleKeyboardActivate } from "@/app/components/styles/admin/users/type";
 
-export default function AdminUsersPage() {
+export default function AdminSettingsPage() {
   const router = useRouter();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);

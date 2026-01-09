@@ -7,6 +7,8 @@ import SellerStatsRow from "@/app/components/styles/seller/home/statrow";
 import SellerActiveProducts from "@/app/components/styles/seller/home/activeproduct";
 import SellerRecentOrders from "@/app/components/styles/seller/home/recentorder";
 import SellerRightRail from "@/app/components/styles/seller/home/rightrail";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 export default function SellerHomePage() {
   const router = useRouter();
@@ -121,6 +123,7 @@ export default function SellerHomePage() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* NOTE: Header/Footer removed as requested (your friend will add later) */}
+      <SellerNavHeader />
 
       <main className="mx-auto w-full max-w-7xl px-4 md:px-6 py-6">
         {/* Title row */}
@@ -174,6 +177,7 @@ export default function SellerHomePage() {
           <SellerRightRail />
         </section>
       </main>
+      <SellerFooter />
     </div>
   );
 }

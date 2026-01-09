@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react"; 
 
-export default function ClientNavHeader(){
+export default function SellerNavHeader(){
     const router = useRouter();  // Initialize the useRouter hook to handle navigation
     const [isJobsDropdownOpen, setIsJobsDropdownOpen] = useState(false);
     const jobsRef = useRef<HTMLDivElement>(null);
@@ -48,90 +48,39 @@ export default function ClientNavHeader(){
                     <input type='text' className='w-full p-3 rounded-xl outline-none border-none focus:ring-0'  placeholder="Search jobs, talent..."></input>
                 </div>
             </div>
+
             <div className="flex items-center justify-between space-x-4 pt-3">
                 <div className="flex items-center space-x-8 text-xl ml-3 sm:ml-3 lg:ml-3">
-                    <div className="sm:flex sm:items-center sm:gap-x-3 
-                                    lg:flex lg:items-center lg:gap-x-3
-                                    xl:flex xl:items-center xl:gap-x-3
-                                    hover:cursor-pointer active:opacity-30 hidden">
-                        {/* Jobs with Dropdown */}
-                        <div className="relative" ref={jobsRef}>
-                            <div
-                            onClick={() => setIsJobsDropdownOpen(!isJobsDropdownOpen)}
-                            className="flex items-center gap-x-3 hover:cursor-pointer active:opacity-70"
-                            >
-                                <p>Jobs</p>
-                                <svg className={`w-3 h-3 -mt-3 transition-transform ${isJobsDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 1L7 7L13 1" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                            </div>
-
-                            {/* Dropdown Panel */}
-                            {isJobsDropdownOpen && (
-                            <div className="absolute top-full mt-3 w-64 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden z-50">
-                                <div className="py-4 px-6 space-y-5 text-lg text-gray-800">
-                                    <div
-                                        className="hover:bg-gray-50 cursor-pointer py-2 -mx-6 px-6 transition"
-                                        onClick={() => {
-                                        router.push('/page/client/orders');
-                                        setIsJobsDropdownOpen(false);
-                                        }}
-                                    >
-                                        My Orders
-                                    </div>
-                                    <div
-                                        className="hover:bg-gray-50 cursor-pointer py-2 -mx-6 px-6 transition"
-                                        onClick={() => {
-                                        router.push('/page/client/post-job');
-                                        setIsJobsDropdownOpen(false);
-                                        }}
-                                    >
-                                        Post a Job
-                                    </div>
-                                    <div
-                                        className="hover:bg-gray-50 cursor-pointer py-2 -mx-6 px-6 transition"
-                                        onClick={() => {
-                                        router.push('/page/client/active-contracts');
-                                        setIsJobsDropdownOpen(false);
-                                        }}
-                                    >
-                                        Active Contracts
-                                    </div>
-                                </div>
-                            </div>
-                            )}
-                        </div>
-                    </div>
 
                     <div className="hover:cursor-pointer active:opacity-30 hidden xl:block lg:block sm:block">
-                    {/* talents */}
-                    <p>Talent</p>
+                        {/* Ready-made */}
+                        <p className="w-32">Ready-Made</p>
                     </div>
 
                     <div className="hidden xl:block lg:block gap-x-3 hover:cursor-pointer active:opacity-30" onClick={handleCartClick}>
-                    {/* shopping-cart */}
-                    <svg className="-mt-4 w-[22px] h-[22px]" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1H2.30616C2.55218 1 2.67519 1 2.77418 1.04524C2.86142 1.08511 2.93535 1.14922 2.98715 1.22995C3.04593 1.32154 3.06333 1.44332 3.09812 1.68686L3.57143 5M3.57143 5L4.62332 12.7314C4.75681 13.7125 4.82355 14.2031 5.0581 14.5723C5.26478 14.8977 5.56108 15.1564 5.91135 15.3174C6.30886 15.5 6.80394 15.5 7.79411 15.5H16.352C17.2945 15.5 17.7658 15.5 18.151 15.3304C18.4905 15.1809 18.7818 14.9398 18.9923 14.6342C19.2309 14.2876 19.3191 13.8247 19.4955 12.8988L20.8191 5.94969C20.8812 5.62381 20.9122 5.46087 20.8672 5.3335C20.8278 5.22177 20.7499 5.12768 20.6475 5.06802C20.5308 5 20.365 5 20.0332 5H3.57143ZM9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM17 20C17 20.5523 16.5523 21 16 21C15.4477 21 15 20.5523 15 20C15 19.4477 15.4477 19 16 19C16.5523 19 17 19.4477 17 20Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                        {/* shopping-cart */}
+                        <svg className="-mt-4 w-[22px] h-[22px]" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1H2.30616C2.55218 1 2.67519 1 2.77418 1.04524C2.86142 1.08511 2.93535 1.14922 2.98715 1.22995C3.04593 1.32154 3.06333 1.44332 3.09812 1.68686L3.57143 5M3.57143 5L4.62332 12.7314C4.75681 13.7125 4.82355 14.2031 5.0581 14.5723C5.26478 14.8977 5.56108 15.1564 5.91135 15.3174C6.30886 15.5 6.80394 15.5 7.79411 15.5H16.352C17.2945 15.5 17.7658 15.5 18.151 15.3304C18.4905 15.1809 18.7818 14.9398 18.9923 14.6342C19.2309 14.2876 19.3191 13.8247 19.4955 12.8988L20.8191 5.94969C20.8812 5.62381 20.9122 5.46087 20.8672 5.3335C20.8278 5.22177 20.7499 5.12768 20.6475 5.06802C20.5308 5 20.365 5 20.0332 5H3.57143ZM9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM17 20C17 20.5523 16.5523 21 16 21C15.4477 21 15 20.5523 15 20C15 19.4477 15.4477 19 16 19C16.5523 19 17 19.4477 17 20Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </div>
                     
                     <div className="hidden xl:block lg:block gap-x-3 hover:cursor-pointer active:opacity-30">
-                    {/* message */}
-                    <svg className="-mt-4 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 14" fill="none">
-                        <path d="M13.9993 9.99935C13.9993 10.353 13.8589 10.6921 13.6088 10.9422C13.3588 11.1922 13.0196 11.3327 12.666 11.3327H3.88468C3.53109 11.3328 3.19201 11.4733 2.94202 11.7233L1.47402 13.1913C1.40782 13.2575 1.32348 13.3026 1.23167 13.3209C1.13987 13.3391 1.0447 13.3297 0.95822 13.2939C0.871737 13.2581 0.797817 13.1974 0.745806 13.1196C0.693795 13.0418 0.666028 12.9503 0.666016 12.8567V1.99935C0.666016 1.64573 0.806491 1.30659 1.05654 1.05654C1.30659 0.806491 1.64573 0.666016 1.99935 0.666016H12.666C13.0196 0.666016 13.3588 0.806491 13.6088 1.05654C13.8589 1.30659 13.9993 1.64573 13.9993 1.99935V9.99935Z" stroke="#1A1A1A" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                        {/* message */}
+                        <svg className="-mt-4 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 14" fill="none">
+                            <path d="M13.9993 9.99935C13.9993 10.353 13.8589 10.6921 13.6088 10.9422C13.3588 11.1922 13.0196 11.3327 12.666 11.3327H3.88468C3.53109 11.3328 3.19201 11.4733 2.94202 11.7233L1.47402 13.1913C1.40782 13.2575 1.32348 13.3026 1.23167 13.3209C1.13987 13.3391 1.0447 13.3297 0.95822 13.2939C0.871737 13.2581 0.797817 13.1974 0.745806 13.1196C0.693795 13.0418 0.666028 12.9503 0.666016 12.8567V1.99935C0.666016 1.64573 0.806491 1.30659 1.05654 1.05654C1.30659 0.806491 1.64573 0.666016 1.99935 0.666016H12.666C13.0196 0.666016 13.3588 0.806491 13.6088 1.05654C13.8589 1.30659 13.9993 1.64573 13.9993 1.99935V9.99935Z" stroke="#1A1A1A" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                     </div>
 
                     <div className="hidden xl:block lg:block gap-x-3 hover:cursor-pointer active:opacity-30">
-                    {/* notification */}
-                    <svg className="-mt-4 w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9.33333 20.0909C10.041 20.6562 10.9755 21 12 21C13.0245 21 13.959 20.6562 14.6667 20.0909M4.50763 17.1818C4.08602 17.1818 3.85054 16.5194 4.10557 16.1514C4.69736 15.2975 5.26855 14.0451 5.26855 12.537L5.29296 10.3517C5.29296 6.29145 8.29581 3 12 3C15.7588 3 18.8058 6.33993 18.8058 10.4599L18.7814 12.537C18.7814 14.0555 19.3329 15.3147 19.9006 16.169C20.1458 16.5379 19.9097 17.1818 19.4933 17.1818H4.50763Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                        {/* notification */}
+                        <svg className="-mt-4 w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.33333 20.0909C10.041 20.6562 10.9755 21 12 21C13.0245 21 13.959 20.6562 14.6667 20.0909M4.50763 17.1818C4.08602 17.1818 3.85054 16.5194 4.10557 16.1514C4.69736 15.2975 5.26855 14.0451 5.26855 12.537L5.29296 10.3517C5.29296 6.29145 8.29581 3 12 3C15.7588 3 18.8058 6.33993 18.8058 10.4599L18.7814 12.537C18.7814 14.0555 19.3329 15.3147 19.9006 16.169C20.1458 16.5379 19.9097 17.1818 19.4933 17.1818H4.50763Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                     </div>
 
-                    <div className="w-40 h-10 -mt-4 px-4 py-1 rounded-xl bg-[#00BC7D] active:opacity-30 hover:cursor-pointer hidden sm:block xl:block lg:block">
+                    <div className="w-52 h-10 -mt-4 px-4 py-1  text-center rounded-xl bg-[#E17100] active:opacity-30 hover:cursor-pointer hidden sm:block xl:block lg:block">
                     {/* post a job */}
-                    <p className="pt-0.5 text-white text-lg">+ Post a Job</p>
+                        <p className="pt-0.5 text-white text-lg">+ Create Product</p>
                     </div>
 
                     <div>
@@ -198,11 +147,23 @@ export default function ClientNavHeader(){
                                                 onClick={() => handleNavigation('/page/client/profile')}
                                                 className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition"
                                             >
-                                                <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <svg className="w-5 h-5" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M17 19C17 17.6044 17 16.9067 16.8278 16.3389C16.44 15.0605 15.4395 14.06 14.1611 13.6722C13.5933 13.5 12.8956 13.5 11.5 13.5H6.5C5.10444 13.5 4.40665 13.5 3.83886 13.6722C2.56045 14.06 1.56004 15.0605 1.17224 16.3389C1 16.9067 1 17.6044 1 19M13.5 5.5C13.5 7.98528 11.4853 10 9 10C6.51472 10 4.5 7.98528 4.5 5.5C4.5 3.01472 6.51472 1 9 1C11.4853 1 13.5 3.01472 13.5 5.5Z" stroke="#717182" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
 
                                                 <span className="text-gray-900">Profile</span>
+                                            </div>
+
+                                            <div 
+                                                onClick={() => handleNavigation('/page/client/product')}
+                                                className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition"
+                                            >
+                                                <svg className="w-5 h-5" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M3.52 1.64049L1.96 3.72049C1.65102 4.13247 1.49652 4.33846 1.50011 4.51088C1.50323 4.66093 1.57358 4.80164 1.69175 4.89416C1.82754 5.00049 2.08503 5.00049 2.6 5.00049H17.4C17.915 5.00049 18.1725 5.00049 18.3083 4.89416C18.4264 4.80164 18.4968 4.66093 18.4999 4.51088C18.5035 4.33846 18.349 4.13247 18.04 3.72049L16.48 1.64049M3.52 1.64049C3.696 1.40582 3.784 1.28849 3.89552 1.20386C3.9943 1.12891 4.10616 1.07298 4.22539 1.03893C4.36 1.00049 4.50667 1.00049 4.8 1.00049H15.2C15.4933 1.00049 15.64 1.00049 15.7746 1.03893C15.8938 1.07298 16.0057 1.12891 16.1045 1.20386C16.216 1.28849 16.304 1.40582 16.48 1.64049M3.52 1.64049L1.64 4.14715C1.40254 4.46377 1.28381 4.62207 1.1995 4.79641C1.12469 4.95111 1.07012 5.1148 1.03715 5.28345C1 5.4735 1 5.67138 1 6.06715L1 17.8005C1 18.9206 1 19.4806 1.21799 19.9085C1.40973 20.2848 1.71569 20.5908 2.09202 20.7825C2.51984 21.0005 3.07989 21.0005 4.2 21.0005L15.8 21.0005C16.9201 21.0005 17.4802 21.0005 17.908 20.7825C18.2843 20.5908 18.5903 20.2848 18.782 19.9085C19 19.4806 19 18.9206 19 17.8005V6.06715C19 5.67139 19 5.4735 18.9628 5.28345C18.9299 5.1148 18.8753 4.95111 18.8005 4.79641C18.7162 4.62208 18.5975 4.46377 18.36 4.14715L16.48 1.64049M14 9.00049C14 10.0614 13.5786 11.0788 12.8284 11.8289C12.0783 12.5791 11.0609 13.0005 10 13.0005C8.93913 13.0005 7.92172 12.5791 7.17157 11.8289C6.42143 11.0788 6 10.0614 6 9.00049" stroke="#717182" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+
+
+                                                <span className="text-gray-900">My Products</span>
                                             </div>
 
                                             <div 
@@ -216,40 +177,8 @@ export default function ClientNavHeader(){
                                                 <span className="text-gray-900">Dashboard</span>
                                             </div>
 
-                                            <div 
-                                                onClick={() => handleNavigation('/page/client/orders')}
-                                                className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition"
-                                            >
-                                                <svg className="w-5 h-5" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M14.1978 6C14.1978 7.06087 13.7764 8.07828 13.0263 8.82843C12.2761 9.57857 11.2587 10 10.1978 10C9.13696 10 8.11955 9.57857 7.3694 8.82843C6.61926 8.07828 6.19783 7.06087 6.19783 6M1.83105 5.40138L1.13105 13.8014C0.980672 15.6059 0.905483 16.5082 1.21051 17.2042C1.47852 17.8157 1.94286 18.3204 2.53002 18.6382C3.1983 19 4.10369 19 5.91447 19H14.4812C16.292 19 17.1974 19 17.8656 18.6382C18.4528 18.3204 18.9171 17.8157 19.1851 17.2042C19.4902 16.5082 19.415 15.6059 19.2646 13.8014L18.5646 5.40138C18.4352 3.84875 18.3705 3.07243 18.0267 2.48486C17.7239 1.96744 17.2731 1.5526 16.7323 1.29385C16.1182 1 15.3392 1 13.7812 1L6.61447 1C5.05645 1 4.27745 1 3.66335 1.29384C3.12257 1.5526 2.67173 1.96744 2.36896 2.48486C2.02513 3.07243 1.96043 3.84875 1.83105 5.40138Z" stroke="#717182" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-
-                                                <span className="text-gray-900">My Orders</span>
-                                            </div>
-
-                                            <div 
-                                                onClick={() => handleNavigation('/page/client/library')}
-                                                className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 16 16" fill="none">
-                                                <path d="M10.668 4L13.3346 13.3333" stroke="#717182" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M8 4V13.3333" stroke="#717182" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M5.33203 5.33398V13.334" stroke="#717182" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M2.66797 2.66602V13.3327" stroke="#717182" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                                <span className="text-gray-900">Library</span>
-                                            </div>
-
-                                            <div 
-                                                onClick={() => handleNavigation('/page/client/favorites')}
-                                                className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition"
-                                            >
-                                                <svg className="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M20.84 4.61012C20.3292 4.09912 19.7228 3.69376 19.0554 3.4172C18.3879 3.14064 17.6725 2.99829 16.95 2.99829C16.2275 2.99829 15.5121 3.14064 14.8446 3.4172C14.1772 3.69376 13.5708 4.09912 13.06 4.61012L12 5.67012L10.94 4.61012C9.9083 3.57842 8.50903 2.99883 7.05 2.99883C5.59096 2.99883 4.19169 3.57842 3.16 4.61012C2.1283 5.64181 1.54871 7.04108 1.54871 8.50012C1.54871 9.95915 2.1283 11.3584 3.16 12.3901L4.22 13.4501L12 21.2301L19.78 13.4501L20.84 12.3901C21.351 11.8794 21.7563 11.2729 22.0329 10.6055C22.3095 9.93801 22.4518 9.2226 22.4518 8.50012C22.4518 7.77763 22.3095 7.06222 22.0329 6.39476C21.7563 5.7273 21.351 5.12087 20.84 4.61012Z" stroke="#717182" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                                </svg>
-                                                <span className="text-gray-900">Favorites</span>
-                                            </div>
                                         </div>
+                                            
 
                                         {/* Bottom Menu Items */}
                                         <div className="px-6 py-3 border-t border-gray-100 space-y-1">
@@ -268,10 +197,11 @@ export default function ClientNavHeader(){
                                                 onClick={() => handleNavigation('/page/client/billing')}
                                                 className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition"
                                             >
-                                                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 10H21M7 15H8M12 15H14M6 19H18C19.1046 19 20 18.1046 20 17V7C20 5.89543 19.1046 5 18 5H6C4.89543 5 4 5.89543 4 7V17C4 18.1046 4.89543 19 6 19Z" stroke="#717182" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                <svg className="w-5 h-5" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1 15C1 17.2091 2.79086 19 5 19H9C11.2091 19 13 17.2091 13 15C13 12.7909 11.2091 11 9 11H5C2.79086 11 1 9.20914 1 7C1 4.79086 2.79086 3 5 3H9C11.2091 3 13 4.79086 13 7M7 1V21" stroke="#717182" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
-                                                <span className="text-gray-900">Billing</span>
+
+                                                <span className="text-gray-900">Earning</span>
                                             </div>
 
                                             <div 

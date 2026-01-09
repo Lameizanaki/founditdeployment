@@ -10,6 +10,8 @@ import NotiTab from "@/app/components/styles/seller/setting/tab/noti";
 import AccountTab from "@/app/components/styles/seller/setting/tab/account";
 import SecurityTab from "@/app/components/styles/seller/setting/tab/security";
 import type { NavItem } from "@/app/components/styles/seller/setting/shell";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 
 export type TabId = "overview" | "order" | "payout" | "noti" | "account" | "security";
@@ -40,21 +42,25 @@ const nav = useMemo<NavItem[]>(
 
 
   return (
-    <Shell
-      title="Shop Settings"
-      nav={nav}
-      activeTab={tab}
-      onChangeTab={(t) => setTab(t)}
-      drawerOpen={drawer}
-      onToggleDrawer={() => setDrawer((v) => !v)}
-      onCloseDrawer={() => setDrawer(false)}
-    >
-      {tab === "overview" && <OverviewTab />}
-      {tab === "order" && <OrderTab />}
-      {tab === "payout" && <PayoutTab />}
-      {tab === "noti" && <NotiTab />}
-      {tab === "account" && <AccountTab />}
-      {tab === "security" && <SecurityTab />}
-    </Shell>
+    <>
+      <SellerNavHeader />
+      <Shell
+        title="Shop Settings"
+        nav={nav}
+        activeTab={tab}
+        onChangeTab={(t) => setTab(t)}
+        drawerOpen={drawer}
+        onToggleDrawer={() => setDrawer((v) => !v)}
+        onCloseDrawer={() => setDrawer(false)}
+      >
+        {tab === "overview" && <OverviewTab />}
+        {tab === "order" && <OrderTab />}
+        {tab === "payout" && <PayoutTab />}
+        {tab === "noti" && <NotiTab />}
+        {tab === "account" && <AccountTab />}
+        {tab === "security" && <SecurityTab />}
+      </Shell>
+      <SellerFooter />
+    </>
   );
 }

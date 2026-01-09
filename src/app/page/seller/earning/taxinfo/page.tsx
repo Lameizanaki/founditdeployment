@@ -2,6 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
+import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,
@@ -95,6 +97,7 @@ export default function Page() {
 
   return (
     <div className="bg-gray-50">
+      <SellerNavHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Back */}
         <div
@@ -453,6 +456,7 @@ export default function Page() {
 
         <div className="h-6" />
       </div>
+      <SellerFooter />
     </div>
   );
 }
