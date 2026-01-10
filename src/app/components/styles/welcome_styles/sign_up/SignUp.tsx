@@ -1,72 +1,107 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import authService from "@/app/services/authService";
 
 export default function SignUp() {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleGoogleSignUp = async () => {
-    setIsLoading(true);
-    // Add your Google OAuth integration here
-    console.log('Google Sign Up clicked');
-    setTimeout(() => setIsLoading(false), 1000);
+  const handleGoogleSignUp = () => {
+    // Redirect to backend OAuth2 endpoint for Google sign-up
+    authService.loginWithGoogle();
   };
 
-  const handleAppleSignUp = async () => {
+  const handleAppleSignUp = () => {
     setIsLoading(true);
-    // Add your Apple OAuth integration here
-    console.log('Apple Sign Up clicked');
+    // TODO: Add Apple OAuth integration here
+    console.log("Apple Sign Up clicked");
     setTimeout(() => setIsLoading(false), 1000);
   };
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError("");
+    setSuccess("");
+
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
-    
+
     if (!agreeTerms) {
-      alert('Please agree to Terms & Privacy');
+      setError("Please agree to Terms & Privacy");
       return;
     }
-    
+
+    if (!fullName || !email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
     setIsLoading(true);
-    // Add your email/password registration here
-    console.log('Email Sign Up:', { fullName, email, password, rememberMe, agreeTerms });
-    setTimeout(() => setIsLoading(false), 1000);
+
+    try {
+      // Register using the auth service
+      const response = await authService.register({
+        username: fullName,
+        email: email,
+        password: password,
+        role: "CLIENT", // Default role
+        status: "ACTIVE",
+        accountNonExpired: true,
+        accountNonLocked: true,
+        credentialsNonExpired: true,
+        enabled: true,
+      });
+
+      console.log("Registration successful:", response);
+      setSuccess("Registration successful! Redirecting to sign in...");
+
+      // Redirect to sign in page after 2 seconds
+      setTimeout(() => {
+        router.push("/page/sign_in");
+      }, 2000);
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      setError(err.message || "Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignInRedirect = () => {
-    // Add your navigation to sign in page here
-    console.log('Navigate to sign in page');
-    window.location.href = '/sign-in'; // Replace with your actual route
+    router.push("/page/sign_in");
   };
 
   return (
-    <div className='w-full h-screen'>
-      <div className='flex justify-center w-full h-9 mt-12 mb-8'>
+    <div className="w-full h-screen">
+      <div className="flex justify-center w-full h-9 mt-12 mb-8">
         <img src="/favicon.ico" alt="logo" />
       </div>
 
       <div className="lg:w-7xl mx-auto h-[85%] bg-gray-50 lg:flex sm:flex-col lg:flex-row">
-
         {/* Left Section - Form */}
         <div className="w-full h-screen lg:w-1/2 flex items-center justify-center p-6 sm:p-8 lg:p-12 bg-white">
           <div className="w-full -mt-40">
-
             {/* Welcome Text */}
             <div className="mb-8">
-              <div className="text-3xl sm:text-3xl font-bold text-gray-900 mb-2">Welcome back</div>
-              <div className="text-sm sm:text-base text-gray-600">Sign in to continue</div>
+              <div className="text-3xl sm:text-3xl font-bold text-gray-900 mb-2">
+                Welcome back
+              </div>
+              <div className="text-sm sm:text-base text-gray-600">
+                Sign in to continue
+              </div>
             </div>
 
             {/* Social Sign Up Buttons */}
@@ -93,17 +128,25 @@ export default function SignUp() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span className="text-sm sm:text-base text-gray-700 font-medium">Continue with Google</span>
+                <span className="text-sm sm:text-base text-gray-700 font-medium">
+                  Continue with Google
+                </span>
               </div>
 
               <div
                 onClick={handleAppleSignUp}
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
                 </svg>
-                <span className="text-sm sm:text-base text-gray-700 font-medium">Continue with Apple</span>
+                <span className="text-sm sm:text-base text-gray-700 font-medium">
+                  Continue with Apple
+                </span>
               </div>
             </div>
 
@@ -113,12 +156,28 @@ export default function SignUp() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">or use email</span>
+                <span className="px-4 bg-white text-gray-500">
+                  or use email
+                </span>
               </div>
             </div>
 
             {/* Email/Password Form */}
             <div className="space-y-4">
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+
+              {/* Success Message */}
+              {success && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                  {success}
+                </div>
+              )}
+
               <div>
                 <div className="text-sm text-gray-700 mb-2">Full name</div>
                 <input
@@ -147,7 +206,7 @@ export default function SignUp() {
                 <div className="text-sm text-gray-700 mb-2">Password</div>
                 <div className="relative">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
@@ -159,13 +218,38 @@ export default function SignUp() {
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
                   >
                     {showPassword ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                        />
                       </svg>
                     )}
                   </div>
@@ -173,10 +257,12 @@ export default function SignUp() {
               </div>
 
               <div>
-                <div className="text-sm text-gray-700 mb-2">Confirm password</div>
+                <div className="text-sm text-gray-700 mb-2">
+                  Confirm password
+                </div>
                 <div className="relative">
                   <input
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Re-enter your password"
@@ -188,13 +274,38 @@ export default function SignUp() {
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
                   >
                     {showConfirmPassword ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                        />
                       </svg>
                     )}
                   </div>
@@ -211,7 +322,10 @@ export default function SignUp() {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
                   />
-                  <div className="ml-2 text-sm text-gray-700 cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>
+                  <div
+                    className="ml-2 text-sm text-gray-700 cursor-pointer"
+                    onClick={() => setRememberMe(!rememberMe)}
+                  >
                     Remember me
                   </div>
                 </div>
@@ -225,22 +339,28 @@ export default function SignUp() {
                     className="w-4 h-4 mt-0.5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
                   />
                   <div className="ml-2 text-sm text-gray-700">
-                    I agree to{' '}
-                    <span className="text-purple-600 hover:text-purple-700 cursor-pointer">Terms</span>
-                    {' '}&{' '}
-                    <span className="text-purple-600 hover:text-purple-700 cursor-pointer">Privacy</span>
+                    I agree to{" "}
+                    <span className="text-purple-600 hover:text-purple-700 cursor-pointer">
+                      Terms
+                    </span>{" "}
+                    &{" "}
+                    <span className="text-purple-600 hover:text-purple-700 cursor-pointer">
+                      Privacy
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Sign Up Button */}
               <div
-                onClick={!isLoading ? handleEmailSignUp as any : undefined}
+                onClick={!isLoading ? (handleEmailSignUp as any) : undefined}
                 className={`w-full bg-[#D92AD0] text-white py-3 rounded-lg transition-all text-center font-medium text-sm sm:text-base ${
-                  isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#C01FB8] cursor-pointer'
+                  isLoading
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-[#C01FB8] cursor-pointer"
                 }`}
               >
-                {isLoading ? 'Signing up...' : 'Sign in'}
+                {isLoading ? "Signing up..." : "Sign in"}
               </div>
             </div>
 
@@ -257,12 +377,12 @@ export default function SignUp() {
           </div>
         </div>
 
-        <div className='w-[1.1px] h-[90%] my-auto bg-gray-200'></div>
+        <div className="w-[1.1px] h-[90%] my-auto bg-gray-200"></div>
 
         {/* Right Section - Illustration */}
         <div className="hidden w-full lg:w-1/2 bg-white lg:block xl:flex xl:items-center justify-center min-h-[300px]">
           <div className="w-full">
-            <div className='flex w-full h-full items-center justify-center'>
+            <div className="flex w-full h-full items-center justify-center">
               <img src="/landing.png" alt="logo" />
             </div>
           </div>

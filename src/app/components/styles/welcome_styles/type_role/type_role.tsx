@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import authService from "@/app/services/authService";
 
 type RoleItem = {
   id: string;
@@ -10,8 +12,10 @@ type RoleItem = {
 };
 
 export default function TypeRole() {
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const router = useRouter();
+  const [selectedRole, setSelectedRole] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const roles: RoleItem[] = useMemo(
     () => [
@@ -80,29 +84,62 @@ export default function TypeRole() {
   );
 
   const toggleRole = (roleId: string) => {
-    setSelectedRoles((prev) => {
-      if (prev.includes(roleId)) return prev.filter((id) => id !== roleId);
-      return [...prev, roleId];
-    });
+    // Only allow single selection - toggle if clicking the same role, otherwise switch to new role
+    setSelectedRole((prev) => (prev === roleId ? "" : roleId));
   };
 
   const handleContinue = async () => {
-    if (selectedRoles.length === 0) {
-      alert("Please select at least one option");
+    if (!selectedRole) {
+      alert("Please select one role");
       return;
     }
 
     setIsLoading(true);
+    setError("");
 
-    // Backend integration point:
-    // await fetch("/api/roles", { method: "POST", body: JSON.stringify({ roles: selectedRoles }) });
+    try {
+      // Map role IDs to backend role names
+      const roleMapping: Record<string, string> = {
+        find_job: "FREELANCER",
+        hire_talent: "CLIENT",
+        sell_products: "SELLER",
+      };
 
-    console.log("Selected roles:", selectedRoles);
+      const mappedRole = roleMapping[selectedRole];
 
-    setTimeout(() => {
+      // Save role to database FIRST
+      const token = authService.getToken();
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085"
+        }/api/user/update-role`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: token } : {}),
+          },
+          body: JSON.stringify({ role: mappedRole }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || errorData.message || "Failed to update role"
+        );
+      }
+
+      const result = await response.json();
+      console.log("Role saved to database:", result);
+
+      // Only navigate to type_picked AFTER successful database save
+      router.push(`/page/type_role/type_picked?role=${selectedRole}`);
+    } catch (err: any) {
+      console.error("Error updating role:", err);
+      setError(err.message || "Failed to save role. Please try again.");
       setIsLoading(false);
-      window.location.href = "/dashboard"; // replace with your route
-    }, 1000);
+    }
   };
 
   const handleSkip = () => {
@@ -117,131 +154,131 @@ export default function TypeRole() {
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
-        {/* Logo */}
-        <div className='flex justify-center w-full h-9 mt-12'>
-            <img src="/favicon.ico" alt="logo" />
-        </div>
-        {/* Center */}
-        <div className="w-full flex items-center justify-center px-4 py-8 sm:py-12">
-            {/* Modal */}
-            <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative">
-            {/* Close */}
-            <div
-                onClick={handleClose}
-                className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
-                role="presentation"
+      {/* Logo */}
+      <div className="flex justify-center w-full h-9 mt-12">
+        <img src="/favicon.ico" alt="logo" />
+      </div>
+      {/* Center */}
+      <div className="w-full flex items-center justify-center px-4 py-8 sm:py-12">
+        {/* Modal */}
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative">
+          {/* Close */}
+          <div
+            onClick={handleClose}
+            className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
+            role="presentation"
+          >
+            <svg
+              className="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-                <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                />
-                </svg>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+
+          {/* Header (no h1-h6) */}
+          <div className="mb-6">
+            <div className="text-2xl sm:text-3xl text-gray-900 mb-3">
+              How will you use the platform?
             </div>
-
-            {/* Header (no h1-h6) */}
-            <div className="mb-6">
-                <div className="text-2xl sm:text-3xl text-gray-900 mb-3">
-                How will you use the platform?
-                </div>
-                <div className="text-sm sm:text-base text-gray-500">
-                Select all that apply to personalize your experience
-                </div>
+            <div className="text-sm sm:text-base text-gray-500">
+              Select one option to personalize your experience
             </div>
+          </div>
 
-            {/* Options */}
-            <div className="space-y-3 mb-6">
-                {roles.map((role) => {
-                const active = selectedRoles.includes(role.id);
+          {/* Options */}
+          <div className="space-y-3 mb-6">
+            {roles.map((role) => {
+              const active = selectedRole === role.id;
 
-                return (
-                    <div
-                    key={role.id}
-                    onClick={() => toggleRole(role.id)}
-                    className={`relative w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer
+              return (
+                <div
+                  key={role.id}
+                  onClick={() => toggleRole(role.id)}
+                  className={`relative w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer
                         ${
-                        active
+                          active
                             ? "border-purple-500 bg-purple-50 ring-2 ring-purple-200"
                             : "border-gray-200 hover:border-gray-300 bg-white"
                         }`}
-                    role="presentation"
-                    >
-                    {/* Optional check badge (NOT a checkbox) */}
-                    {active && (
-                        <div className="absolute top-3 right-3 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
-                        <svg
-                            className="w-4 h-4 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                            />
-                        </svg>
-                        </div>
-                    )}
+                  role="presentation"
+                >
+                  {/* Optional check badge (NOT a checkbox) */}
+                  {active && (
+                    <div className="absolute top-3 right-3 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                  )}
 
-                    {/* Icon */}
-                    <div
-                        className={`w-12 h-12 flex items-center justify-center rounded-lg
+                  {/* Icon */}
+                  <div
+                    className={`w-12 h-12 flex items-center justify-center rounded-lg
                         ${
-                            active
+                          active
                             ? "bg-purple-100 text-purple-600"
                             : "bg-gray-100 text-gray-600"
                         }`}
-                    >
-                        {role.icon}
-                    </div>
+                  >
+                    {role.icon}
+                  </div>
 
-                    {/* Text */}
-                    <div className="flex-1 pr-8">
-                        <div className="text-base sm:text-lg font-semibold text-gray-900">
-                        {role.title}
-                        </div>
-                        <div className="text-xs sm:text-sm text-gray-500">
-                        {role.description}
-                        </div>
+                  {/* Text */}
+                  <div className="flex-1 pr-8">
+                    <div className="text-base sm:text-lg font-semibold text-gray-900">
+                      {role.title}
                     </div>
+                    <div className="text-xs sm:text-sm text-gray-500">
+                      {role.description}
                     </div>
-                );
-                })}
-            </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-            {/* Continue (no button tag) */}
-            <div
-                onClick={!isLoading ? handleContinue : undefined}
-                className={`w-full py-3.5 rounded-xl text-white text-center font-medium text-sm sm:text-base transition-all mb-3
+          {/* Continue (no button tag) */}
+          <div
+            onClick={!isLoading ? handleContinue : undefined}
+            className={`w-full py-3.5 rounded-xl text-white text-center font-medium text-sm sm:text-base transition-all mb-3
                 ${
-                    isLoading
+                  isLoading
                     ? "bg-pink-400 cursor-not-allowed"
                     : "bg-[#D92AD0] hover:bg-[#C01FB8] cursor-pointer"
                 }`}
-                role="presentation"
-            >
-                {isLoading ? "Loading..." : "Continue"}
-            </div>
+            role="presentation"
+          >
+            {isLoading ? "Loading..." : "Continue"}
+          </div>
 
-            {/* Skip */}
-            <div
-                onClick={handleSkip}
-                className="w-full text-center text-sm text-gray-500 hover:text-gray-700 cursor-pointer transition-colors"
-                role="presentation"
-            >
-                Skip for now
-            </div>
-            </div>
+          {/* Skip */}
+          <div
+            onClick={handleSkip}
+            className="w-full text-center text-sm text-gray-500 hover:text-gray-700 cursor-pointer transition-colors"
+            role="presentation"
+          >
+            Skip for now
+          </div>
         </div>
+      </div>
     </div>
   );
 }

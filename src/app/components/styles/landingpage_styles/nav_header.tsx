@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface MenuItem {
   name: string;
   id: string;
-  subcategories: string[]; 
+  subcategories: string[];
 }
 
 interface NavHeaderProps {
@@ -14,19 +15,20 @@ interface NavHeaderProps {
 }
 
 const defaultMenuItems: MenuItem[] = [
-  { name: 'Hire', id:'#hire', subcategories: [] },
-  { name: 'Job', id:'#feature', subcategories: [] },
-  { name: 'Sell', id:'#ready', subcategories: [] },
-  { name: 'Explore', id:'#', subcategories: [] },
-  { name: 'Categories', id:'#', subcategories: [] },
-  { name: 'About', id:'#', subcategories: [] },
+  { name: "Hire", id: "#hire", subcategories: [] },
+  { name: "Job", id: "#feature", subcategories: [] },
+  { name: "Sell", id: "#ready", subcategories: [] },
+  { name: "Explore", id: "#", subcategories: [] },
+  { name: "Categories", id: "#", subcategories: [] },
+  { name: "About", id: "#", subcategories: [] },
 ];
 
 export default function NavHeader({
-  logoSrc = 'favicon.ico',
-  logoAlt = 'FoundIt Logo',
+  logoSrc = "favicon.ico",
+  logoAlt = "FoundIt Logo",
   menuItems = defaultMenuItems,
 }: NavHeaderProps) {
+  const router = useRouter();
   const [isBurgerOpen, setBurgerOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -34,10 +36,18 @@ export default function NavHeader({
     const element = document.querySelector(id);
     if (element) {
       element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start', 
+        behavior: "smooth",
+        block: "start",
       });
     }
+  };
+
+  const handleSignIn = () => {
+    router.push("/page/sign_in");
+  };
+
+  const handleJoin = () => {
+    router.push("/page/sign_up");
   };
 
   return (
@@ -89,30 +99,32 @@ export default function NavHeader({
 
         {/* Close Button */}
         {isBurgerOpen && (
-            <div
-                className={`absolute w-[210px] -mt-12 justify-between list-none rounded-[12px] bg-white shadow-lg py-2 px-4 transition-all duration-300 ease-in-out ${
-                    isBurgerOpen ? 'block' : 'hidden'
-                }`}
-                >
-                {menuItems.map((arr, index) => (
-                    <li
-                    key={`${arr.name}-${index}`}
-                    className={`text-gray-700 py-2${arr.id}-${index}`}
-                    onClick={() => {
-                      setActiveIndex(index);
-                      handleScrollToSection(arr.id); 
-                      setBurgerOpen(false); 
-                    }}
-                    
-                    >
-                    {arr.name}
-                    </li>
-                ))}
-                <p onClick={() => setBurgerOpen(false)} className="absolute top-2 right-2 text-2xl text-gray-700">
-                    X
-                </p>
-            </div>
-        )}   
+          <div
+            className={`absolute w-[210px] -mt-12 justify-between list-none rounded-[12px] bg-white shadow-lg py-2 px-4 transition-all duration-300 ease-in-out ${
+              isBurgerOpen ? "block" : "hidden"
+            }`}
+          >
+            {menuItems.map((arr, index) => (
+              <li
+                key={`${arr.name}-${index}`}
+                className={`text-gray-700 py-2${arr.id}-${index}`}
+                onClick={() => {
+                  setActiveIndex(index);
+                  handleScrollToSection(arr.id);
+                  setBurgerOpen(false);
+                }}
+              >
+                {arr.name}
+              </li>
+            ))}
+            <p
+              onClick={() => setBurgerOpen(false)}
+              className="absolute top-2 right-2 text-2xl text-gray-700"
+            >
+              X
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Menu Items for Large Screens */}
@@ -123,13 +135,16 @@ export default function NavHeader({
             <li
               key={`${arr.name}-${index}`}
               className={`relative text-gray-700 transition-colors duration-200 
-                ${isOpen ? 'text-gray-900 after:w-full' : 
-                           'hover:text-gray-900 hover:after:w-full'} 
+                ${
+                  isOpen
+                    ? "text-gray-900 after:w-full"
+                    : "hover:text-gray-900 hover:after:w-full"
+                } 
                            after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[#D92AD0] after:transition-[width] after:duration-300 after:ease-out focus:outline-none focus:after:w-full`}
               onClick={() => {
                 setActiveIndex(index);
                 handleScrollToSection(arr.id);
-              }} 
+              }}
             >
               {arr.name}
             </li>
@@ -139,9 +154,13 @@ export default function NavHeader({
 
       {/* Sign In & Join buttons */}
       <div className="flex items-center gap-x-3 text-sm pr-2 sm:flex sm:items-center sm:gap-x-6 sm:text-sm sm:pr-4 lg:flex lg:items-center lg:gap-x-6 lg:text-sm lg:pr-4 xl:flex xl:items-center xl:gap-x-6 xl:text-lg xl:pr-4">
-        <button className="hover:opacity-75">Sign in</button>
+        <button onClick={handleSignIn} className="hover:opacity-75">
+          Sign in
+        </button>
         <div className="rounded-2xl bg-[#D92AD0] px-3 py-2 transition-colors">
-          <button className="text-white">Join</button>
+          <button onClick={handleJoin} className="text-white">
+            Join
+          </button>
         </div>
       </div>
     </nav>
