@@ -153,11 +153,11 @@ export default function TypePicked() {
           {/* Header */}
           <div className="mb-6">
             <div className="text-3xl sm:text-3xl font-bold text-gray-900 mb-4">
-              Tell us what you're into
+              Tell us what you&apos;re into
             </div>
             <div className="text-sm sm:text-base text-gray-500 mb-4">
-              We'll personalize your feed and shortcuts. You can change this
-              anytime.
+              We&apos;ll personalize your feed and shortcuts. You can change
+              this anytime.
             </div>
           </div>
 
