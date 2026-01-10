@@ -2,14 +2,17 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import type { Product } from "@/app/components/styles/admin/products/mockData";
+import type { ProductRow } from "@/app/components/styles/admin_styles/products/mockData";
 import {
   IconEye,
   IconDownload,
   IconTrash,
-} from "@/app/components/styles/admin/Icon";
+} from "@/app/components/styles/admin_styles/Icon";
 
-function handleKeyboardActivate(e: React.KeyboardEvent, onActivate: () => void) {
+function handleKeyboardActivate(
+  e: React.KeyboardEvent,
+  onActivate: () => void
+) {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
     onActivate();
@@ -36,12 +39,28 @@ export default function ProductsTable({
   setOpenMenuId,
   onOpenModal,
 }: {
-  products: Product[];
+  products: ProductRow[];
   openMenuId: string | null;
-  setOpenMenuId: (id: string | null) => void;
-  onOpenModal: (type: "details" | "sales" | "delete", p: Product) => void;
+  setOpenMenuId: React.Dispatch<React.SetStateAction<string | null>>;
+  onOpenModal: (type: "details" | "sales" | "delete", p: ProductRow) => void;
 }) {
   const menuWrapRef = useRef<HTMLDivElement | null>(null);
+
+  // Map thumbTone to CSS classes
+  function getThumbClass(tone: ProductRow["thumbTone"]): string {
+    switch (tone) {
+      case "dark":
+        return "bg-gray-800";
+      case "gray":
+        return "bg-gray-400";
+      case "purple":
+        return "bg-purple-500";
+      case "blue":
+        return "bg-blue-500";
+      default:
+        return "bg-gray-400";
+    }
+  }
 
   // click outside close menu
   useEffect(() => {
@@ -78,7 +97,12 @@ export default function ProductsTable({
                 className="grid grid-cols-[360px_150px_170px_140px_90px_90px] px-5 py-5 border-b border-gray-100"
               >
                 <div className="flex items-center gap-4">
-                  <div className={["h-12 w-12 rounded-xl", p.thumbClass].join(" ")} />
+                  <div
+                    className={[
+                      "h-12 w-12 rounded-xl",
+                      getThumbClass(p.thumbTone),
+                    ].join(" ")}
+                  />
                   <div className="text-sm text-gray-900">{p.name}</div>
                 </div>
 
@@ -89,14 +113,30 @@ export default function ProductsTable({
                 </div>
 
                 <div className="flex flex-col gap-2 text-sm text-gray-900">
-                  {p.licenses.map((l) => (
-                    <div key={l.label} className="flex items-center gap-2">
-                      <div className="px-2 py-0.5 rounded-full border border-gray-200 text-xs text-gray-800 bg-white">
-                        {l.label}
-                      </div>
-                      <div className="text-sm text-gray-900">{l.price}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="px-2 py-0.5 rounded-full border border-gray-200 text-xs text-gray-800 bg-white">
+                      Personal
                     </div>
-                  ))}
+                    <div className="text-sm text-gray-900">
+                      ${p.pricePersonal}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="px-2 py-0.5 rounded-full border border-gray-200 text-xs text-gray-800 bg-white">
+                      Commercial
+                    </div>
+                    <div className="text-sm text-gray-900">
+                      ${p.priceCommercial}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="px-2 py-0.5 rounded-full border border-gray-200 text-xs text-gray-800 bg-white">
+                      Extended
+                    </div>
+                    <div className="text-sm text-gray-900">
+                      ${p.priceExtended}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex items-center text-sm text-gray-900">

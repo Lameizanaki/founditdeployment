@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import type { Product } from "@/app/components/styles/admin_styles/products/mockData";
+import type { ProductRow } from "@/app/components/styles/admin_styles/products/mockData";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,
@@ -20,7 +20,7 @@ export default function ProductModal({
   onClose,
 }: {
   type: "details" | "sales" | "delete";
-  product: Product;
+  product: ProductRow;
   onClose: () => void;
 }) {
   return (

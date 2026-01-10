@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { Heart, ChevronDown, Star, ChevronUp } from "lucide-react";
 import { Talent } from "./data"; // Assumes Talent interface and data are imported
 
@@ -89,9 +90,11 @@ export default function TalentList({
             <div className="flex justify-between items-start mb-4">
               <div className="flex gap-4">
                 {/* 🟢 IMAGE BLOCK: INPUT PROFILE IMAGE HERE 🟢 */}
-                <img
+                <Image
                   src={talent.imageUrl || "/default-avatar.png"}
                   alt={`Profile image of ${talent.name}`}
+                  width={64}
+                  height={64}
                   className="w-16 h-16 rounded-full object-cover border-2 border-dashed border-gray-300"
                 />
 
@@ -139,7 +142,7 @@ export default function TalentList({
 
             {/* Push the button to the bottom using mt-auto */}
             <div className="mt-auto">
-              <p className="w-full py-2.5 bg-gray-100 rounded-lg font-medium hover:bg-gray-200 flex justify-center" >
+              <p className="w-full py-2.5 bg-gray-100 rounded-lg font-medium hover:bg-gray-200 flex justify-center">
                 View Profile
               </p>
             </div>

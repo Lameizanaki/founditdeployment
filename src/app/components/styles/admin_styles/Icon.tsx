@@ -1,6 +1,5 @@
-// src/app/components/styles/admin/Icon.tsx
-"use client";
 
+"use client";
 import React from "react";
 
 export function IconMenu() {
