@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/contexts/AuthContext";
 import authService from "@/app/services/authService";
 
 export default function SignIn() {
   const router = useRouter();
+  const { checkAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -52,7 +54,10 @@ export default function SignIn() {
       setError("");
       setSuccess("Login successful! Redirecting...");
 
-      // Redirect to type_role page for basic auth users to select their role
+      // Trigger auth context to load user data
+      await checkAuth();
+
+      // Redirect to type_role page for users to select their role
       setTimeout(() => {
         router.push("/page/type_role");
       }, 500);

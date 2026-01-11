@@ -134,14 +134,20 @@ class AuthService {
         );
       }
 
-      const data = await response.json();
-
-      // Store token if provided
-      if (data.token) {
-        this.setToken(data.token);
+      // Get JWT token from Authorization header (format: "Bearer <token>")
+      const authHeader = response.headers.get("Authorization");
+      if (authHeader) {
+        const token = authHeader.replace("Bearer ", "");
+        this.setToken(token);
       }
 
-      return { user: data, message: "Login successful with email" };
+      const data = await response.json();
+
+      return {
+        token: authHeader || undefined,
+        user: data,
+        message: "Login successful with email",
+      };
     } catch (error) {
       console.error("Email Login error:", error);
       throw error;
@@ -239,6 +245,21 @@ class AuthService {
    */
   isAuthenticated(): boolean {
     return !!(this.getToken() || this.getBasicAuth());
+  }
+
+  /**
+   * Get user data from localStorage
+   */
+  getUser(): Record<string, unknown> | null {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        return JSON.parse(userStr);
+      } catch {
+        return null;
+      }
+    }
+    return null;
   }
 
   /**

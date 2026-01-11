@@ -9,6 +9,8 @@ import SellerRecentOrders from "@/app/components/styles/seller_styles/home/recen
 import SellerRightRail from "@/app/components/styles/seller_styles/home/rightrail";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
+import { ProtectedRoute } from "@/app/components/auth/ProtectedRoute";
+import { Role } from "@/app/types/auth";
 
 export default function SellerHomePage() {
   const router = useRouter();
@@ -121,63 +123,64 @@ export default function SellerHomePage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      {/* NOTE: Header/Footer removed as requested (your friend will add later) */}
-      <SellerNavHeader />
+    <ProtectedRoute requiredRole={Role.SELLER}>
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+        <SellerNavHeader />
 
-      <main className="mx-auto w-full max-w-7xl px-4 md:px-6 py-6">
-        {/* Title row */}
-        <section>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="text-2xl font-semibold">Dashboard</div>
-              <div className="mt-1 text-sm text-gray-500">
-                Manage your products and grow your business
+        <main className="mx-auto w-full max-w-7xl px-4 md:px-6 py-6">
+          {/* Title row */}
+          <section>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="text-2xl font-semibold">Dashboard</div>
+                <div className="mt-1 text-sm text-gray-500">
+                  Manage your products and grow your business
+                </div>
               </div>
-            </div>
 
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => router.push("/page/seller/home/myproduct")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  router.push("/page/seller/home/myproduct");
-                }
-              }}
-              className="h-10 px-4 rounded-lg bg-white border border-gray-200 shadow-sm
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push("/page/seller/home/myproduct")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    router.push("/page/seller/home/myproduct");
+                  }
+                }}
+                className="h-10 px-4 rounded-lg bg-white border border-gray-200 shadow-sm
                          text-sm text-gray-700 flex items-center cursor-pointer select-none
                          hover:bg-gray-50 hover:border-gray-300 transition"
-              aria-label="View All Products"
-            >
-              View All Products
+                aria-label="View All Products"
+              >
+                View All Products
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Stats */}
-        <section className="mt-5">
-          <SellerStatsRow stats={stats} />
-        </section>
+          {/* Stats */}
+          <section className="mt-5">
+            <SellerStatsRow stats={stats} />
+          </section>
 
-        {/* Main grid */}
-        <section className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <SellerActiveProducts
-              countText="(4)"
-              items={products}
-              onViewAll={() => router.push("/page/seller/home/myproduct")}
-              onViewAllLink={() => router.push("/page/seller/home/myproduct")}
-            />
+          {/* Main grid */}
+          <section className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <SellerActiveProducts
+                countText="(4)"
+                items={products}
+                onViewAll={() => router.push("/page/seller/home/myproduct")}
+                onViewAllLink={() => router.push("/page/seller/home/myproduct")}
+              />
 
-            <SellerRecentOrders items={orders} />
-          </div>
+              <SellerRecentOrders items={orders} />
+            </div>
 
-          <SellerRightRail />
-        </section>
-      </main>
-      <SellerFooter />
-    </div>
+            <SellerRightRail />
+          </section>
+        </main>
+        <SellerFooter />
+      </div>
+    </ProtectedRoute>
   );
 }

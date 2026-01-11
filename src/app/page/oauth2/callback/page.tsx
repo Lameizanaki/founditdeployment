@@ -9,31 +9,32 @@ export default function OAuth2Callback() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const errorParam = searchParams.get("error");
+    const handleOAuthCallback = () => {
+      const token = searchParams.get("token");
+      const errorParam = searchParams.get("error");
 
-    if (errorParam) {
-      setError("OAuth2 authentication failed. Please try again.");
-      setTimeout(() => {
-        router.push("/page/sign_in");
-      }, 3000);
-      return;
-    }
+      if (errorParam) {
+        setError("OAuth2 authentication failed. Please try again.");
+        setTimeout(() => {
+          router.push("/page/sign_in");
+        }, 3000);
+        return;
+      }
 
-    if (token) {
-      // Store the token
-      authService.setToken(token);
-
-      // Redirect to client home for OAuth2 users
-      setTimeout(() => {
+      if (token) {
+        // Store the token and navigate immediately
+        // The ProtectedRoute will handle the auth check and show loading
+        authService.setToken(token);
         router.push("/page/client/home");
-      }, 500);
-    } else {
-      setError("No token received. Please try again.");
-      setTimeout(() => {
-        router.push("/page/sign_in");
-      }, 3000);
-    }
+      } else {
+        setError("No token received. Please try again.");
+        setTimeout(() => {
+          router.push("/page/sign_in");
+        }, 3000);
+      }
+    };
+
+    handleOAuthCallback();
   }, [searchParams, router]);
 
   if (error) {
@@ -65,17 +66,6 @@ export default function OAuth2Callback() {
     );
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Completing Sign In...
-          </h2>
-          <p className="text-gray-600">Please wait while we log you in.</p>
-        </div>
-      </div>
-    </div>
-  );
+  // No loading screen here - navigate immediately and let ProtectedRoute show loading
+  return null;
 }

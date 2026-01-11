@@ -2,6 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { Role } from "@/app/types/auth";
 import authService from "@/app/services/authService";
 
 type RoleItem = {
@@ -13,6 +15,7 @@ type RoleItem = {
 
 export default function TypeRole() {
   const router = useRouter();
+  const { updateUserRole, user } = useAuth();
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -99,64 +102,35 @@ export default function TypeRole() {
 
     try {
       // Check authentication
-      if (!authService.isAuthenticated()) {
+      if (!user) {
         throw new Error(
           "You must be logged in to continue. Please sign in again."
         );
       }
 
-      // Map role IDs to backend role names
-      const roleMapping: Record<string, string> = {
-        find_job: "FREELANCER",
-        hire_talent: "CLIENT",
-        sell_products: "SELLER",
+      // Map role IDs to backend role enum values
+      const roleMapping: Record<string, Role> = {
+        find_job: Role.FREELANCER,
+        hire_talent: Role.CLIENT,
+        sell_products: Role.SELLER,
       };
 
       const mappedRole = roleMapping[selectedRole];
 
-      // Save role to database FIRST
-      const authHeader = authService.getAuthHeader();
-      const token = authService.getToken();
-      const basicAuth = authService.getBasicAuth();
+      console.log("Updating user role to:", mappedRole);
 
-      console.log("Token in localStorage:", token); // Debug log
-      console.log("BasicAuth in localStorage:", basicAuth); // Debug log
-      console.log("Auth header:", authHeader); // Debug log
-      console.log("Mapped role:", mappedRole); // Debug log
+      // Use AuthContext's updateUserRole method
+      await updateUserRole(mappedRole);
 
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085"
-        }/api/user/update-role`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...authHeader,
-          },
-          body: JSON.stringify({ role: mappedRole }),
-        }
-      );
+      console.log("Role updated successfully");
 
-      console.log("Response status:", response.status); // Debug log
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Error response:", errorData); // Debug log
-        throw new Error(
-          errorData.error || errorData.message || "Failed to update role"
-        );
-      }
-
-      const result = await response.json();
-      console.log("Role saved to database:", result);
-
-      // Only navigate to type_picked AFTER successful database save
+      // Navigate to type_picked AFTER successful update
       router.push(`/page/type_role/type_picked?role=${selectedRole}`);
     } catch (err: unknown) {
       console.error("Error updating role:", err);
       const errorMessage = err instanceof Error ? err.message : String(err);
       setError(errorMessage || "Failed to save role. Please try again.");
+    } finally {
       setIsLoading(false);
     }
   };
