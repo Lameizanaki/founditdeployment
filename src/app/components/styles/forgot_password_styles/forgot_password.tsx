@@ -209,7 +209,7 @@ export default function ForgotPassword() {
   };
 
   const handleBackToSignIn = () => {
-    router.push('/page/(welcome)/sign_in');
+    router.push('/page/sign_in');
   };
 
   return (

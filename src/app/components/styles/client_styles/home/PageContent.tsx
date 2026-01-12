@@ -75,6 +75,7 @@ export default function TalentPageContent() {
     fetchGigs();
   }, []);
 
+
   // Filter application logic...
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>

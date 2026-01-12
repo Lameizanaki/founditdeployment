@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Roboto, Andada_Pro } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { RouteGuard } from "./components/auth/RouteGuard";
 
@@ -15,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "www.founded.com",
+  title: "www.foundIT.com",
   description:
-    "'Founded' platform unites clients, freelancers, and sellers in one workspace. Post jobs, get proposals, and track milestones. Freelancers showcase portfolios, win contracts, and get paid via secure escrow. Sellers list digital goods and services with instant delivery. Built-in chat, ratings, and disputes keep work safe and simple.",
+    "'FoundIT' platform unites clients, freelancers, and sellers in one workspace. Post jobs, get proposals, and track milestones. Freelancers showcase portfolios, win contracts, and get paid via secure escrow. Sellers list digital goods and services with instant delivery. Built-in chat, ratings, and disputes keep work safe and simple.",
 };
 
 export default function RootLayout({

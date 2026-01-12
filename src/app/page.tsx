@@ -15,6 +15,7 @@ import ReadyToUseProducts from './components/styles/landingpage_styles/ready_to_
 import Inspiration from './components/styles/landingpage_styles/inspiration';
 import HireTalent from './components/styles/landingpage_styles/hire_talent';
 import ScrollToTopButton from './components/styles/landingpage_styles/ScrollToTopButton';
+
 export default function LandingPage() {
     return (
         <div className="w-full overflow-hidden">

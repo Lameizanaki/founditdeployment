@@ -101,7 +101,7 @@ export default function SignUp() {
                 Welcome back
               </div>
               <div className="text-sm sm:text-base text-gray-600">
-                Sign in to continue
+                Sign up to continue
               </div>
             </div>
 
@@ -361,7 +361,7 @@ export default function SignUp() {
                     : "hover:bg-[#C01FB8] cursor-pointer"
                 }`}
               >
-                {isLoading ? "Signing up..." : "Sign in"}
+                {isLoading ? "Signing up..." : "Sign Up"}
               </div>
             </div>
 
