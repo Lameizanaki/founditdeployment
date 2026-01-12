@@ -312,7 +312,7 @@ export default function PostJobPage() {
       });
 
       if (response.ok) {
-        alert("Job posted successfully!");
+     
         router.push("/page/client/editpf");
       } else {
         const error = await response.text();

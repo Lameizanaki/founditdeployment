@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 import {
   JOB,
@@ -39,13 +40,34 @@ import CloseJobPostingModal from "@/app/components/styles/client_styles/applicat
 
 export default function ApplicationPage() {
   const router = useRouter();
-const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
-
+  const { user } = useAuth();
+  const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
 
   const [tab, setTab] = useState<TabKey>("proposals");
 
   // proposals shortlist state
-  const [proposalList, setProposalList] = useState<Proposal[]>(PROPOSALS);
+  const [proposalList, setProposalList] = useState<Proposal[]>([]);
+  const [isLoadingProposals, setIsLoadingProposals] = useState(true);
+
+  // sidebar data
+  const [matches, setMatches] = useState<any[]>([]);
+  const [isLoadingMatches, setIsLoadingMatches] = useState(true);
+  const [jobStats, setJobStats] = useState({ views: 0, proposals: 0 });
+
+  // messages and hired data
+  const [messages, setMessages] = useState<any[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(true);
+  const [hired, setHired] = useState<any[]>([]);
+  const [isLoadingHired, setIsLoadingHired] = useState(true);
+
+  // job info for header
+  const [jobInfo, setJobInfo] = useState({
+    title: "Loading...",
+    postedLabel: "Posted recently",
+    views: 0,
+    proposals: 0,
+    visibility: "Public",
+  });
 
   // top-right job actions menu
   const [jobMenuOpen, setJobMenuOpen] = useState(false);
@@ -58,6 +80,212 @@ const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
     () => proposalList.filter((p) => p.shortlisted).length,
     [proposalList]
   );
+
+  // Fetch proposals from backend
+  useEffect(() => {
+    const fetchProposals = async () => {
+      if (!user?.id) {
+        setIsLoadingProposals(false);
+        return;
+      }
+
+      try {
+        setIsLoadingProposals(true);
+        const response = await fetch(
+          `http://localhost:8085/proposals/client/${user.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // Map backend data to frontend Proposal format
+          const mappedProposals: Proposal[] = data.map((item: any) => ({
+            id: item.id.toString(),
+            name: item.freelancerName || "Unknown Freelancer",
+            title: item.freelancerSkill || "Freelancer",
+            rating: item.freelancerRating || 0,
+            reviews: item.freelancerReviewCount || 0,
+            jobsDone: 0, // Not available in backend DTO
+            country: "N/A", // Not available in backend DTO
+            bid: item.proposedBudget || 0,
+            durationLabel: item.deliveryDays
+              ? `${item.deliveryDays} days`
+              : "TBD",
+            intro: item.coverLetter || "No cover letter provided",
+            qa: [], // Not available in backend DTO
+            attachments: [], // Not available in backend DTO
+            shortlisted: false,
+          }));
+
+          setProposalList(mappedProposals);
+        } else {
+          console.error("Failed to fetch proposals");
+          setProposalList([]);
+        }
+      } catch (error) {
+        console.error("Error fetching proposals:", error);
+        setProposalList([]);
+      } finally {
+        setIsLoadingProposals(false);
+      }
+    };
+
+    fetchProposals();
+  }, [user?.id]);
+
+  // Fetch suggested matches (freelancers with gigs)
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        setIsLoadingMatches(true);
+        const response = await fetch(
+          "http://localhost:8085/gigs/freelancer/client-view",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // Map backend data to match format, limit to 3-5 matches
+          const mappedMatches = data.slice(0, 5).map((item: any) => ({
+            id: item.gigId.toString(),
+            name: item.freelancerName || "Unknown",
+            subtitle: item.skillName || "Freelancer",
+            rating: item.rating || 0,
+            rate: item.hourlyRate ? `$${item.hourlyRate}/hr` : "Rate not set",
+            tags: item.skillName ? [item.skillName] : [],
+          }));
+
+          setMatches(mappedMatches);
+        } else {
+          console.error("Failed to fetch matches");
+          setMatches([]);
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+        setMatches([]);
+      } finally {
+        setIsLoadingMatches(false);
+      }
+    };
+
+    fetchMatches();
+  }, []);
+
+  // Fetch messages (conversations with freelancers)
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!user?.id) {
+        setIsLoadingMessages(false);
+        return;
+      }
+
+      try {
+        setIsLoadingMessages(true);
+        // TODO: Replace with actual messages endpoint when available
+        // For now, we'll use an empty array or mock data structure
+        // const response = await fetch(`http://localhost:8085/messages/client/${user.id}`);
+
+        // Placeholder: Return empty messages for now
+        setMessages([]);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+        setMessages([]);
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    fetchMessages();
+  }, [user?.id]);
+
+  // Fetch hired freelancers (accepted contracts)
+  useEffect(() => {
+    const fetchHired = async () => {
+      if (!user?.id) {
+        setIsLoadingHired(false);
+        return;
+      }
+
+      try {
+        setIsLoadingHired(true);
+        const response = await fetch(
+          `http://localhost:8085/proposals/client/${user.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // Filter only accepted proposals
+          const acceptedProposals = data.filter(
+            (item: any) => item.status === "ACCEPTED"
+          );
+
+          // Map to HiredRow format
+          const mappedHired = acceptedProposals.map((item: any) => ({
+            id: item.id.toString(),
+            name: item.freelancerName || "Unknown Freelancer",
+            role: item.freelancerSkill || "Freelancer",
+            rating: item.freelancerRating || 0,
+            reviews: item.freelancerReviewCount || 0,
+            jobsDone: 0, // Not available in backend
+            status: "active" as const,
+            contractValue: `$${item.proposedBudget || 0}`,
+            timeline: item.deliveryDays ? `${item.deliveryDays} days` : "TBD",
+            startLabel: "Started",
+            startValue: item.createdAt
+              ? new Date(item.createdAt).toLocaleDateString()
+              : "Recently",
+          }));
+
+          setHired(mappedHired);
+        } else {
+          console.error("Failed to fetch hired freelancers");
+          setHired([]);
+        }
+      } catch (error) {
+        console.error("Error fetching hired freelancers:", error);
+        setHired([]);
+      } finally {
+        setIsLoadingHired(false);
+      }
+    };
+
+    fetchHired();
+  }, [user?.id]);
+
+  // Calculate job stats and update job info from proposal data
+  useEffect(() => {
+    const views = 127; // Could be fetched from a job post endpoint
+    const proposalsCount = proposalList.length;
+
+    setJobStats({
+      views,
+      proposals: proposalsCount,
+    });
+
+    setJobInfo({
+      title: "Build a React Web Application", // Could be fetched from job post endpoint
+      postedLabel: "Posted 2 days ago", // Could be calculated from job post date
+      views,
+      proposals: proposalsCount,
+      visibility: "Public",
+    });
+  }, [proposalList]);
 
   return (
     <>
@@ -105,18 +333,18 @@ const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
               </div>
 
               <div className="mt-2 text-lg font-semibold text-gray-900">
-                {JOB.title}
+                {jobInfo.title}
               </div>
 
               <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-500">
                 <span className="inline-flex items-center gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
-                  {JOB.postedLabel}
+                  {jobInfo.postedLabel}
                 </span>
 
                 <span className="inline-flex items-center gap-1">
                   <IconEye />
-                  {JOB.views} views
+                  {jobInfo.views} views
                 </span>
 
                 <span className="inline-flex items-center gap-1">
@@ -173,75 +401,86 @@ const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
                       </defs>
                     </svg>
                   </span>
-                  {JOB.proposals} proposals
+                  {jobInfo.proposals} proposals
                 </span>
 
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-700">
-                  {JOB.visibility}
+                  {jobInfo.visibility}
                 </span>
               </div>
             </div>
 
-            {/* Job actions dropdown */}
-            <DropDownMenu
-              align="right"
-              open={jobMenuOpen}
-              onOpenChange={setJobMenuOpen}
-              trigger={
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setJobMenuOpen((v) => !v)}
-                  onKeyDown={(e) =>
-                    handleKeyboardActivate(e, () => setJobMenuOpen((v) => !v))
-                  }
-                  className="h-9 w-9 rounded-md border bg-white flex items-center justify-center cursor-pointer select-none
-                           hover:bg-gray-50 hover:border-gray-300 transition active:scale-[0.99]"
-                  aria-label="Job actions"
-                >
-                  <IconMore />
-                </div>
-              }
-            >
-              <DropDownMenu.Item
-                icon={<IconEye />}
-                label="View full post"
-                onClick={() => {
-                  setJobMenuOpen(false);
-                  router.push("/page/application/viewfulljob");
-                }}
-              />
+            {/* Hire button + Job actions dropdown */}
+            <div className="flex items-center gap-2">
+              <p
+                onClick={() =>
+                  router.push("/page/client/application")
+                }
+                className="h-9 px-4 rounded-[12px] mt-3 bg-[#10B981] active:opacity-30 text-white text-sm font-medium cursor-pointer select-none inline-flex items-center justify-center transition"
+              >
+                Hire
+              </p>
 
-              <DropDownMenu.Item
-                icon={<IconSettings />}
-                label="Edit job post"
-                onClick={() => {
-                  setJobMenuOpen(false);
-                  // later
-                }}
-              />
+              <DropDownMenu
+                align="right"
+                open={jobMenuOpen}
+                onOpenChange={setJobMenuOpen}
+                trigger={
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setJobMenuOpen((v) => !v)}
+                    onKeyDown={(e) =>
+                      handleKeyboardActivate(e, () => setJobMenuOpen((v) => !v))
+                    }
+                    className="h-9 w-9 rounded-md border bg-white flex items-center justify-center cursor-pointer select-none
+                             hover:bg-gray-50 hover:border-gray-300 transition active:scale-[0.99]"
+                    aria-label="Job actions"
+                  >
+                    <IconMore />
+                  </div>
+                }
+              >
+                <DropDownMenu.Item
+                  icon={<IconEye />}
+                  label="View full post"
+                  onClick={() => {
+                    setJobMenuOpen(false);
+                    router.push("/page/client/application/viewfulljob");
+                  }}
+                />
 
-              <DropDownMenu.Item
-                icon={<IconPause />}
-                label="Pause applications"
-                onClick={() => {
-                  setJobMenuOpen(false);
-                  setPauseOpen(true);
-                }}
-              />
+                <DropDownMenu.Item
+                  icon={<IconSettings />}
+                  label="Edit job post"
+                  onClick={() => {
+                    setJobMenuOpen(false);
+                    // later
+                  }}
+                />
 
-              <DropDownMenu.Divider />
+                <DropDownMenu.Item
+                  icon={<IconPause />}
+                  label="Pause applications"
+                  onClick={() => {
+                    setJobMenuOpen(false);
+                    setPauseOpen(true);
+                  }}
+                />
 
-              <DropDownMenu.Item
-                icon={<Iconx />}
-                label="Close job"
-                tone="danger"
-                onClick={() => {
-                  setJobMenuOpen(false);
-                  setCloseOpen(true);
-                }}
-              />
-            </DropDownMenu>
+                <DropDownMenu.Divider />
+
+                <DropDownMenu.Item
+                  icon={<Iconx />}
+                  label="Close job"
+                  tone="danger"
+                  onClick={() => {
+                    setJobMenuOpen(false);
+                    setCloseOpen(true);
+                  }}
+                />
+              </DropDownMenu>
+            </div>
           </div>
 
           <div className="mt-4 border-t" />
@@ -253,29 +492,66 @@ const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
 
               <div className="mt-4">
                 {tab === "proposals" ? (
-                  <ProposalsPanel
-                    proposals={proposalList}
-                    shortlistedCount={shortlistedCount}
-                    onToggleShortlist={(id) => {
-                      setProposalList((prev) =>
-                        prev.map((p) =>
-                          p.id === id
-                            ? { ...p, shortlisted: !p.shortlisted }
-                            : p
-                        )
-                      );
-                    }}
-                    onOpenProposal={() =>
-                      router.push("/page/application/proposals")
-                    }
-                  />
+                  isLoadingProposals ? (
+                    <div className="bg-white border rounded-xl shadow-sm p-8 text-center text-gray-500">
+                      Loading proposals...
+                    </div>
+                  ) : proposalList.length === 0 ? (
+                    <div className="bg-white border rounded-xl shadow-sm p-8 text-center text-gray-500">
+                      No proposals yet
+                    </div>
+                  ) : (
+                    <ProposalsPanel
+                      proposals={proposalList}
+                      shortlistedCount={shortlistedCount}
+                      onToggleShortlist={(id) => {
+                        setProposalList((prev) =>
+                          prev.map((p) =>
+                            p.id === id
+                              ? { ...p, shortlisted: !p.shortlisted }
+                              : p
+                          )
+                        );
+                      }}
+                      onOpenProposal={() =>
+                        router.push("/page/client/application/proposals")
+                      }
+                      onHireClick={(proposalId) => {
+                        router.push(
+                          `/page/client/application/proposals?id=${proposalId}`
+                        );
+                      }}
+                    />
+                  )
                 ) : null}
 
                 {tab === "messages" ? (
-                  <MessagesPanel messages={MESSAGES} />
+                  isLoadingMessages ? (
+                    <div className="bg-white border rounded-xl shadow-sm p-8 text-center text-gray-500">
+                      Loading messages...
+                    </div>
+                  ) : messages.length === 0 ? (
+                    <div className="bg-white border rounded-xl shadow-sm p-8 text-center text-gray-500">
+                      No messages yet
+                    </div>
+                  ) : (
+                    <MessagesPanel messages={messages} />
+                  )
                 ) : null}
 
-                {tab === "hired" ? <HiredPanel hired={HIRED} /> : null}
+                {tab === "hired" ? (
+                  isLoadingHired ? (
+                    <div className="bg-white border rounded-xl shadow-sm p-8 text-center text-gray-500">
+                      Loading hired freelancers...
+                    </div>
+                  ) : hired.length === 0 ? (
+                    <div className="bg-white border rounded-xl shadow-sm p-8 text-center text-gray-500">
+                      No hired freelancers yet
+                    </div>
+                  ) : (
+                    <HiredPanel hired={hired} />
+                  )
+                ) : null}
               </div>
             </section>
 
@@ -283,7 +559,12 @@ const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
             <aside className="lg:col-span-4">
               {/* ✅ keep your old sticky style */}
               <div className="sticky top-24 space-y-4">
-                <ApplicationSidebar matches={MATCHES} job={JOB} />
+                <ApplicationSidebar
+                  matches={matches}
+                  job={jobStats}
+                  isLoadingMatches={isLoadingMatches}
+                  proposalList={proposalList}
+                />
               </div>
             </aside>
           </div>
@@ -294,10 +575,10 @@ const stickyTopClass = "top-[88px]"; // 72px header + 16px gap
 
       {/* ✅ Modals */}
       <PauseJobApplicationsModal
-  open={pauseOpen}
-  activeProposalsCount={proposalList.length}
-  onClose={() => setPauseOpen(false)}
-/>
+        open={pauseOpen}
+        activeProposalsCount={proposalList.length}
+        onClose={() => setPauseOpen(false)}
+      />
 
       <CloseJobPostingModal
         open={closeOpen}

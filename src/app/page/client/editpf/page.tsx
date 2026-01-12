@@ -346,40 +346,6 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showJobs]);
 
-  // Handle delete gig
-  const handleDeleteGig = async (gigId: number) => {
-    if (!confirm("Are you sure you want to delete this job?")) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please login first");
-        return;
-      }
-
-      const response = await fetch(
-        `http://localhost:8085/gigs/client/${gigId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok || response.status === 204) {
-        alert("Job deleted successfully!");
-        fetchMyGigs(); // Refresh the list
-      } else {
-        const error = await response.text();
-        alert(`Failed to delete job: ${error}`);
-      }
-    } catch (error) {
-      console.error("Error deleting gig:", error);
-      alert("An error occurred while deleting the job");
-    }
-  };
-
   // Handle start edit
   const handleStartEdit = (gig: Gig) => {
     setEditingGigId(gig.id);
@@ -462,20 +428,249 @@ export default function Page() {
     }
   };
 
-  const [showReviews, setShowReviews] = useState(true);
+  // Handle delete gig
+  const handleDeleteGig = async (gigId: number) => {
+    if (!confirm("Are you sure you want to delete this job?")) return;
 
-  const featuredLinkOptions: DropdownOption[] = [
-    { label: "Website", value: "website" },
-    { label: "LinkedIn", value: "linkedin" },
-    { label: "X/Twitter", value: "x" },
-  ];
-  const [featuredLink, setFeaturedLink] = useState<DropdownOption>(
-    featuredLinkOptions[0]
-  );
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:8085/gigs/client/${gigId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok || response.status === 204) {
+        alert("Job deleted successfully!");
+        fetchMyGigs(); // Refresh the list
+      } else {
+        const error = await response.text();
+        alert(`Failed to delete job: ${error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting gig:", error);
+      alert("An error occurred while deleting the job");
+    }
+  };
+
+  // Handle publish all unpublished gigs
+  const handlePublishAllGigs = async () => {
+    const unpublishedGigs = myGigs.filter((gig) => !gig.isPublic);
+
+    if (unpublishedGigs.length === 0) {
+      alert("All jobs are already published!");
+      return;
+    }
+
+    if (!confirm(`Publish ${unpublishedGigs.length} unpublished job(s)?`))
+      return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const gig of unpublishedGigs) {
+        try {
+          const response = await fetch(
+            `http://localhost:8085/gigs/client/${gig.id}/publish`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch {
+          failCount++;
+        }
+      }
+
+      if (failCount === 0) {
+        alert(`Successfully published ${successCount} job(s)!`);
+      } else {
+        alert(`Published ${successCount} job(s), but ${failCount} failed.`);
+      }
+
+      fetchMyGigs(); // Refresh the list
+    } catch (error) {
+      console.error("Error publishing gigs:", error);
+      alert("An error occurred while publishing jobs");
+    }
+  };
+
+  const [showReviews, setShowReviews] = useState(true);
 
   const [website, setWebsite] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [xTwitter, setXTwitter] = useState("");
+
+  // Avatar upload handler
+  const handleAvatarUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      const file = target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setAvatarUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  // Load profile data on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch(
+          "http://localhost:8085/client/profile/my-profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const profile = await response.json();
+
+          // Load overview data
+          if (profile.avatarUrl) setAvatarUrl(profile.avatarUrl);
+          if (profile.fullName) setFullName(profile.fullName);
+          if (profile.titleRole) setTitleRole(profile.titleRole);
+          if (profile.location) setLocation(profile.location);
+          if (profile.allowMessages !== undefined)
+            setAllowMessages(profile.allowMessages);
+
+          // Load about data
+          if (profile.shortBio) setShortBio(profile.shortBio);
+          if (profile.valuesWhenHiring && profile.valuesWhenHiring.length > 0)
+            setValuesWhenHiring(profile.valuesWhenHiring);
+          if (profile.industries && profile.industries.length > 0)
+            setIndustries(profile.industries);
+          if (
+            profile.preferredWorkStyles &&
+            profile.preferredWorkStyles.length > 0
+          )
+            setPreferredWorkStyles(profile.preferredWorkStyles);
+
+          // Load hiring highlights
+          if (profile.hireCategories && profile.hireCategories.length > 0)
+            setHireCategories(profile.hireCategories);
+          if (profile.fixedProjectMedian) {
+            const option = fixedProjectOptions.find(
+              (opt) => opt.value === profile.fixedProjectMedian
+            );
+            if (option) setFixedProjectMedian(option);
+          }
+          if (profile.hourlyMedian) {
+            const option = hourlyOptions.find(
+              (opt) => opt.value === profile.hourlyMedian
+            );
+            if (option) setHourlyMedian(option);
+          }
+          if (profile.contractLengthMedian) {
+            const option = contractLengthOptions.find(
+              (opt) => opt.value === profile.contractLengthMedian
+            );
+            if (option) setContractLength(option);
+          }
+
+          // Load links
+          if (profile.website) setWebsite(profile.website);
+          if (profile.linkedin) setLinkedin(profile.linkedin);
+          if (profile.xTwitter) setXTwitter(profile.xTwitter);
+        }
+      } catch (error) {
+        console.error("Error loading profile:", error);
+      }
+    };
+
+    loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save profile function
+  const handleSaveProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+
+      const profileData = {
+        avatarUrl,
+        fullName,
+        titleRole,
+        location,
+        allowMessages,
+        shortBio,
+        valuesWhenHiring,
+        industries,
+        preferredWorkStyles,
+        hireCategories,
+        fixedProjectMedian: fixedProjectMedian.value,
+        hourlyMedian: hourlyMedian.value,
+        contractLengthMedian: contractLength.value,
+        website,
+        linkedin,
+        xTwitter,
+      };
+
+      const response = await fetch(
+        "http://localhost:8085/client/profile/save",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(profileData),
+        }
+      );
+
+      if (response.ok) {
+        alert("Profile saved successfully!");
+      } else {
+        const errorText = await response.text();
+        console.error("Save profile failed:", response.status, errorText);
+        alert(`Failed to save profile: ${response.status} - ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      alert("An error occurred while saving profile");
+    }
+  };
 
   function toggleDropdown(id: string) {
     setOpenDropdownId(openDropdownId === id ? null : id);
@@ -523,9 +718,7 @@ export default function Page() {
             <OverviewCard
               sectionRef={sectionRefs.overview}
               avatarUrl={avatarUrl}
-              onUpload={() => {
-                // placeholder
-              }}
+              onUpload={handleAvatarUpload}
               onDeleteAvatar={() => setAvatarUrl(null)}
               fullName={fullName}
               setFullName={setFullName}
@@ -627,11 +820,11 @@ export default function Page() {
                     }}
                   />
 
-                  {/* Display Posted Gigs */}
+                  {/* Display Posted Gigs - History Only (Read-only) */}
                   {showJobs && (
                     <div className="mt-5 pt-5 border-t border-gray-200">
                       <div className="text-sm font-medium text-gray-700 mb-3">
-                        Your Posted Jobs ({myGigs.length})
+                        Your Job History ({myGigs.length})
                       </div>
 
                       {isLoadingGigs ? (
@@ -640,7 +833,7 @@ export default function Page() {
                         </div>
                       ) : myGigs.length === 0 ? (
                         <div className="text-sm text-gray-500 py-4">
-                          No jobs posted yet. Click "Post a Job" to create one!
+                          No jobs posted yet. Click “Post a Job” to create one!
                         </div>
                       ) : (
                         <div className="space-y-3">
@@ -739,6 +932,7 @@ export default function Page() {
                                   {/* Image preview if available */}
                                   {gig.imageData && gig.imageType && (
                                     <div className="flex-shrink-0">
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
                                       <img
                                         src={`data:${gig.imageType};base64,${gig.imageData}`}
                                         alt={gig.title}
@@ -767,8 +961,14 @@ export default function Page() {
                                       <span>•</span>
                                       <span>{gig.deliveryTime}</span>
                                       <span>•</span>
-                                      <span className="text-green-600">
-                                        {gig.isPublic ? "Public" : "Private"}
+                                      <span
+                                        className={
+                                          gig.isPublic
+                                            ? "text-green-600"
+                                            : "text-gray-500"
+                                        }
+                                      >
+                                        {gig.isPublic ? "✓ Published" : "Draft"}
                                       </span>
                                       {gig.referenceFiles &&
                                         (() => {
@@ -789,7 +989,7 @@ export default function Page() {
                                                 </>
                                               );
                                             }
-                                          } catch (e) {
+                                          } catch {
                                             return null;
                                           }
                                         })()}
@@ -904,14 +1104,55 @@ export default function Page() {
               </div>
             </section>
 
-            {/* Bottom actions placeholder */}
+            {/* Information Banner */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <div className="text-blue-600 mt-0.5">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
+                </div>
+                <div className="flex-1 text-sm">
+                  <div className="font-semibold text-blue-900 mb-1">
+                    How Publishing Works
+                  </div>
+                  <ul className="space-y-1 text-blue-700">
+                    <li>
+                      • <strong>Save Profile</strong> - Save your profile data
+                      without making it public
+                    </li>
+                    <li>
+                      • <strong>Publish Profile & All Jobs</strong> - Make your
+                      profile and all draft jobs visible to freelancers
+                    </li>
+                    <li>
+                      • Once published, freelancers can view your profile and
+                      apply to your jobs
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom actions */}
             <div className="flex items-center justify-end gap-2 pt-2">
               <div
                 role="button"
                 tabIndex={0}
                 aria-label="Exit"
-                onClick={() => {}}
-                onKeyDown={(e) => handleKeyboardActivate(e, () => {})}
+                onClick={() => router.back()}
+                onKeyDown={(e) =>
+                  handleKeyboardActivate(e, () => router.back())
+                }
                 className="h-9 px-4 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-sm cursor-pointer select-none flex items-center"
               >
                 Exit
@@ -920,12 +1161,26 @@ export default function Page() {
               <div
                 role="button"
                 tabIndex={0}
-                aria-label="Publish"
-                onClick={() => {}}
-                onKeyDown={(e) => handleKeyboardActivate(e, () => {})}
-                className="h-9 px-4 rounded-md bg-green-500 hover:bg-green-600 text-white text-sm cursor-pointer select-none flex items-center"
+                aria-label="Save Profile"
+                onClick={handleSaveProfile}
+                onKeyDown={(e) => handleKeyboardActivate(e, handleSaveProfile)}
+                className="h-9 px-4 rounded-md bg-blue-500 hover:bg-blue-600 text-white text-sm cursor-pointer select-none flex items-center"
               >
-                Publish
+                Save Profile
+              </div>
+
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Publish All Jobs"
+                onClick={handlePublishAllGigs}
+                onKeyDown={(e) =>
+                  handleKeyboardActivate(e, handlePublishAllGigs)
+                }
+                className="h-9 px-4 rounded-md bg-green-500 hover:bg-green-600 text-white text-sm cursor-pointer select-none flex items-center"
+                title="Publish all draft jobs and make your profile public"
+              >
+                Publish Profile & All Jobs
               </div>
             </div>
           </div>

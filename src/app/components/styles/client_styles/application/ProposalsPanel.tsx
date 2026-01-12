@@ -11,11 +11,13 @@ export default function ProposalsPanel({
   shortlistedCount,
   onToggleShortlist,
   onOpenProposal,
+  onHireClick,
 }: {
   proposals: Proposal[];
   shortlistedCount: number;
   onToggleShortlist: (id: string) => void;
   onOpenProposal: () => void;
+  onHireClick?: (proposalId: string) => void;
 }) {
   const [sortOpen, setSortOpen] = useState(false);
   const [budgetOpen, setBudgetOpen] = useState(false);
@@ -33,7 +35,8 @@ export default function ProposalsPanel({
     function onMouseDown(e: MouseEvent) {
       const t = e.target as Node;
       if (sortRef.current && !sortRef.current.contains(t)) setSortOpen(false);
-      if (budgetRef.current && !budgetRef.current.contains(t)) setBudgetOpen(false);
+      if (budgetRef.current && !budgetRef.current.contains(t))
+        setBudgetOpen(false);
     }
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("mousedown", onMouseDown);
@@ -49,24 +52,24 @@ export default function ProposalsPanel({
       <div className="bg-white border rounded-xl shadow-sm p-3">
         <div className="flex flex-wrap items-center gap-2">
           <DropdownBlank
-  ref={sortRef}
-  open={sortOpen}
-  label="Best match"
-  onToggle={() => {
-    setSortOpen((v) => !v);
-    setBudgetOpen(false);
-  }}
-/>
+            ref={sortRef}
+            open={sortOpen}
+            label="Best match"
+            onToggle={() => {
+              setSortOpen((v) => !v);
+              setBudgetOpen(false);
+            }}
+          />
 
-<DropdownBlank
-  ref={budgetRef}
-  open={budgetOpen}
-  label="All budgets"
-  onToggle={() => {
-    setBudgetOpen((v) => !v);
-    setSortOpen(false);
-  }}
-/>
+          <DropdownBlank
+            ref={budgetRef}
+            open={budgetOpen}
+            label="All budgets"
+            onToggle={() => {
+              setBudgetOpen((v) => !v);
+              setSortOpen(false);
+            }}
+          />
 
           <div className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
             {shortlistedCount} shortlisted
@@ -80,6 +83,7 @@ export default function ProposalsPanel({
           proposal={p}
           onOpenProposal={onOpenProposal}
           onToggleShortlist={() => onToggleShortlist(p.id)}
+          onHireClick={onHireClick}
         />
       ))}
     </div>

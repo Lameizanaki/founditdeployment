@@ -3,12 +3,17 @@
 import React from "react";
 import { handleKeyboardActivate } from "@/app/components/styles/client_styles/application/utils";
 
-import { IconMessage, IconStar } from "@/app/components/styles/client_styles/application/icons";
+import {
+  IconMessage,
+  IconStar,
+} from "@/app/components/styles/client_styles/application/icons";
 
 export default function ProposalCandidateCard({
   candidate,
   shortlisted,
   onToggleShortlist,
+  onAccept,
+  onReject,
 }: {
   candidate: {
     name: string;
@@ -22,6 +27,8 @@ export default function ProposalCandidateCard({
   };
   shortlisted: boolean;
   onToggleShortlist: () => void;
+  onAccept?: () => void;
+  onReject?: () => void;
 }) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm">
@@ -75,8 +82,25 @@ export default function ProposalCandidateCard({
 
           {/* Right actions: MOBILE = grid stack nicely */}
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end lg:max-w-[360px]">
+            {/* Accept - green button */}
+            {onAccept && (
+              <button
+                onClick={onAccept}
+                className="h-10 px-4 rounded-full bg-green-500 hover:bg-green-600 text-white text-sm font-medium cursor-pointer select-none inline-flex items-center justify-center"
+              >
+                Accept Proposal
+              </button>
+            )}
+
             {/* Decline = red OUTLINE pill (not filled) */}
-            <ActionPill tone="danger" label="Decline" />
+            {onReject && (
+              <button
+                onClick={onReject}
+                className="h-10 px-4 rounded-full border border-red-200 bg-white text-red-600 hover:bg-red-50 text-sm cursor-pointer select-none inline-flex items-center justify-center"
+              >
+                Decline
+              </button>
+            )}
 
             <ActionPill tone="neutral" label="Message" icon={<IconMessage />} />
 
@@ -95,9 +119,6 @@ export default function ProposalCandidateCard({
             >
               {shortlisted ? "Shortlisted" : "Shortlist"}
             </div>
-
-            
-            
           </div>
         </div>
 

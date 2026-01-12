@@ -23,12 +23,14 @@ export default function TalentPageContent() {
   const [talents, setTalents] = useState<Talent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch gigs from backend
+  // Fetch gigs from backend (both freelancer gigs and client job postings)
   useEffect(() => {
     const fetchGigs = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
+
+        // Fetch freelancer gigs only
+        const freelancerResponse = await fetch(
           "http://localhost:8085/gigs/freelancer/client-view?limit=50",
           {
             headers: {
@@ -37,33 +39,43 @@ export default function TalentPageContent() {
           }
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          const gigsData = data.content || [];
+        let mappedTalents: Talent[] = [];
 
-          // Map backend data to frontend Talent type
-          const mappedTalents: Talent[] = gigsData.map((gig: any) => ({
-            id: gig.id,
-            name: gig.freelancerName || "Freelancer",
-            title: gig.shortBio || "Skilled Professional",
-            rating: gig.rating || 4.5,
-            reviews: gig.reviewCount || 0,
-            rate: gig.price || 50,
-            skills: gig.skillName ? [gig.skillName] : ["General"],
-            bio: gig.description || "No description available",
-            category: gig.skillName || "General",
-            experience: gig.experience || "Intermediate",
-            location: gig.location || "Cambodia",
-            lastActive: gig.lastActiveDays || 0,
-            workCount: gig.workCount || 0,
-            verified: gig.verified || false,
-          }));
+        // Map freelancer gigs
+        if (freelancerResponse.ok) {
+          const freelancerData = await freelancerResponse.json();
+          const freelancerGigs = freelancerData.content || [];
 
-          setTalents(mappedTalents);
-        } else {
-          console.error("Failed to fetch gigs");
-          setTalents([]);
+          const freelancerTalents: Talent[] = freelancerGigs.map(
+            (gig: any) => ({
+              id: `fl-${gig.id}`,
+              name: gig.freelancerName || "Freelancer",
+              title: gig.shortBio || "Skilled Professional",
+              rating: gig.rating || 4.5,
+              reviews: gig.reviewCount || 0,
+              rate: gig.price || 50,
+              skills: gig.skillName ? [gig.skillName] : ["General"],
+              bio: gig.description || "No description available",
+              category: gig.skillName || "General",
+              experience: gig.experience || "Intermediate",
+              location: gig.location || "Cambodia",
+              lastActive: gig.lastActiveDays || 0,
+              workCount: gig.workCount || 0,
+              verified: gig.verified || false,
+              imageUrl: gig.imageUrl,
+            })
+          );
+
+          mappedTalents = [...mappedTalents, ...freelancerTalents];
         }
+
+        console.log(
+          "✓ Fetched freelancer gigs:",
+          mappedTalents.length,
+          "IDs:",
+          mappedTalents.map((t) => t.id)
+        );
+        setTalents(mappedTalents);
       } catch (error) {
         console.error("Error fetching gigs:", error);
         setTalents([]);
@@ -74,7 +86,6 @@ export default function TalentPageContent() {
 
     fetchGigs();
   }, []);
-
 
   // Filter application logic...
   const toggleFavorite = (id: number) => {

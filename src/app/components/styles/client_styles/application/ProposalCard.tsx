@@ -4,7 +4,12 @@
 import React from "react";
 import type { Proposal } from "@/app/components/styles/client_styles/application/mockdata";
 import { handleKeyboardActivate } from "@/app/components/styles/client_styles/application/utils";
-import { IconHired, IconMessage, IconPaperclip, IconStar } from "@/app/components/styles/client_styles/application/icons";
+import {
+  IconHired,
+  IconMessage,
+  IconPaperclip,
+  IconStar,
+} from "@/app/components/styles/client_styles/application/icons";
 import ActionPill from "@/app/components/styles/client_styles/application/ui/ActionPill";
 import Avatar from "@/app/components/styles/client_styles/application/ui/Avatar";
 
@@ -16,10 +21,12 @@ export default function ProposalCard({
   proposal,
   onOpenProposal,
   onToggleShortlist,
+  onHireClick,
 }: {
   proposal: Proposal;
   onOpenProposal: () => void;
   onToggleShortlist: () => void;
+  onHireClick?: (proposalId: string) => void;
 }) {
   // ✅ Only the left “profile/intro area” navigates. Nothing else navigates.
   return (
@@ -55,7 +62,9 @@ export default function ProposalCard({
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
               <span className="inline-flex items-center gap-1 text-yellow-600">
                 <IconStar />
-                <span className="text-gray-800">{proposal.rating.toFixed(1)}</span>
+                <span className="text-gray-800">
+                  {proposal.rating.toFixed(1)}
+                </span>
                 <span>({proposal.reviews})</span>
               </span>
               <span>•</span>
@@ -78,19 +87,18 @@ export default function ProposalCard({
 
       {/* Non-clickable content (no navigate) */}
       <div
-          role="button"
-          tabIndex={0}
-          onClick={onOpenProposal}
-          onKeyDown={(e) => handleKeyboardActivate(e, onOpenProposal)}
-          className="flex items-start gap-3 min-w-0 cursor-pointer rounded-lg p-2 -m-2
+        role="button"
+        tabIndex={0}
+        onClick={onOpenProposal}
+        onKeyDown={(e) => handleKeyboardActivate(e, onOpenProposal)}
+        className="flex items-start gap-3 min-w-0 cursor-pointer rounded-lg p-2 -m-2
                      hover:bg-gray-50 transition"
-          aria-label="Open proposal"
-        >
-      <div className="mt-3 text-sm text-gray-700 leading-6">
-        {proposal.intro}{" "}
-        
-        <span className="text-green-600 hover:underline">Read more</span>
-      </div>
+        aria-label="Open proposal"
+      >
+        <div className="mt-3 text-sm text-gray-700 leading-6">
+          {proposal.intro}{" "}
+          <span className="text-green-600 hover:underline">Read more</span>
+        </div>
       </div>
 
       <div className="mt-3 rounded-xl bg-gray-50 border p-3 space-y-2">
@@ -125,18 +133,25 @@ export default function ProposalCard({
 
       {/* Actions (stop “card zoom” — actions are separate) */}
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <ActionPill tone="green" label={
-        <span className="inline-flex items-center gap-2">
-          <IconHired />
-          Hired
-        </span>
-      }/>
-        <ActionPill tone="white" label={
-        <span className="inline-flex items-center gap-2">
-          <IconMessage />
-          Message
-        </span>
-      } />
+        <ActionPill
+          tone="green"
+          label={
+            <span className="inline-flex items-center gap-2">
+              <IconHired />
+              Hire
+            </span>
+          }
+          onClick={() => onHireClick?.(proposal.id)}
+        />
+        <ActionPill
+          tone="white"
+          label={
+            <span className="inline-flex items-center gap-2">
+              <IconMessage />
+              Message
+            </span>
+          }
+        />
 
         <ActionPill
           tone={proposal.shortlisted ? "gray" : "white"}
@@ -145,7 +160,9 @@ export default function ProposalCard({
         />
 
         <ActionPill tone="red" label="Decline" />
-        <div className="text-xs text-gray-500 ml-auto">Submitted 2 hours ago</div>
+        <div className="text-xs text-gray-500 ml-auto">
+          Submitted 2 hours ago
+        </div>
       </div>
     </div>
   );

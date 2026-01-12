@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Heart, ChevronDown, Star, ChevronUp } from "lucide-react";
 import { Talent } from "./data"; // Assumes Talent interface and data are imported
+import { useRouter } from "next/navigation";
 
 interface TalentListProps {
   filteredTalents: Talent[];
@@ -19,6 +20,15 @@ export default function TalentList({
   setBestMatch,
 }: TalentListProps) {
   const [showBestMatch, setShowBestMatch] = React.useState(false);
+  const router = useRouter();
+
+  // Truncate name if longer than 15 characters
+  const truncateName = (name: string, maxLength: number = 15) => {
+    if (name.length > maxLength) {
+      return name.substring(0, maxLength) + "...";
+    }
+    return name;
+  };
 
   // Apply sorting based on the selected option
   const sortTalents = (talents: Talent[], sortOption: string) => {
@@ -89,17 +99,33 @@ export default function TalentList({
           >
             <div className="flex justify-between items-start mb-4">
               <div className="flex gap-4">
-                {/* 🟢 IMAGE BLOCK: INPUT PROFILE IMAGE HERE 🟢 */}
-                <Image
-                  src={talent.imageUrl || "/default-avatar.png"}
-                  alt={`Profile image of ${talent.name}`}
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-dashed border-gray-300"
-                />
+                {/* Profile Avatar - Dynamic from backend */}
+                {talent.imageUrl ? (
+                  <img
+                    src={talent.imageUrl}
+                    alt={`${talent.name}'s profile`}
+                    className="w-16 h-16 rounded-full object-cover"
+                    onError={(e) => {
+                      // Fallback to letter avatar if image fails to load
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove(
+                        "hidden"
+                      );
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-xl ${
+                    talent.imageUrl ? "hidden" : ""
+                  }`}
+                >
+                  {talent.name.charAt(0).toUpperCase()}
+                </div>
 
                 <div>
-                  <h3 className="font-bold">{talent.name}</h3>
+                  <h3 className="font-bold" title={talent.name}>
+                    {truncateName(talent.name)}
+                  </h3>
                   <p className="text-sm text-gray-600">{talent.title}</p>
                 </div>
               </div>
@@ -142,7 +168,15 @@ export default function TalentList({
 
             {/* Push the button to the bottom using mt-auto */}
             <div className="mt-auto">
-              <p className="w-full py-2.5 bg-gray-100 rounded-lg font-medium hover:bg-gray-200 flex justify-center">
+              <p
+                className="w-full py-2.5 bg-gray-100 rounded-lg font-medium hover:bg-green-100 hover:text-green-700 flex justify-center cursor-pointer transition-all"
+                onClick={() => {
+                  console.log(
+                    `Navigating to Profile ID: ${talent.id} - ${talent.name}`
+                  );
+                  router.push(`/page/client/viewprofile?id=${talent.id}`);
+                }}
+              >
                 View Profile
               </p>
             </div>
