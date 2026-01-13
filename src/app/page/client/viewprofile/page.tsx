@@ -15,6 +15,7 @@ type Tab = "work" | "reviews" | "about";
 
 interface GigData {
   id: number;
+  freelancerId?: number;
   freelancerName: string;
   shortBio: string;
   description: string;
@@ -154,6 +155,25 @@ export default function TalentProfilePage() {
     router.back();
   };
 
+  const handleHire = () => {
+    if (!gigData) return;
+    
+    // Build freelancer data for the milestone/contract page
+    const freelancerData = {
+      id: gigData.freelancerId || gigData.id,
+      gigId: gigData.id,
+      name: gigData.freelancerName,
+      title: gigData.skillName || "Freelancer",
+      rating: gigData.rating || 0,
+      reviewCount: gigData.reviewCount || 0,
+      hourlyRate: gigData.price || 0,
+      avatarUrl: gigData.imageData ? `data:${gigData.imageType};base64,${gigData.imageData}` : undefined,
+    };
+    
+    // Navigate to milestone page with freelancer data
+    router.push(`/page/client/milestone?freelancer=${encodeURIComponent(JSON.stringify(freelancerData))}`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -214,7 +234,7 @@ export default function TalentProfilePage() {
           Back
         </div>
         <div className="px-8 pb-4">
-          <ProfileHeader gigData={gigData} />
+          <ProfileHeader gigData={gigData} onHire={handleHire} />
         </div>
 
         <div className="px-6 grid grid-cols-12 gap-6">

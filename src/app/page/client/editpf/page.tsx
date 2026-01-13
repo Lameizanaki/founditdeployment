@@ -620,9 +620,16 @@ export default function Page() {
   }, []);
 
   // Save profile function
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleSaveProfile = async () => {
+    if (isSaving) return;
+
     try {
+      setIsSaving(true);
       const token = localStorage.getItem("token");
+      console.log("DEBUG - Save Profile: Token exists:", !!token);
+
       if (!token) {
         alert("Please login first");
         return;
@@ -647,6 +654,8 @@ export default function Page() {
         xTwitter,
       };
 
+      console.log("DEBUG - Save Profile: Sending data:", profileData);
+
       const response = await fetch(
         "http://localhost:8085/client/profile/save",
         {
@@ -659,8 +668,13 @@ export default function Page() {
         }
       );
 
+      console.log("DEBUG - Save Profile: Response status:", response.status);
+
       if (response.ok) {
+        const savedData = await response.json();
+        console.log("DEBUG - Save Profile: Saved data:", savedData);
         alert("Profile saved successfully!");
+        router.push("/page/client/home");
       } else {
         const errorText = await response.text();
         console.error("Save profile failed:", response.status, errorText);
@@ -669,6 +683,8 @@ export default function Page() {
     } catch (error) {
       console.error("Error saving profile:", error);
       alert("An error occurred while saving profile");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -1164,9 +1180,13 @@ export default function Page() {
                 aria-label="Save Profile"
                 onClick={handleSaveProfile}
                 onKeyDown={(e) => handleKeyboardActivate(e, handleSaveProfile)}
-                className="h-9 px-4 rounded-md bg-blue-500 hover:bg-blue-600 text-white text-sm cursor-pointer select-none flex items-center"
+                className={`h-9 px-4 rounded-md text-white text-sm cursor-pointer select-none flex items-center ${
+                  isSaving
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600"
+                }`}
               >
-                Save Profile
+                {isSaving ? "Saving..." : "Save Profile"}
               </div>
 
               <div

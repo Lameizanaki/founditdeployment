@@ -54,7 +54,9 @@ export default function Sidebar({ gigData }: SidebarProps) {
         );
 
         if (response.ok) {
-          const allGigs: GigData[] = await response.json();
+          const data = await response.json();
+          // Response is PageDTO with { content: [...], pageable: {...} }
+          const allGigs: GigData[] = data.content || [];
 
           // Filter gigs with same skill, exclude current gig, limit to 3
           const filtered = allGigs

@@ -15,10 +15,12 @@ interface GigData {
   location: string;
   lastActiveDays?: number;
   workCount?: number;
+  freelancerId?: number;
 }
 
 interface ProfileHeaderProps {
   gigData?: GigData | null;
+  onHire?: () => void;
 }
 
 function handleKeyboardActivate(
@@ -44,7 +46,7 @@ function StarIcon({ className = "" }: { className?: string }) {
   );
 }
 
-export default function ProfileHeader({ gigData }: ProfileHeaderProps) {
+export default function ProfileHeader({ gigData, onHire }: ProfileHeaderProps) {
   const [tab, setTab] = useState<"work" | "reviews" | "about">("work");
 
   // Format last active text
@@ -142,8 +144,8 @@ export default function ProfileHeader({ gigData }: ProfileHeaderProps) {
           <div
             role="button"
             tabIndex={0}
-            onClick={() => {}}
-            onKeyDown={(e) => handleKeyboardActivate(e, () => {})}
+            onClick={() => onHire?.()}
+            onKeyDown={(e) => handleKeyboardActivate(e, () => onHire?.())}
             className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-emerald-500 text-white text-sm font-medium
                        shadow-sm hover:bg-emerald-600 transition cursor-pointer select-none"
             aria-label="Hire"

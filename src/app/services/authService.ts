@@ -143,6 +143,11 @@ class AuthService {
 
       const data = await response.json();
 
+      // Store user data in localStorage
+      if (data) {
+        localStorage.setItem("user", JSON.stringify(data));
+      }
+
       return {
         token: authHeader || undefined,
         user: data,
