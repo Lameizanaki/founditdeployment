@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMemo } from "react";
 import SubHeader from "./sub_header";
+import PaymentSuccessForm from "../payment_accept_delivery/payment_success_form";
+import { useRouter } from "next/navigation";
 
 // ============================================================================
 // TYPES
@@ -207,6 +209,7 @@ const ActionItem = ({ action }: { action: OrderGigAction }) => {
 // ============================================================================
 
 function OrderGigCard({ gig }: { gig: OrderGig }) {
+  const [showModal, setShowModal] = useState(false); 
   const computed = calcPercentFromAmounts(gig.currentAmount, gig.totalAmount);
   const percent = clampPercent(gig.progressPercent ?? computed);
   const percentText =
@@ -216,6 +219,8 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
 
   const current = gig.currentAmount ?? 0;
   const total = gig.totalAmount ?? 0;
+
+  const payment_success_form = useRouter();
 
   // Determine if this gig needs special action buttons
   const isAwaitingApproval = gig.status === "Awaiting approval";
@@ -340,7 +345,7 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
             {/* Special prominent "Accept delivery" button */}
             {isAwaitingApproval && (
               <p
-                onClick={actions[1].onClick}
+                onClick={() => setShowModal(true)}
                 className="flex items-center gap-x-2 px-3 py-1.5 mt-3 active:opacity-30 hover:cursor-pointer bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 active:bg-emerald-800 transition shadow-sm"
               >
                 <svg className="w-4 h-4 mt-0.5" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -349,11 +354,67 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
                 Accept delivery
               </p>
             )}
-
+          
             {/* Show "Message" button for all other statuses */}
-            {!isAwaitingApproval && actions[1]?.text === "Message" && (
-              <ActionItem action={actions[1]} />
+            {showModal  && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+                  {/* Header */}
+                  <div className="px-6 pt-6 pb-4 relative">
+                    <p
+                      onClick={() => setShowModal(false)}
+                      className="absolute top-4 right-4 active:opacity-30 cursor-pointer text-gray-400 hover:text-gray-600 transition"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </p>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Accept delivery?
+                    </h2>
+                  </div>
+
+                  {/* Content */}
+                  <div className="px-6 pb-6">
+                    <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                      Once you accept this delivery, the work will be marked as approved.
+                      You can still release payment later.
+                    </p>
+
+                    {/* Action ps */}
+                    <div className="flex gap-3">
+                      <p
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 text-center active:opacity-30 cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition"
+                      >
+                        Cancel
+                      </p>
+                      <p
+                        onClick={() => {
+                          setShowModal(false);
+                          payment_success_form.push('/page/client/payment_accpet_delivery');
+                        }}
+                        className="flex-1 text-center active:opacity-30 cursor-pointer px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition"
+                      >
+                        Accept delivery
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
             )}
+
           </div>
         </div>
       </div>
