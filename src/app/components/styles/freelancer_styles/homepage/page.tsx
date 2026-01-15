@@ -811,23 +811,23 @@ export default function FreelancerHomepagePage() {
           <div className="absolute inset-y-0 left-0 w-[65vw] max-w-[360px] bg-white shadow-xl border-r border-gray-200 flex flex-col">
             {/* top bar with X */}
             <div className="h-14 px-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
-    <div className="text-sm font-semibold text-gray-900">Filters</div>
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={() => setFilterOpen(false)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          setFilterOpen(false);
-        }
-      }}
-      className="h-9 w-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"
-      aria-label="Close filters"
-    >
-      <X className="h-4 w-4 text-gray-700" />
-    </div>
-  </div>
+              <div className="text-sm font-semibold text-gray-900">Filters</div>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setFilterOpen(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setFilterOpen(false);
+                    }
+                  }}
+                  className="h-9 w-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"
+                  aria-label="Close filters"
+                >
+                <X className="h-4 w-4 text-gray-700" />
+              </div>
+            </div>
 
             {/* sidebar content */}
             <div className="flex-1 min-h-0">

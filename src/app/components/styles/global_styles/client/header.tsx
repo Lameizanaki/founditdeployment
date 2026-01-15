@@ -587,6 +587,13 @@ export default function ClientNavHeader() {
         {/* =============================== */}
         <div className="flex items-center justify-between space-x-4 pt-3">
           <div className="flex items-center space-x-8 text-xl ml-3 sm:ml-3 lg:ml-3">
+            <div
+              onClick={() => ""}
+              className="flex items-center gap-x-3 hover:cursor-pointer active:opacity-70"
+            >
+              <p className="w-32">Ready-Made</p>
+            </div>
+
             {/* Jobs Dropdown */}
             <div className="sm:flex sm:items-center sm:gap-x-3 lg:flex lg:items-center lg:gap-x-3 xl:flex xl:items-center xl:gap-x-3 hover:cursor-pointer active:opacity-30 hidden">
               <div className="relative" ref={jobsRef}>

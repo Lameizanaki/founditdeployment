@@ -214,7 +214,7 @@ export default function TypeRole() {
           // User is already verified, redirect to their role-specific homepage
           const homeRoutes: Record<Role, string> = {
             [Role.CLIENT]: "/page/client/home",
-            [Role.FREELANCER]: "/page/freelancer/projects",
+            [Role.FREELANCER]: "/page/freelancer/home",
             [Role.SELLER]: "/page/seller/home",
           };
 

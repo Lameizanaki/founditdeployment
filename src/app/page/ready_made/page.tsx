@@ -6,17 +6,16 @@ import { SlidersHorizontal } from "lucide-react";
 import ProjectCard, {
   type ProjectItem,
 } from "@/app/components/styles/client_styles/fav/ProjectCard";
-import SellerHero from "@/app/components/styles/seller_styles/landingpage/SellerHero";
-import SortDropdown from "@/app/components/styles/seller_styles/landingpage/SortDropdown";
+import SellerHero from "@/app/components/styles/ready_made/SellerHero";
+import SortDropdown from "@/app/components/styles/ready_made/SortDropdown";
 import FiltersPanel, {
   type AccKey,
-} from "@/app/components/styles/seller_styles/landingpage/FiltersPanel";
-import MobileFiltersDrawer from "@/app/components/styles/seller_styles/landingpage/MobileFiltersDrawer";
+} from "@/app/components/styles/ready_made/FiltersPanel";
+import MobileFiltersDrawer from "@/app/components/styles/ready_made/MobileFiltersDrawer";
 import Footer from "@/app/components/styles/landingpage_styles/footer";
-import BrowsingHistoryCard from "@/app/components/styles/seller_styles/landingpage/BrowsingHistoryStrip";
+import BrowsingHistoryCard from "@/app/components/styles/ready_made/BrowsingHistoryStrip";
 import SellerNavHeader from "@/app/components/styles/global_styles/seller/header";
 import SellerFooter from "@/app/components/styles/global_styles/seller/footer";
-
 
 export default function SellerPage() {
   // ---- hero
@@ -154,8 +153,7 @@ export default function SellerPage() {
         badges: ["Bestseller", "Featured"],
         updated: "Updated 2 days ago",
         coverTone: "orange",
-        imageSrc: "/images/p2.png"
-        
+        imageSrc: "/images/p2.png",
       },
       {
         id: "p2",
@@ -181,7 +179,7 @@ export default function SellerPage() {
         badges: ["Bestseller", "New"],
         updated: "Updated 3 days ago",
         coverTone: "light",
-        imageSrc:"/images/p3.png",
+        imageSrc: "/images/p3.png",
       },
       {
         id: "p4",
@@ -194,7 +192,7 @@ export default function SellerPage() {
         badges: ["Trending"],
         updated: "Updated 5 days ago",
         coverTone: "light",
-        imageSrc:"/images/p4.png",
+        imageSrc: "/images/p4.png",
       },
       {
         id: "p5",
@@ -207,7 +205,7 @@ export default function SellerPage() {
         badges: ["New"],
         updated: "Updated 1 day ago",
         coverTone: "brown",
-        imageSrc:"/images/p5.png",
+        imageSrc: "/images/p5.png",
       },
       {
         id: "p6",
@@ -220,7 +218,7 @@ export default function SellerPage() {
         badges: ["Featured"],
         updated: "Updated 4 days ago",
         coverTone: "orange",
-        imageSrc:"/images/p6.png",
+        imageSrc: "/images/p6.png",
       },
     ],
     []
@@ -245,161 +243,161 @@ export default function SellerPage() {
 
   return (
     <>
-    <SellerNavHeader />
-    <main className="bg-gray-50">
-      <SellerHero
-        heroQuery={heroQuery}
-        onChangeHeroQuery={setHeroQuery}
-        topChips={topChips}
-        activeTopChip={activeTopChip}
-        onPickTopChip={setActiveTopChip}
-        subChips={subChips}
-        activeSubChip={activeSubChip}
-        onPickSubChip={setActiveSubChip}
-      />
+      <SellerNavHeader />
+      <main className="bg-gray-50">
+        <SellerHero
+          heroQuery={heroQuery}
+          onChangeHeroQuery={setHeroQuery}
+          topChips={topChips}
+          activeTopChip={activeTopChip}
+          onPickTopChip={setActiveTopChip}
+          subChips={subChips}
+          activeSubChip={activeSubChip}
+          onPickSubChip={setActiveSubChip}
+        />
 
-      <section className="mx-auto w-full  px-4 py-6">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => setDrawerOpen(true)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  setDrawerOpen(true);
-                }
-              }}
-              className="md:hidden inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800
+        <section className="mx-auto w-full  px-4 py-6">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setDrawerOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setDrawerOpen(true);
+                  }
+                }}
+                className="md:hidden inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800
                          shadow-sm hover:bg-gray-50 cursor-pointer select-none"
-              aria-label="Open filters"
-            >
-              <SlidersHorizontal className="h-4 w-4 text-orange-500" />
-              Filters
+                aria-label="Open filters"
+              >
+                <SlidersHorizontal className="h-4 w-4 text-orange-500" />
+                Filters
+              </div>
+
+              <div className="text-xs text-gray-500">
+                {products.length} products
+              </div>
             </div>
 
-            <div className="text-xs text-gray-500">
-              {products.length} products
-            </div>
+            <SortDropdown
+              value={sortValue}
+              options={sortOptions}
+              onChange={setSortValue}
+            />
           </div>
 
-          <SortDropdown
-            value={sortValue}
-            options={sortOptions}
-            onChange={setSortValue}
-          />
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-[260px_1fr]">
-          {/* Desktop Filters */}
-          <aside className="hidden md:block">
-            <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-4">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-semibold text-gray-900">
-                  Filters
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={resetFilters}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      resetFilters();
-                    }
-                  }}
-                  className="text-xs text-orange-600 hover:text-orange-700 cursor-pointer select-none"
-                  aria-label="Clear filters"
-                >
-                  Clear all
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <FiltersPanel
-                  accOpen={accOpen}
-                  onToggleAcc={toggleAcc}
-                  categories={categories}
-                  catValue={catValue}
-                  setCatValue={setCatValue}
-                  priceMin={priceMin}
-                  priceMax={priceMax}
-                  setPriceMin={setPriceMin}
-                  setPriceMax={setPriceMax}
-                  platforms={platforms}
-                  platformChecks={platformChecks}
-                  setPlatformChecks={setPlatformChecks}
-                  fileTypes={fileTypes}
-                  fileTypeChecks={fileTypeChecks}
-                  setFileTypeChecks={setFileTypeChecks}
-                  licenseType={licenseType}
-                  setLicenseType={setLicenseType}
-                  minRating={minRating}
-                  setMinRating={setMinRating}
-                  verifiedSellersOnly={verifiedSellersOnly}
-                  setVerifiedSellersOnly={setVerifiedSellersOnly}
-                  updatedWithin={updatedWithin}
-                  setUpdatedWithin={setUpdatedWithin}
-                />
-              </div>
-            </div>
-          </aside>
-
-          {/* Grid */}
-          <div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((p) => (
-                <div key={p.id}>
-                  <ProjectCard
-                    item={p}
-                    onOpen={(id: string) => {
-                      // later: router.push(`/seller/product/${id}`);
-                      console.log("open", id);
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-[260px_1fr]">
+            {/* Desktop Filters */}
+            <aside className="hidden md:block">
+              <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold text-gray-900">
+                    Filters
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={resetFilters}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        resetFilters();
+                      }
                     }}
+                    className="text-xs text-orange-600 hover:text-orange-700 cursor-pointer select-none"
+                    aria-label="Clear filters"
+                  >
+                    Clear all
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <FiltersPanel
+                    accOpen={accOpen}
+                    onToggleAcc={toggleAcc}
+                    categories={categories}
+                    catValue={catValue}
+                    setCatValue={setCatValue}
+                    priceMin={priceMin}
+                    priceMax={priceMax}
+                    setPriceMin={setPriceMin}
+                    setPriceMax={setPriceMax}
+                    platforms={platforms}
+                    platformChecks={platformChecks}
+                    setPlatformChecks={setPlatformChecks}
+                    fileTypes={fileTypes}
+                    fileTypeChecks={fileTypeChecks}
+                    setFileTypeChecks={setFileTypeChecks}
+                    licenseType={licenseType}
+                    setLicenseType={setLicenseType}
+                    minRating={minRating}
+                    setMinRating={setMinRating}
+                    verifiedSellersOnly={verifiedSellersOnly}
+                    setVerifiedSellersOnly={setVerifiedSellersOnly}
+                    updatedWithin={updatedWithin}
+                    setUpdatedWithin={setUpdatedWithin}
                   />
                 </div>
-              ))}
+              </div>
+            </aside>
+
+            {/* Grid */}
+            <div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {products.map((p) => (
+                  <div key={p.id}>
+                    <ProjectCard
+                      item={p}
+                      onOpen={(id: string) => {
+                        // later: router.push(`/seller/product/${id}`);
+                        console.log("open", id);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <MobileFiltersDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onClear={resetFilters}
-        onApply={() => setDrawerOpen(false)}
-      >
-        <FiltersPanel
-          accOpen={accOpen}
-          onToggleAcc={toggleAcc}
-          categories={categories}
-          catValue={catValue}
-          setCatValue={setCatValue}
-          priceMin={priceMin}
-          priceMax={priceMax}
-          setPriceMin={setPriceMin}
-          setPriceMax={setPriceMax}
-          platforms={platforms}
-          platformChecks={platformChecks}
-          setPlatformChecks={setPlatformChecks}
-          fileTypes={fileTypes}
-          fileTypeChecks={fileTypeChecks}
-          setFileTypeChecks={setFileTypeChecks}
-          licenseType={licenseType}
-          setLicenseType={setLicenseType}
-          minRating={minRating}
-          setMinRating={setMinRating}
-          verifiedSellersOnly={verifiedSellersOnly}
-          setVerifiedSellersOnly={setVerifiedSellersOnly}
-          updatedWithin={updatedWithin}
-          setUpdatedWithin={setUpdatedWithin}
-        />
-      </MobileFiltersDrawer>
-    </main>
-    <BrowsingHistoryCard/>
-    <Footer/>
+        <MobileFiltersDrawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          onClear={resetFilters}
+          onApply={() => setDrawerOpen(false)}
+        >
+          <FiltersPanel
+            accOpen={accOpen}
+            onToggleAcc={toggleAcc}
+            categories={categories}
+            catValue={catValue}
+            setCatValue={setCatValue}
+            priceMin={priceMin}
+            priceMax={priceMax}
+            setPriceMin={setPriceMin}
+            setPriceMax={setPriceMax}
+            platforms={platforms}
+            platformChecks={platformChecks}
+            setPlatformChecks={setPlatformChecks}
+            fileTypes={fileTypes}
+            fileTypeChecks={fileTypeChecks}
+            setFileTypeChecks={setFileTypeChecks}
+            licenseType={licenseType}
+            setLicenseType={setLicenseType}
+            minRating={minRating}
+            setMinRating={setMinRating}
+            verifiedSellersOnly={verifiedSellersOnly}
+            setVerifiedSellersOnly={setVerifiedSellersOnly}
+            updatedWithin={updatedWithin}
+            setUpdatedWithin={setUpdatedWithin}
+          />
+        </MobileFiltersDrawer>
+      </main>
+      <BrowsingHistoryCard />
+      <Footer />
     </>
   );
 }

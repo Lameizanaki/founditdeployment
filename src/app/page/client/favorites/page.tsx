@@ -10,7 +10,7 @@ import FreelancerCard, {
 import ProjectCard, {
   ProjectItem,
 } from "@/app/components/styles/client_styles/fav/ProjectCard";
-import BrowsingHistoryCard from "@/app/components/styles/seller_styles/landingpage/BrowsingHistoryStrip";
+import BrowsingHistoryCard from "@/app/components/styles/ready_made/BrowsingHistoryStrip";
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
 import ClientFooter from "@/app/components/styles/global_styles/client/footer";
 import Footer from "@/app/components/styles/landingpage_styles/footer";
@@ -95,7 +95,7 @@ export default function FavoritesPage() {
       badges: ["Bestseller", "Featured"],
       updated: "Updated 2 days ago",
       coverTone: "orange",
-      imageSrc:"/images/p2.png"
+      imageSrc: "/images/p2.png",
     },
     {
       id: "p2",
@@ -108,7 +108,7 @@ export default function FavoritesPage() {
       badges: ["Trending"],
       updated: "Updated 1 week ago",
       coverTone: "dark",
-      imageSrc:"/images/p1.png"
+      imageSrc: "/images/p1.png",
     },
     {
       id: "p3",
@@ -121,7 +121,7 @@ export default function FavoritesPage() {
       badges: ["Featured"],
       updated: "Updated 4 days ago",
       coverTone: "brown",
-      imageSrc:"/images/p3.png"
+      imageSrc: "/images/p3.png",
     },
     {
       id: "p4",
@@ -134,11 +134,9 @@ export default function FavoritesPage() {
       badges: ["Bestseller", "New"],
       updated: "Updated 3 days ago",
       coverTone: "light",
-      imageSrc:"/images/p4.png"
+      imageSrc: "/images/p4.png",
     },
   ];
-
-
 
   function onOpen(id: string) {
     console.log("Navigate to:", id);
@@ -223,13 +221,12 @@ export default function FavoritesPage() {
             </div>
           )}
 
-          
           <div />
         </div>
-        
+
         <BrowsingHistoryCard />
       </main>
-      
+
       <Footer />
       <ClientFooter />
     </>
