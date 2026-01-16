@@ -57,7 +57,8 @@ export default function MessagesPage() {
         // Group by other userId, store both userId and username
         const grouped: { [key: string]: ConversationWithId } = {};
         data.forEach((msg: any) => {
-          const myUsername = localStorage.getItem("username");
+          // Prefer username from user object, fallback to localStorage
+          const myUsername = user?.username || localStorage.getItem("username");
           const myUserId = user?.id ? String(user.id) : null;
           const isSender = msg.senderName === myUsername;
           const otherUserId = isSender
@@ -71,9 +72,29 @@ export default function MessagesPage() {
               "id" in msg.senderId
             ? String(msg.senderId.id)
             : String(msg.senderId);
+          // Debug log for name/role logic
+          console.log(
+            "[DEBUG] myUsername:",
+            myUsername,
+            "| senderName:",
+            msg.senderName,
+            "| recipientName:",
+            msg.recipientName,
+            "| isSender:",
+            isSender,
+            "| otherUserId:",
+            otherUserId,
+            "| senderRole:",
+            msg.senderRole,
+            "| recipientRole:",
+            msg.recipientRole
+          );
           // Skip self-conversations
           if (myUserId && otherUserId === myUserId) return;
-          const otherUserName = isSender ? msg.recipientName : msg.senderName;
+          // Prefer username fields if available, fallback to name/email
+          const otherUserName = isSender
+            ? msg.recipientUsername || msg.recipientName || msg.recipientEmail
+            : msg.senderUsername || msg.senderName || msg.senderEmail;
           // Try to infer the other user's role from backend data if available
           let otherRole: "Client" | "Freelancer" = "Client";
           if (isSender && msg.recipientRole) {
