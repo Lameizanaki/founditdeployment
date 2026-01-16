@@ -58,21 +58,27 @@ export default function ProposalOfferCard({
             </span>
           </div>
         </div>
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-4">
-          <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-colors"
-            onClick={onAccept}
-          >
-            Accept Offer
-          </button>
-          <button
-            className="bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3.5 px-6 rounded-xl border-2 border-gray-200 transition-colors"
-            onClick={onDecline}
-          >
-            Decline
-          </button>
-        </div>
+        {/* Action Buttons: Only show if handlers are provided */}
+        {(onAccept || onDecline) && (
+          <div className="grid grid-cols-2 gap-4">
+            {onAccept && (
+              <button
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-colors"
+                onClick={onAccept}
+              >
+                Accept Offer
+              </button>
+            )}
+            {onDecline && (
+              <button
+                className="bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3.5 px-6 rounded-xl border-2 border-gray-200 transition-colors"
+                onClick={onDecline}
+              >
+                Decline
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

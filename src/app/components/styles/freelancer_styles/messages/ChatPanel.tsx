@@ -357,8 +357,7 @@ export default function ChatPanel(props: ChatPanelProps) {
                           milestones,
                           status,
                         }}
-                        onAccept={() => {}}
-                        onDecline={() => {}}
+                        // No accept/decline buttons for freelancer
                       />
                     </div>
                   );

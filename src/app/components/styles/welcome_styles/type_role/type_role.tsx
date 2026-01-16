@@ -180,7 +180,16 @@ function TypeRole() {
       // Check if user is already verified
       const token = localStorage.getItem("token");
       if (!token) {
-        router.push("/page/client/verify/step-1");
+        // Redirect based on role if not verified
+        if (mappedRole === Role.CLIENT) {
+          router.push("/page/client/verify/step-1");
+        } else if (mappedRole === Role.FREELANCER) {
+          router.push("/page/freelancer/verify/step-1");
+        } else if (mappedRole === Role.SELLER) {
+          router.push("/page/seller/verify/step-1");
+        } else {
+          router.push("/dashboard");
+        }
         return;
       }
 
@@ -203,7 +212,16 @@ function TypeRole() {
           return;
         }
       }
-      router.push("/page/client/verify/step-1");
+      // Not verified, redirect based on role
+      if (mappedRole === Role.CLIENT) {
+        router.push("/page/client/verify/step-1");
+      } else if (mappedRole === Role.FREELANCER) {
+        router.push("/page/freelancer/verify/step-1");
+      } else if (mappedRole === Role.SELLER) {
+        router.push("/page/seller/verify/step-1");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: unknown) {
       console.error("Error updating role:", err);
       const errorMessage = err instanceof Error ? err.message : String(err);

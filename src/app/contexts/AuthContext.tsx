@@ -112,7 +112,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const updateUserRole = async (newRole: Role) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/update-role`, {
+      const response = await fetch(`${API_BASE_URL}/user/update-role`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         };
         setUser(userWithPermissions);
       } else {
-        throw new Error("Failed to update role");
+        // Try to extract backend error message
+        let errorMsg = "Failed to update role";
+        try {
+          const errorData = await response.json();
+          if (errorData && (errorData.message || errorData.error)) {
+            errorMsg = errorData.message || errorData.error;
+          }
+        } catch {}
+        throw new Error(errorMsg);
       }
     } catch (error) {
       console.error("Role update failed:", error);
