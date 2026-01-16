@@ -33,13 +33,126 @@ export default function MessagesPage() {
     otherUserId: string;
     otherUserName: string;
   };
+
   const [conversations, setConversations] = useState<ConversationWithId[]>([]);
-  const [activeId, setActiveId] = useState<string>(""); // this will be userId
+  const [activeId, setActiveId] = useState<string>("");
   const [active, setActive] = useState<ConversationWithId | undefined>(
     undefined
   );
   const [loadingConversations, setLoadingConversations] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const [searchLeft, setSearchLeft] = useState("");
+  const [chatText, setChatText] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [blockOpen, setBlockOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("Spam or unwanted messages");
+  const [reportDetails, setReportDetails] = useState("");
+  const wsRef = useRef<WebSocket | null>(null);
+
+  // WebSocket connection for real-time messages
+  useEffect(() => {
+    const userId = user?.id || localStorage.getItem("userId");
+    if (!userId) return;
+
+    const token = localStorage.getItem("token");
+    const safeUserId =
+      typeof userId === "object" && userId !== null
+        ? (userId as any).id || (userId as any)._id || JSON.stringify(userId)
+        : String(userId);
+    const wsUrl = `ws://localhost:8085/chat?userId=${safeUserId}`;
+
+    console.log("Establishing WebSocket connection to:", wsUrl);
+
+    try {
+      const socket = new WebSocket(wsUrl);
+      wsRef.current = socket;
+
+      socket.onopen = () => {
+        console.log("WebSocket connection established");
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          console.log("Parsed message:", message);
+
+          const myUserId = user?.id
+            ? String(user.id)
+            : localStorage.getItem("userId");
+          // Always treat senderId/recipientId as string for comparison
+          const senderId = String(message.senderId);
+          const recipientId = String(message.recipientId);
+
+          // The other user is the one who is NOT me
+          const otherUserId = senderId === myUserId ? recipientId : senderId;
+
+          setConversations((prev) => {
+            return prev.map((conv) => {
+              // Match conversation by otherUserId (string compare)
+              if (String(conv.otherUserId) === otherUserId) {
+                return {
+                  ...conv,
+                  preview: message.contents || "",
+                  timeLabel: "Just now",
+                  messages: [
+                    ...conv.messages,
+                    {
+                      id: message.id || `msg-${Date.now()}`,
+                      from: senderId === myUserId ? "me" : "them",
+                      text: message.contents || "",
+                      time: message.time || new Date().toISOString(),
+                      messageType: message.messageType || "text",
+                    },
+                  ],
+                };
+              }
+              return conv;
+            });
+          });
+
+          setActive((prev) => {
+            if (!prev || String(prev.otherUserId) !== otherUserId) return prev;
+            return {
+              ...prev,
+              messages: [
+                ...prev.messages,
+                {
+                  id: message.id || `msg-${Date.now()}`,
+                  from: senderId === myUserId ? "me" : "them",
+                  text: message.contents || "",
+                  time: message.time || new Date().toISOString(),
+                  messageType: message.messageType || "text",
+                },
+              ],
+            };
+          });
+        } catch (e) {
+          console.error("Error parsing WebSocket message:", e);
+        }
+      };
+
+      socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+
+      socket.onclose = (event) => {
+        console.log("WebSocket connection closed:", event.code, event.reason);
+      };
+    } catch (e) {
+      console.error("Failed to establish WebSocket connection:", e);
+    }
+
+    return () => {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        console.log("Closing WebSocket connection");
+        wsRef.current.close();
+      }
+    };
+  }, [user]);
 
   // Fetch conversations from backend
   useEffect(() => {
@@ -52,13 +165,10 @@ export default function MessagesPage() {
         });
         if (!res.ok) throw new Error("Failed to fetch conversations");
         const data = await res.json();
-        // Map backend messages to Conversation[]
-        // Group by other user (client/freelancer)
-        // Group by other userId, store both userId and username
+
         const grouped: { [key: string]: ConversationWithId } = {};
         data.forEach((msg: any) => {
-          // Prefer username from user object, fallback to localStorage
-          const myUsername = user?.username || localStorage.getItem("username");
+          const myUsername = localStorage.getItem("username");
           const myUserId = user?.id ? String(user.id) : null;
           const isSender = msg.senderName === myUsername;
           const otherUserId = isSender
@@ -72,30 +182,16 @@ export default function MessagesPage() {
               "id" in msg.senderId
             ? String(msg.senderId.id)
             : String(msg.senderId);
-          // Debug log for name/role logic
-          console.log(
-            "[DEBUG] myUsername:",
-            myUsername,
-            "| senderName:",
-            msg.senderName,
-            "| recipientName:",
-            msg.recipientName,
-            "| isSender:",
-            isSender,
-            "| otherUserId:",
-            otherUserId,
-            "| senderRole:",
-            msg.senderRole,
-            "| recipientRole:",
-            msg.recipientRole
-          );
-          // Skip self-conversations
+
           if (myUserId && otherUserId === myUserId) return;
-          // Prefer username fields if available, fallback to name/email
-          const otherUserName = isSender
-            ? msg.recipientUsername || msg.recipientName || msg.recipientEmail
-            : msg.senderUsername || msg.senderName || msg.senderEmail;
-          // Try to infer the other user's role from backend data if available
+
+          const otherUserName = isSender ? msg.recipientName : msg.senderName;
+
+          // Clean up email domain from names
+          const cleanName = otherUserName
+            ? otherUserName.replace(/@gmail\.com$/i, "")
+            : "";
+
           let otherRole: "Client" | "Freelancer" = "Client";
           if (isSender && msg.recipientRole) {
             otherRole =
@@ -103,13 +199,14 @@ export default function MessagesPage() {
           } else if (msg.senderRole) {
             otherRole = msg.senderRole === "CLIENT" ? "Client" : "Freelancer";
           }
+
           if (!grouped[otherUserId]) {
             grouped[otherUserId] = {
               ...msg,
               id: otherUserId,
-              name: otherUserName,
+              name: cleanName,
               otherUserId,
-              otherUserName,
+              otherUserName: cleanName,
               roleTag: otherRole,
               timeLabel: "",
               preview: msg.contents,
@@ -128,10 +225,10 @@ export default function MessagesPage() {
             messageType: msg.messageType,
           });
         });
+
         const convArr = Object.values(grouped);
         setConversations(convArr);
         if (convArr.length > 0 && !activeId) {
-          // Try to restore last selected chat from localStorage
           const lastActiveId = localStorage.getItem("lastActiveChatId");
           const found =
             lastActiveId && convArr.find((c) => c.otherUserId === lastActiveId);
@@ -154,16 +251,21 @@ export default function MessagesPage() {
   // Fetch messages for active conversation
   useEffect(() => {
     if (!activeId) return;
-    // Ensure activeId is a string or number, not an object
+
     let safeActiveId = activeId;
     if (typeof activeId === "object" && activeId !== null) {
-      safeActiveId = activeId.id || activeId._id || JSON.stringify(activeId);
+      safeActiveId =
+        (activeId as any).id ||
+        (activeId as any)._id ||
+        JSON.stringify(activeId);
     }
     safeActiveId = String(safeActiveId);
+
     if (typeof safeActiveId !== "string" && typeof safeActiveId !== "number") {
       console.warn("[WARN] activeId is not a string or number:", activeId);
       return;
     }
+
     setLoadingMessages(true);
     const fetchMessages = async () => {
       try {
@@ -200,36 +302,13 @@ export default function MessagesPage() {
         setLoadingMessages(false);
       }
     };
-    // Find the conversation object
+
     const conv = conversations.find((c) => c.otherUserId === activeId);
     setActive(conv);
     fetchMessages();
-    // eslint-disable-next-line
   }, [activeId, conversations]);
 
-  // responsive: mobile list/chat
-  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
-
-  // left search (simple filter)
-  const [searchLeft, setSearchLeft] = useState("");
-
-  // chat input
-  const [chatText, setChatText] = useState("");
-
-  // 3-dots dropdown
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  // modals
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [blockOpen, setBlockOpen] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
-
-  // report form
-  const [reportReason, setReportReason] = useState("Spam or unwanted messages");
-  const [reportDetails, setReportDetails] = useState("");
-
-  // close dropdown on click outside
+  // Close dropdown on click outside
   useEffect(() => {
     function onDocDown(e: MouseEvent) {
       if (!menuOpen) return;
@@ -265,7 +344,7 @@ export default function MessagesPage() {
   const showChat = mobileView === "chat";
 
   function openConversation(id: string) {
-    setActiveId(String(id)); // id is otherUserId
+    setActiveId(String(id));
     localStorage.setItem("lastActiveChatId", String(id));
     setMenuOpen(false);
     setMobileView("chat");
@@ -285,7 +364,6 @@ export default function MessagesPage() {
     setConversations((prev) => prev.filter((c) => c.id !== idToDelete));
     setDeleteOpen(false);
 
-    // pick next active
     setTimeout(() => {
       setConversations((curr) => {
         const next = curr[0];
@@ -300,45 +378,79 @@ export default function MessagesPage() {
     const text = chatText.trim();
     if (!text || !active || !user) return;
 
+    // Check if WebSocket is connected
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error("WebSocket is not connected");
+      alert("Connection lost. Please refresh the page.");
+      return;
+    }
+
+    const myUserId =
+      typeof user.id === "object" && user.id !== null
+        ? (user.id as any).id || (user.id as any)._id || JSON.stringify(user.id)
+        : String(user.id);
+
+    const recipientId =
+      typeof active.otherUserId === "object" && active.otherUserId !== null
+        ? (active.otherUserId as any).id ||
+          (active.otherUserId as any)._id ||
+          JSON.stringify(active.otherUserId)
+        : String(active.otherUserId);
+
     // Optimistically update UI
+    const tempId = `me-${Date.now()}`;
+    const newMessage = {
+      id: tempId,
+      from: "me" as const,
+      text,
+      time: "Just now",
+      messageType: "text",
+    };
+
     setConversations((prev) =>
       prev.map((c) =>
         c.otherUserId === active.otherUserId
           ? {
               ...c,
-              messages: [
-                ...c.messages,
-                { id: `me-${Date.now()}`, from: "me", text, time: "Just now" },
-              ],
+              messages: [...c.messages, newMessage],
               preview: text,
               timeLabel: "Just now",
             }
           : c
       )
     );
+
+    setActive((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        messages: [...prev.messages, newMessage],
+      };
+    });
+
     setChatText("");
 
-    // Send via WebSocket, use userId
-    ws.send({
-      type: "MESSAGE",
-      payload: JSON.stringify({
-        recipientId:
-          typeof active.otherUserId === "object" && active.otherUserId !== null
-            ? active.otherUserId.id ||
-              active.otherUserId._id ||
-              JSON.stringify(active.otherUserId)
-            : String(active.otherUserId),
-        recipientName: active.otherUserName,
-        senderId:
-          typeof user.id === "object" && user.id !== null
-            ? user.id.id || user.id._id || JSON.stringify(user.id)
-            : String(user.id),
-        senderName: user.username,
-        contents: text,
-        messageType: "text",
-        gigId: active.gigId || null,
-      }),
-    });
+    // Send via WebSocket
+    try {
+      const messagePayload = {
+        type: "MESSAGE",
+        payload: {
+          recipientId,
+          recipientName: active.otherUserName,
+          senderId: myUserId,
+          senderName: user.username,
+          contents: text,
+          messageType: "text",
+          gigId: (active as any).gigId || null,
+        },
+      };
+
+      console.log("Sending message:", messagePayload);
+      wsRef.current.send(JSON.stringify(messagePayload));
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      alert("Failed to send message. Please try again.");
+    }
   }
 
   return (
@@ -351,16 +463,8 @@ export default function MessagesPage() {
             <div
               role="button"
               tabIndex={0}
-              onClick={() => {
-                console.log("Back clicked (placeholder)");
-                void router;
-              }}
-              onKeyDown={(e) =>
-                handleKeyboardActivate(e, () => {
-                  console.log("Back clicked (placeholder)");
-                  void router;
-                })
-              }
+              onClick={() => router.back()}
+              onKeyDown={(e) => handleKeyboardActivate(e, () => router.back())}
               className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 cursor-pointer select-none"
             >
               <span className="text-base">←</span> Back
@@ -384,7 +488,7 @@ export default function MessagesPage() {
 
             <ChatPanel
               conversation={active}
-              visible={showChat || true /* keep visible on desktop via CSS */}
+              visible={showChat || true}
               menuOpen={menuOpen}
               setMenuOpen={setMenuOpen}
               onMute={() => {
@@ -468,7 +572,7 @@ export default function MessagesPage() {
           onClose={() => setReportOpen(false)}
         >
           <div className="text-xs text-gray-500">
-            Help us understand what’s wrong. Your report will be reviewed by our
+            Help us understand what's wrong. Your report will be reviewed by our
             team.
           </div>
 
@@ -518,41 +622,41 @@ export default function MessagesPage() {
                 "focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-400",
               ].join(" ")}
             />
+          </div>
 
-            <div className="mt-5 flex items-center justify-end gap-2">
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => setReportOpen(false)}
-                onKeyDown={(e) =>
-                  handleKeyboardActivate(e, () => setReportOpen(false))
-                }
-                className="h-9 px-4 flex items-center rounded-md border bg-white hover:bg-gray-50 text-sm cursor-pointer select-none"
-              >
-                Cancel
-              </div>
+          <div className="mt-5 flex items-center justify-end gap-2">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setReportOpen(false)}
+              onKeyDown={(e) =>
+                handleKeyboardActivate(e, () => setReportOpen(false))
+              }
+              className="h-9 px-4 flex items-center rounded-md border bg-white hover:bg-gray-50 text-sm cursor-pointer select-none"
+            >
+              Cancel
+            </div>
 
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() =>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() =>
+                console.log("Submit report (static)", {
+                  reportReason,
+                  reportDetails,
+                })
+              }
+              onKeyDown={(e) =>
+                handleKeyboardActivate(e, () =>
                   console.log("Submit report (static)", {
                     reportReason,
                     reportDetails,
                   })
-                }
-                onKeyDown={(e) =>
-                  handleKeyboardActivate(e, () =>
-                    console.log("Submit report (static)", {
-                      reportReason,
-                      reportDetails,
-                    })
-                  )
-                }
-                className="h-9 px-4 rounded-md flex items-center bg-red-500 hover:bg-red-600 text-white text-sm cursor-pointer select-none"
-              >
-                Submit Report
-              </div>
+                )
+              }
+              className="h-9 px-4 rounded-md flex items-center bg-red-500 hover:bg-red-600 text-white text-sm cursor-pointer select-none"
+            >
+              Submit Report
             </div>
           </div>
         </ModalShell>

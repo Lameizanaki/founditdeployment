@@ -399,7 +399,7 @@ export default function ChatPanel(props: ChatPanelProps) {
                           className={[
                             "px-4 py-3 rounded-2xl text-sm leading-5 whitespace-pre-line",
                             isMe
-                              ? "bg-green-500 text-white rounded-tr-md"
+                              ? "bg-green-600 text-white rounded-tr-md"
                               : "bg-gray-100 text-gray-800 rounded-tl-md",
                           ].join(" ")}
                         >

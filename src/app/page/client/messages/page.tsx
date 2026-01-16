@@ -8,7 +8,7 @@ import ConversationsSidebar, {
   Message,
 } from "@/app/components/styles/client_styles/messages/ConversationsSidebar";
 import ChatPanel from "@/app/components/styles/client_styles/messages/ChatPanel";
-import ws from "@/app/lib/ws";
+// import ws from "@/app/lib/ws";
 import ModalShell from "@/app/components/styles/client_styles/messages/ModalShell";
 import ConfirmDeleteModal from "@/app/components/styles/client_styles/messages/ConfirmDeleteModal";
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
@@ -27,6 +27,7 @@ function handleKeyboardActivate(
 export default function MessagesPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const wsRef = useRef<WebSocket | null>(null);
 
   // Store both userId and username for each conversation
   type ConversationWithId = Conversation & {
@@ -43,7 +44,6 @@ export default function MessagesPage() {
   // Fetch conversations from backend
   useEffect(() => {
     const fetchConversations = async () => {
-      // Removed unused loadingConversations
       try {
         const token = localStorage.getItem("token");
         const res = await fetch("http://localhost:8085/chat/conversations", {
@@ -51,10 +51,8 @@ export default function MessagesPage() {
         });
         if (!res.ok) throw new Error("Failed to fetch conversations");
         const data = await res.json();
-        // Group by other userId, store both userId and username
         const grouped: { [key: string]: ConversationWithId } = {};
-        data.forEach((msg: Message) => {
-          // Prefer username from user object, fallback to localStorage
+        (data as Message[]).forEach((msg) => {
           const myUsername = user?.username || localStorage.getItem("username");
           const myUserId = user?.id ? String(user.id) : null;
           const isSender = msg.senderName === myUsername;
@@ -72,20 +70,9 @@ export default function MessagesPage() {
             ? String((rawSenderId as { id: string | number }).id)
             : String(rawSenderId);
           if (myUserId && otherUserId === myUserId) return;
-          // Always show the freelancer's username as the other user in client chat
           let otherUserName = isSender
-            ? msg.recipientRole === "FREELANCER"
-              ? msg.recipientUsername ||
-                msg.recipientName ||
-                msg.recipientEmail ||
-                ""
-              : msg.senderUsername || msg.senderName || msg.senderEmail || ""
-            : msg.senderRole === "FREELANCER"
-            ? msg.senderUsername || msg.senderName || msg.senderEmail || ""
-            : msg.recipientUsername ||
-              msg.recipientName ||
-              msg.recipientEmail ||
-              "";
+            ? msg.recipientName || ""
+            : msg.senderName || "";
           if (
             typeof otherUserName === "string" &&
             otherUserName.includes("@gmail.com")
@@ -115,24 +102,11 @@ export default function MessagesPage() {
             time: msg.time,
             messageType: msg.messageType,
             gigId: msg.gigId || null,
-            senderName: msg.senderName,
-            recipientName: msg.recipientName,
-            senderId: msg.senderId,
-            recipientId: msg.recipientId,
           });
         });
         const convArr = Object.values(grouped);
-        // Debug log to inspect what otherUserId is
-        if (convArr.length > 0) {
-          console.log(
-            "DEBUG: convArr[0].otherUserId =",
-            convArr[0].otherUserId,
-            typeof convArr[0].otherUserId
-          );
-        }
         setConversations(convArr);
         if (convArr.length > 0 && !activeId) {
-          // Try to restore last selected chat from localStorage
           const lastActiveId = localStorage.getItem("lastActiveChatId");
           const found =
             lastActiveId && convArr.find((c) => c.otherUserId === lastActiveId);
@@ -144,15 +118,12 @@ export default function MessagesPage() {
         }
       } catch (e) {
         console.error(e);
-      } finally {
-        // Removed unused loadingConversations
       }
     };
     fetchConversations();
-    // eslint-disable-next-line
   }, []);
 
-  // Fetch messages for active conversation
+  // Fetch messages for active conversation and setup WebSocket
   useEffect(() => {
     if (!activeId) return;
     const safeActiveId = String(activeId);
@@ -178,12 +149,12 @@ export default function MessagesPage() {
           if (!prev) return undefined;
           const mappedMessages =
             messagesArr.length > 0
-              ? messagesArr.map((msg) => ({
+              ? (messagesArr as BackendMessage[]).map((msg) => ({
                   id: msg.id,
                   from: (msg.senderName === localStorage.getItem("username")
                     ? "me"
                     : "them") as "me" | "them",
-                  text: msg.contents ?? msg.text ?? "",
+                  text: msg.contents || msg.text || "",
                   time: msg.time,
                   messageType: msg.messageType,
                   gigId: msg.gigId || null,
@@ -196,63 +167,95 @@ export default function MessagesPage() {
         });
       } catch (e) {
         console.error(e);
-      } finally {
-        // Removed unused loadingMessages
       }
     };
     const conv = conversations.find((c) => c.otherUserId === activeId);
     setActive(conv);
     fetchMessages();
-    // Setup WebSocket listener for real-time updates
-    if (user?.id) {
-      ws.connect(user.id, (event: { type: string; payload: Message }) => {
-        if (event.type === "MESSAGE") {
-          let msg = event.payload;
-          // If payload is stringified, parse it
-          if (typeof msg === "string") {
-            try {
-              msg = JSON.parse(msg);
-            } catch {}
-          }
-          // Only update if message belongs to current active conversation
-          const myUsername = localStorage.getItem("username");
-          const isSender = msg.senderName === myUsername;
-          const otherUserId = isSender
-            ? typeof msg.recipientId === "object" &&
-              msg.recipientId !== null &&
-              "id" in msg.recipientId
-              ? String(msg.recipientId.id)
-              : String(msg.recipientId)
-            : typeof msg.senderId === "object" &&
-              msg.senderId !== null &&
-              "id" in msg.senderId
-            ? String(msg.senderId.id)
-            : String(msg.senderId);
-          if (String(activeId) === String(otherUserId)) {
-            setActive((prev) => {
-              if (!prev) return undefined;
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    id: msg.id || Math.random().toString(),
-                    from: isSender ? "me" : "them",
-                    text: msg.contents,
-                    time: msg.time || new Date().toLocaleTimeString(),
-                    messageType: msg.messageType || undefined,
-                  },
-                ],
-              };
+
+    // Setup WebSocket connection (like freelancer)
+    const userId = user?.id || localStorage.getItem("userId");
+    if (!userId) return;
+    const safeUserId =
+      typeof userId === "object" && userId !== null
+        ? (userId as any).id || (userId as any)._id || JSON.stringify(userId)
+        : String(userId);
+    const wsUrl = `ws://localhost:8085/chat?userId=${safeUserId}`;
+    console.log("[WebSocket] Connecting to:", wsUrl);
+    try {
+      const socket = new WebSocket(wsUrl);
+      wsRef.current = socket;
+      socket.onopen = () => {
+        console.log("[WebSocket] Connection established");
+      };
+      socket.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          console.log("[WebSocket] Received message:", message);
+          const myUserId = user?.id
+            ? String(user.id)
+            : localStorage.getItem("userId");
+          const senderId = String(message.senderId);
+          const recipientId = String(message.recipientId);
+          const otherUserId = senderId === myUserId ? recipientId : senderId;
+          setConversations((prev) => {
+            return prev.map((conv) => {
+              if (String(conv.otherUserId) === otherUserId) {
+                return {
+                  ...conv,
+                  preview: message.contents || "",
+                  timeLabel: "Just now",
+                  messages: [
+                    ...conv.messages,
+                    {
+                      id: message.id || `msg-${Date.now()}`,
+                      from: senderId === myUserId ? "me" : "them",
+                      text: message.contents || "",
+                      time: message.time || new Date().toISOString(),
+                      messageType: message.messageType || "text",
+                    },
+                  ],
+                };
+              }
+              return conv;
             });
-          }
+          });
+          setActive((prev) => {
+            if (!prev || String(prev.otherUserId) !== otherUserId) return prev;
+            return {
+              ...prev,
+              messages: [
+                ...prev.messages,
+                {
+                  id: message.id || `msg-${Date.now()}`,
+                  from: senderId === myUserId ? "me" : "them",
+                  text: message.contents || "",
+                  time: message.time || new Date().toISOString(),
+                  messageType: message.messageType || "text",
+                },
+              ],
+            };
+          });
+        } catch (e) {
+          console.error("[WebSocket] Error parsing message:", e);
         }
-      });
-      // Disconnect on unmount
-      return () => ws.disconnect();
+      };
+      socket.onerror = (error) => {
+        console.error("[WebSocket] Error:", error);
+      };
+      socket.onclose = (event) => {
+        console.log("[WebSocket] Connection closed:", event.code, event.reason);
+      };
+    } catch (e) {
+      console.error("[WebSocket] Failed to connect:", e);
     }
-    // (removed unused eslint-disable-next-line)
-  }, [activeId, conversations, user?.id]);
+    return () => {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        console.log("[WebSocket] Closing connection");
+        wsRef.current.close();
+      }
+    };
+  }, [activeId, conversations, user]);
 
   // responsive: mobile list/chat
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
@@ -350,40 +353,77 @@ export default function MessagesPage() {
     const text = chatText.trim();
     if (!text || !active || !user) return;
 
+    // Check if WebSocket is connected
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error("[WebSocket] Not connected");
+      alert("Connection lost. Please refresh the page.");
+      return;
+    }
+
+    const myUserId =
+      typeof user.id === "object" && user.id !== null
+        ? (user.id as any).id || (user.id as any)._id || JSON.stringify(user.id)
+        : String(user.id);
+    const recipientId =
+      typeof active.otherUserId === "object" && active.otherUserId !== null
+        ? (active.otherUserId as any).id ||
+          (active.otherUserId as any)._id ||
+          JSON.stringify(active.otherUserId)
+        : String(active.otherUserId);
+
     // Optimistically update UI
+    const tempId = `me-${Date.now()}`;
+    const newMessage = {
+      id: tempId,
+      from: "me" as const,
+      text,
+      time: "Just now",
+      messageType: "text",
+    };
+
     setConversations((prev) =>
       prev.map((c) =>
         c.otherUserId === active.otherUserId
           ? {
               ...c,
-              messages: [
-                ...c.messages,
-                { id: `me-${Date.now()}`, from: "me", text, time: "Just now" },
-              ],
+              messages: [...c.messages, newMessage],
               preview: text,
               timeLabel: "Just now",
             }
           : c
       )
     );
+
+    setActive((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        messages: [...prev.messages, newMessage],
+      };
+    });
+
     setChatText("");
 
-    // Send via WebSocket, use userId
-    const recipientIdStr = String(active.otherUserId);
-    const wsPayload = {
-      type: "MESSAGE",
-      payload: JSON.stringify({
-        recipientId: recipientIdStr,
-        recipientName: recipientIdStr,
-        senderId: String(user.id),
-        senderName: user.username,
-        contents: text,
-        messageType: "text",
-        gigId: active?.messages?.[0]?.gigId || null,
-      }),
-    };
-    console.log("[DEBUG] ws.send payload:", wsPayload);
-    ws.send(wsPayload);
+    // Send via WebSocket
+    try {
+      const messagePayload = {
+        type: "MESSAGE",
+        payload: {
+          recipientId,
+          recipientName: active.otherUserName,
+          senderId: myUserId,
+          senderName: user.username,
+          contents: text,
+          messageType: "text",
+          gigId: (active as any).gigId || null,
+        },
+      };
+      console.log("[WebSocket] Sending message:", messagePayload);
+      wsRef.current.send(JSON.stringify(messagePayload));
+    } catch (error) {
+      console.error("[WebSocket] Failed to send message:", error);
+      alert("Failed to send message. Please try again.");
+    }
   }
 
   return (

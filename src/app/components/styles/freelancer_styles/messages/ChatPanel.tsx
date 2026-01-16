@@ -142,6 +142,7 @@ interface ChatPanelProps {
   onSend: () => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
   user: any;
+  onNewMessage?: (msg: any) => void; // callback to update parent
 }
 
 export default function ChatPanel(props: ChatPanelProps) {
@@ -160,6 +161,7 @@ export default function ChatPanel(props: ChatPanelProps) {
     onSend,
     menuRef,
     user,
+    onNewMessage,
   } = props;
   const [messages, setMessages] = React.useState(
     conversation ? conversation.messages : []
@@ -172,28 +174,34 @@ export default function ChatPanel(props: ChatPanelProps) {
     ws.connect(user.id, (event) => {
       if (event.type === "MESSAGE") {
         const msg = event.payload;
+        // Always call parent callback to update conversation/messages state
+        const newMsg = {
+          id: msg.id || Math.random().toString(),
+          from: msg.senderName === user.username ? "me" : "them",
+          text: msg.contents,
+          time: msg.time || new Date().toLocaleTimeString(),
+          messageType: msg.messageType || undefined,
+        };
+        if (onNewMessage) {
+          onNewMessage(newMsg);
+        }
+        // Prevent duplicate messages in local state
         if (
           msg &&
           ((msg.conversationId &&
             msg.conversationId === conversationIdRef.current) ||
             !msg.conversationId)
         ) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: msg.id || Math.random().toString(),
-              from: msg.senderName === user.username ? "me" : "them",
-              text: msg.contents,
-              time: msg.time || new Date().toLocaleTimeString(),
-              messageType: msg.messageType || undefined,
-            },
-          ]);
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === newMsg.id)) return prev;
+            return [...prev, newMsg];
+          });
         }
       }
     });
     return () => ws.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, conversation?.id]);
+  }, [user?.id, conversation?.id, onNewMessage]);
 
   // Update messages if conversation changes
   useEffect(() => {
