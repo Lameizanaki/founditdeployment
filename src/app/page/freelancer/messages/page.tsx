@@ -5,12 +5,12 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import ConversationsSidebar, {
   Conversation,
-  Message,
-} from "@/app/components/styles/client_styles/messages/ConversationsSidebar";
-import ChatPanel from "@/app/components/styles/client_styles/messages/ChatPanel";
+  Message as SidebarMessage,
+} from "@/app/components/styles/freelancer_styles/messages/ConversationsSidebar";
+import ChatPanel from "@/app/components/styles/freelancer_styles/messages/ChatPanel";
 import ws from "@/app/lib/ws";
-import ModalShell from "@/app/components/styles/client_styles/messages/ModalShell";
-import ConfirmDeleteModal from "@/app/components/styles/client_styles/messages/ConfirmDeleteModal";
+import ModalShell from "@/app/components/styles/freelancer_styles/messages/ModalShell";
+import ConfirmDeleteModal from "@/app/components/styles/freelancer_styles/messages/ConfirmDeleteModal";
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
 import ClientFooter from "@/app/components/styles/global_styles/client/footer";
 
@@ -38,12 +38,13 @@ export default function MessagesPage() {
   const [active, setActive] = useState<ConversationWithId | undefined>(
     undefined
   );
-  // Removed unused loadingConversations and loadingMessages
+  const [loadingConversations, setLoadingConversations] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   // Fetch conversations from backend
   useEffect(() => {
     const fetchConversations = async () => {
-      // Removed unused loadingConversations
+      setLoadingConversations(true);
       try {
         const token = localStorage.getItem("token");
         const res = await fetch("http://localhost:8085/chat/conversations", {
@@ -51,29 +52,36 @@ export default function MessagesPage() {
         });
         if (!res.ok) throw new Error("Failed to fetch conversations");
         const data = await res.json();
+        // Map backend messages to Conversation[]
+        // Group by other user (client/freelancer)
         // Group by other userId, store both userId and username
         const grouped: { [key: string]: ConversationWithId } = {};
-        data.forEach((msg: Message) => {
+        data.forEach((msg: any) => {
           const myUsername = localStorage.getItem("username");
           const myUserId = user?.id ? String(user.id) : null;
           const isSender = msg.senderName === myUsername;
-          const rawRecipientId = msg.recipientId;
-          const rawSenderId = msg.senderId;
           const otherUserId = isSender
-            ? typeof rawRecipientId === "object" &&
-              rawRecipientId !== null &&
-              "id" in rawRecipientId
-              ? String((rawRecipientId as { id: string | number }).id)
-              : String(rawRecipientId)
-            : typeof rawSenderId === "object" &&
-              rawSenderId !== null &&
-              "id" in rawSenderId
-            ? String((rawSenderId as { id: string | number }).id)
-            : String(rawSenderId);
+            ? typeof msg.recipientId === "object" &&
+              msg.recipientId !== null &&
+              "id" in msg.recipientId
+              ? String(msg.recipientId.id)
+              : String(msg.recipientId)
+            : typeof msg.senderId === "object" &&
+              msg.senderId !== null &&
+              "id" in msg.senderId
+            ? String(msg.senderId.id)
+            : String(msg.senderId);
+          // Skip self-conversations
           if (myUserId && otherUserId === myUserId) return;
-          const otherUserName = isSender
-            ? msg.recipientName ?? ""
-            : msg.senderName ?? "";
+          const otherUserName = isSender ? msg.recipientName : msg.senderName;
+          // Try to infer the other user's role from backend data if available
+          let otherRole: "Client" | "Freelancer" = "Client";
+          if (isSender && msg.recipientRole) {
+            otherRole =
+              msg.recipientRole === "CLIENT" ? "Client" : "Freelancer";
+          } else if (msg.senderRole) {
+            otherRole = msg.senderRole === "CLIENT" ? "Client" : "Freelancer";
+          }
           if (!grouped[otherUserId]) {
             grouped[otherUserId] = {
               ...msg,
@@ -81,37 +89,25 @@ export default function MessagesPage() {
               name: otherUserName,
               otherUserId,
               otherUserName,
-              roleTag: "Freelancer",
+              roleTag: otherRole,
               timeLabel: "",
-              preview: msg.contents ?? msg.text ?? "",
+              preview: msg.contents,
               online: false,
               projectLabel: "",
               muted: false,
               messages: [],
             };
           }
+          grouped[otherUserId].roleTag = otherRole;
           grouped[otherUserId].messages.push({
             id: msg.id,
             from: isSender ? "me" : "them",
-            text: msg.contents ?? msg.text ?? "",
+            text: msg.contents,
             time: msg.time,
             messageType: msg.messageType,
-            gigId: msg.gigId || null,
-            senderName: msg.senderName,
-            recipientName: msg.recipientName,
-            senderId: msg.senderId,
-            recipientId: msg.recipientId,
           });
         });
         const convArr = Object.values(grouped);
-        // Debug log to inspect what otherUserId is
-        if (convArr.length > 0) {
-          console.log(
-            "DEBUG: convArr[0].otherUserId =",
-            convArr[0].otherUserId,
-            typeof convArr[0].otherUserId
-          );
-        }
         setConversations(convArr);
         if (convArr.length > 0 && !activeId) {
           // Try to restore last selected chat from localStorage
@@ -127,7 +123,7 @@ export default function MessagesPage() {
       } catch (e) {
         console.error(e);
       } finally {
-        // Removed unused loadingConversations
+        setLoadingConversations(false);
       }
     };
     fetchConversations();
@@ -137,7 +133,17 @@ export default function MessagesPage() {
   // Fetch messages for active conversation
   useEffect(() => {
     if (!activeId) return;
-    const safeActiveId = String(activeId);
+    // Ensure activeId is a string or number, not an object
+    let safeActiveId = activeId;
+    if (typeof activeId === "object" && activeId !== null) {
+      safeActiveId = activeId.id || activeId._id || JSON.stringify(activeId);
+    }
+    safeActiveId = String(safeActiveId);
+    if (typeof safeActiveId !== "string" && typeof safeActiveId !== "number") {
+      console.warn("[WARN] activeId is not a string or number:", activeId);
+      return;
+    }
+    setLoadingMessages(true);
     const fetchMessages = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -151,90 +157,34 @@ export default function MessagesPage() {
         );
         if (!res.ok) throw new Error("Failed to fetch messages");
         const data = await res.json();
-        const messagesArr: Message[] = Array.isArray(data)
-          ? data
-          : data
-          ? [data]
-          : [];
         setActive((prev) => {
           if (!prev) return undefined;
-          const mappedMessages =
-            messagesArr.length > 0
-              ? messagesArr.map((msg) => ({
-                  id: msg.id,
-                  from: (msg.senderName === localStorage.getItem("username")
-                    ? "me"
-                    : "them") as "me" | "them",
-                  text: msg.contents ?? msg.text ?? "",
-                  time: msg.time,
-                  messageType: msg.messageType,
-                  gigId: msg.gigId || null,
-                }))
-              : prev.messages || [];
           return {
             ...prev,
-            messages: mappedMessages,
+            messages: data.map((msg: any) => ({
+              id: msg.id,
+              from:
+                msg.senderName === localStorage.getItem("username")
+                  ? "me"
+                  : "them",
+              text: msg.contents,
+              time: msg.time,
+              messageType: msg.messageType,
+            })),
           };
         });
       } catch (e) {
         console.error(e);
       } finally {
-        // Removed unused loadingMessages
+        setLoadingMessages(false);
       }
     };
+    // Find the conversation object
     const conv = conversations.find((c) => c.otherUserId === activeId);
     setActive(conv);
     fetchMessages();
-    // Setup WebSocket listener for real-time updates
-    if (user?.id) {
-      ws.connect(user.id, (event: { type: string; payload: Message }) => {
-        if (event.type === "MESSAGE") {
-          let msg = event.payload;
-          // If payload is stringified, parse it
-          if (typeof msg === "string") {
-            try {
-              msg = JSON.parse(msg);
-            } catch {}
-          }
-          // Only update if message belongs to current active conversation
-          const myUsername = localStorage.getItem("username");
-          const isSender = msg.senderName === myUsername;
-          const otherUserId = isSender
-            ? typeof msg.recipientId === "object" &&
-              msg.recipientId !== null &&
-              "id" in msg.recipientId
-              ? String(msg.recipientId.id)
-              : String(msg.recipientId)
-            : typeof msg.senderId === "object" &&
-              msg.senderId !== null &&
-              "id" in msg.senderId
-            ? String(msg.senderId.id)
-            : String(msg.senderId);
-          if (String(activeId) === String(otherUserId)) {
-            setActive((prev) => {
-              if (!prev) return undefined;
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    id: msg.id || Math.random().toString(),
-                    from: isSender ? "me" : "them",
-                    text: msg.contents,
-                    time: msg.time || new Date().toLocaleTimeString(),
-                    messageType: msg.messageType || undefined,
-                  },
-                ],
-              };
-            });
-          }
-        }
-      });
-      // Disconnect on unmount
-      return () => ws.disconnect();
-    }
-    // (removed unused eslint-disable-next-line)
-  }, [activeId, conversations, user?.id]);
+    // eslint-disable-next-line
+  }, [activeId, conversations]);
 
   // responsive: mobile list/chat
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
@@ -262,11 +212,8 @@ export default function MessagesPage() {
   useEffect(() => {
     function onDocDown(e: MouseEvent) {
       if (!menuOpen) return;
-      if (
-        menuRef.current &&
-        e.target &&
-        !menuRef.current.contains(e.target as Node)
-      ) {
+      const target = e.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setMenuOpen(false);
       }
     }
@@ -351,21 +298,26 @@ export default function MessagesPage() {
     setChatText("");
 
     // Send via WebSocket, use userId
-    const recipientIdStr = String(active.otherUserId);
-    const wsPayload = {
+    ws.send({
       type: "MESSAGE",
       payload: JSON.stringify({
-        recipientId: recipientIdStr,
-        recipientName: recipientIdStr,
-        senderId: String(user.id),
+        recipientId:
+          typeof active.otherUserId === "object" && active.otherUserId !== null
+            ? active.otherUserId.id ||
+              active.otherUserId._id ||
+              JSON.stringify(active.otherUserId)
+            : String(active.otherUserId),
+        recipientName: active.otherUserName,
+        senderId:
+          typeof user.id === "object" && user.id !== null
+            ? user.id.id || user.id._id || JSON.stringify(user.id)
+            : String(user.id),
         senderName: user.username,
         contents: text,
         messageType: "text",
-        gigId: active?.messages?.[0]?.gigId || null,
+        gigId: active.gigId || null,
       }),
-    };
-    console.log("[DEBUG] ws.send payload:", wsPayload);
-    ws.send(wsPayload);
+    });
   }
 
   return (

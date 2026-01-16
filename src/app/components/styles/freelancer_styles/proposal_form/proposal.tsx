@@ -42,9 +42,9 @@ interface ProposalFormData {
   screeningQuestions: ScreeningQuestion[];
 }
 
-  function ProposalForm() {
-    const searchParams = useSearchParams();
-    const jobId = searchParams.get("id") || searchParams.get("jobId");
+function ProposalForm() {
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("id") || searchParams.get("jobId");
 
   // State management for form data
   const [formData, setFormData] = useState<ProposalFormData>({
@@ -236,10 +236,12 @@ interface ProposalFormData {
     setIsSubmitting(true);
     const token = localStorage.getItem("token");
     const senderId = localStorage.getItem("userId");
-    const recipientId = jobDetails.clientId; 
+    const recipientId = jobDetails.clientId;
+    const gigId = jobDetails.id;
     const form = new URLSearchParams();
     form.append("senderId", senderId || "");
     form.append("recipientId", recipientId);
+    form.append("gigId", gigId);
     form.append("coverLetter", formData.coverLetter);
     form.append("rate", formData.proposedBudget?.toString() || "");
     form.append("deliveryTime", formData.deliveryDays?.toString() || "");

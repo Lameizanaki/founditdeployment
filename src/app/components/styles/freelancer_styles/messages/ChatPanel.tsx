@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import ws from "@/app/lib/ws";
-// import { useAuth } from "@/app/contexts/AuthContext";
+import { useAuth } from "@/app/contexts/AuthContext";
 import MoreMenu from "@/app/components/styles/client_styles/messages/MoreMenu";
 import type { Conversation } from "./ConversationsSidebar";
 import ProposalOfferCard from "./ProposalOfferCard";
@@ -161,16 +161,9 @@ export default function ChatPanel(props: ChatPanelProps) {
     menuRef,
     user,
   } = props;
-  // const { user } = useAuth();
   const [messages, setMessages] = React.useState(
     conversation ? conversation.messages : []
   );
-
-  // Debug: log conversation and messages
-  useEffect(() => {
-    console.log("[DEBUG] ChatPanel conversation:", conversation);
-    console.log("[DEBUG] ChatPanel messages:", messages);
-  }, [conversation, messages]);
   const conversationIdRef = useRef(conversation ? conversation.id : null);
 
   // Connect to WebSocket for real-time chat
@@ -206,16 +199,6 @@ export default function ChatPanel(props: ChatPanelProps) {
   useEffect(() => {
     setMessages(conversation ? conversation.messages : []);
     conversationIdRef.current = conversation ? conversation.id : null;
-    if (
-      !conversation ||
-      !conversation.messages ||
-      conversation.messages.length === 0
-    ) {
-      console.warn(
-        "[WARN] No messages found for this conversation:",
-        conversation
-      );
-    }
   }, [conversation]);
 
   return (
@@ -332,93 +315,87 @@ export default function ChatPanel(props: ChatPanelProps) {
 
           {/* Messages */}
           <div className="flex-1 overflow-auto px-4 py-4 bg-white">
-            {messages.length === 0 ? (
-              <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-                No messages yet. Say hello!
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((m) => {
-                  // If this is a proposal message, render the ProposalOfferCard UI
-                  if (m.messageType === "proposal") {
-                    // Parse proposal data from m.text
-                    // Example: "Proposal: [coverLetter] | Rate: [rate] | Delivery: [deliveryTime] days"
-                    let jobTitle = "Proposal";
-                    let type = "Fixed Price";
-                    let budget = 0;
-                    let milestones = 1;
-                    let status = "Pending";
-                    const regex =
-                      /Proposal: (.*?) \| Rate: (.*?) \| Delivery: (.*?) days/;
-                    const match = m.text.match(regex);
-                    if (match) {
-                      jobTitle = match[1] || "Proposal";
-                      // Try to extract budget from rate string (e.g., "$300" or "300 USD")
-                      const rate = match[2] || "";
-                      const budgetMatch = rate.match(/\$?(\d+(?:\.\d+)?)/);
-                      if (budgetMatch) {
-                        budget = parseFloat(budgetMatch[1]);
-                      }
-                      // Optionally, extract type from rate string
-                      if (rate.toLowerCase().includes("hour")) {
-                        type = "Hourly";
-                      } else {
-                        type = "Fixed Price";
-                      }
-                      // Delivery days as milestones (for demo)
-                      const delivery = match[3] || "1";
-                      milestones = parseInt(delivery, 10) || 1;
+            <div className="space-y-4">
+              {messages.map((m) => {
+                // If this is a proposal message, render the ProposalOfferCard UI
+                if (m.messageType === "proposal") {
+                  // Parse proposal data from m.text
+                  // Example: "Proposal: [coverLetter] | Rate: [rate] | Delivery: [deliveryTime] days"
+                  let jobTitle = "Proposal";
+                  let type = "Fixed Price";
+                  let budget = 0;
+                  let milestones = 1;
+                  let status = "Pending";
+                  const regex =
+                    /Proposal: (.*?) \| Rate: (.*?) \| Delivery: (.*?) days/;
+                  const match = m.text.match(regex);
+                  if (match) {
+                    jobTitle = match[1] || "Proposal";
+                    // Try to extract budget from rate string (e.g., "$300" or "300 USD")
+                    const rate = match[2] || "";
+                    const budgetMatch = rate.match(/\$?(\d+(?:\.\d+)?)/);
+                    if (budgetMatch) {
+                      budget = parseFloat(budgetMatch[1]);
                     }
-                    return (
-                      <div key={m.id} className="flex justify-center">
-                        <ProposalOfferCard
-                          proposal={{
-                            jobTitle,
-                            type,
-                            budget,
-                            milestones,
-                            status,
-                          }}
-                          onAccept={() => {}}
-                          onDecline={() => {}}
-                        />
-                      </div>
-                    );
+                    // Optionally, extract type from rate string
+                    if (rate.toLowerCase().includes("hour")) {
+                      type = "Hourly";
+                    } else {
+                      type = "Fixed Price";
+                    }
+                    // Delivery days as milestones (for demo)
+                    const delivery = match[3] || "1";
+                    milestones = parseInt(delivery, 10) || 1;
                   }
-                  const isMe = m.from === "me";
                   return (
-                    <div
-                      key={m.id}
-                      className={[
-                        "flex",
-                        isMe ? "justify-end" : "justify-start",
-                      ].join(" ")}
-                    >
-                      <div className="max-w-[78%]">
-                        <div
-                          className={[
-                            "px-4 py-3 rounded-2xl text-sm leading-5 whitespace-pre-line",
-                            isMe
-                              ? "bg-green-500 text-white rounded-tr-md"
-                              : "bg-gray-100 text-gray-800 rounded-tl-md",
-                          ].join(" ")}
-                        >
-                          {m.text}
-                        </div>
-                        <div
-                          className={[
-                            "text-xs text-gray-400 mt-1",
-                            isMe ? "text-right" : "text-left",
-                          ].join(" ")}
-                        >
-                          {m.time}
-                        </div>
-                      </div>
+                    <div key={m.id} className="flex justify-center">
+                      <ProposalOfferCard
+                        proposal={{
+                          jobTitle,
+                          type,
+                          budget,
+                          milestones,
+                          status,
+                        }}
+                        onAccept={() => {}}
+                        onDecline={() => {}}
+                      />
                     </div>
                   );
-                })}
-              </div>
-            )}
+                }
+                const isMe = m.from === "me";
+                return (
+                  <div
+                    key={m.id}
+                    className={[
+                      "flex",
+                      isMe ? "justify-end" : "justify-start",
+                    ].join(" ")}
+                  >
+                    <div className="max-w-[78%]">
+                      <div
+                        className={[
+                          "px-4 py-3 rounded-2xl text-sm leading-5 whitespace-pre-line",
+                          isMe
+                            ? "bg-green-500 text-white rounded-tr-md"
+                            : "bg-gray-100 text-gray-800 rounded-tl-md",
+                        ].join(" ")}
+                      >
+                        {m.text}
+                      </div>
+                      <div
+                        className={[
+                          "text-xs text-gray-400 mt-1",
+                          isMe ? "text-right" : "text-left",
+                        ].join(" ")}
+                      >
+                        {m.time}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Sticky composer */}

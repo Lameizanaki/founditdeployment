@@ -4,16 +4,9 @@ export type RoleTag = "Freelancer" | "Seller";
 
 export type Message = {
   id: string;
-  from?: "me" | "them";
-  text?: string;
+  from: "me" | "them";
+  text: string;
   time: string;
-  messageType?: string;
-  gigId?: string | number | null;
-  senderName?: string;
-  recipientName?: string;
-  senderId?: string | number | { id: string | number };
-  recipientId?: string | number | { id: string | number };
-  contents?: string;
 };
 
 export type Conversation = {
@@ -215,3 +208,4 @@ export default function ConversationsSidebar({
     </section>
   );
 }
+  
