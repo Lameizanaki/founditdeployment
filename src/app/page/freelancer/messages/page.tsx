@@ -52,6 +52,8 @@ export default function MessagesPage() {
   const [reportReason, setReportReason] = useState("Spam or unwanted messages");
   const [reportDetails, setReportDetails] = useState("");
   const wsRef = useRef<WebSocket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
 
   // WebSocket connection for real-time messages
   useEffect(() => {
@@ -155,90 +157,97 @@ export default function MessagesPage() {
     };
   }, [user]);
 
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (active?.messages && active.messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [active?.messages]);
+
   // Fetch conversations from backend
   useEffect(() => {
-    const fetchConversations = async () => {
-      setLoadingConversations(true);
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:8085/chat/conversations", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Failed to fetch conversations");
-        const data = await res.json();
+  const fetchConversations = async () => {
+    setLoadingConversations(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8085/chat/conversations", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch conversations");
+      const data = await res.json();
 
-        const grouped: { [key: string]: ConversationWithId } = {};
+      const grouped: { [key: string]: ConversationWithId } = {};
+      
+      data.forEach((msg: any) => {
+        const myUsername = user?.username || localStorage.getItem("username");
+        const myUserId = user?.id ? String(user.id) : null;
         
-        data.forEach((msg: any) => {
-          const myUsername = user?.username || localStorage.getItem("username");
-          const myUserId = user?.id ? String(user.id) : null;
-          
-          // Determine if current user is the sender
-          const isSender = msg.senderName === myUsername || String(msg.senderId) === myUserId;
-          
-          // Extract the other user's ID
-          const otherUserId = isSender
-            ? typeof msg.recipientId === "object" && msg.recipientId !== null && "id" in msg.recipientId
-              ? String(msg.recipientId.id)
-              : String(msg.recipientId)
-            : typeof msg.senderId === "object" && msg.senderId !== null && "id" in msg.senderId
-            ? String(msg.senderId.id)
-            : String(msg.senderId);
-
-          if (myUserId && otherUserId === myUserId) return;
-
-          // For FREELANCER page: otherUserName should be the CLIENT's name
-          // If I'm the sender, the other person is the recipient (client)
-          // If I'm the recipient, the other person is the sender (client)
-          const otherUserName = isSender ? msg.recipientName : msg.senderName;
-
-          // Clean up email domain from names
-          const cleanName = otherUserName ? otherUserName.replace(/@gmail\.com$/i, "") : "";
-
-          if (!grouped[otherUserId]) {
-            grouped[otherUserId] = {
-              ...msg,
-              id: otherUserId,
-              name: cleanName,
-              otherUserId,
-              otherUserName: cleanName,
-              roleTag: "Client", // Freelancer always sees "Client"
-              timeLabel: "",
-              preview: msg.contents || "",
-              online: false,
-              projectLabel: "",
-              muted: false,
-              messages: [],
-            };
-          }
-          
-          grouped[otherUserId].messages.push({
-            id: msg.id,
-            from: isSender ? "me" : "them",
-            text: msg.contents || "",
-            time: msg.time,
-            messageType: msg.messageType,
-          });
-        });
-
-        const convArr = Object.values(grouped);
-        setConversations(convArr);
+        // Determine if current user is the sender
+        const isSender = msg.senderName === myUsername || String(msg.senderId) === myUserId;
         
-        if (convArr.length > 0 && !activeId) {
-          const lastActiveId = localStorage.getItem("lastActiveChatId");
-          const found = lastActiveId && convArr.find((c) => c.otherUserId === lastActiveId);
-          if (found) {
-            setActiveId(lastActiveId);
-          } else {
-            setActiveId(String(convArr[0].otherUserId));
-          }
+        // Extract the other user's ID
+        const otherUserId = isSender
+          ? typeof msg.recipientId === "object" && msg.recipientId !== null && "id" in msg.recipientId
+            ? String(msg.recipientId.id)
+            : String(msg.recipientId)
+          : typeof msg.senderId === "object" && msg.senderId !== null && "id" in msg.senderId
+          ? String(msg.senderId.id)
+          : String(msg.senderId);
+
+        if (myUserId && otherUserId === myUserId) return;
+
+        // For FREELANCER page: otherUserName should be the CLIENT's name
+        // If I'm the sender, the other person is the recipient (client)
+        // If I'm the recipient, the other person is the sender (client)
+        const otherUserName = isSender ? msg.senderName : msg.recipientName;
+
+        // Clean up email domain from names
+        const cleanName = otherUserName ? otherUserName.replace(/@gmail\.com$/i, "") : "";
+
+        if (!grouped[otherUserId]) {
+          grouped[otherUserId] = {
+            ...msg,
+            id: otherUserId,
+            name: cleanName,
+            otherUserId,
+            otherUserName: cleanName,
+            roleTag: "Client", // Freelancer always sees "Client"
+            timeLabel: "",
+            preview: msg.contents || "",
+            online: false,
+            projectLabel: "",
+            muted: false,
+            messages: [],
+          };
         }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoadingConversations(false);
+        
+        grouped[otherUserId].messages.push({
+          id: msg.id,
+          from: isSender ? "me" : "them",
+          text: msg.contents || "",
+          time: msg.time,
+          messageType: msg.messageType,
+        });
+      });
+
+      const convArr = Object.values(grouped);
+      setConversations(convArr);
+      
+      if (convArr.length > 0 && !activeId) {
+        const lastActiveId = localStorage.getItem("lastActiveChatId");
+        const found = lastActiveId && convArr.find((c) => c.otherUserId === lastActiveId);
+        if (found) {
+          setActiveId(lastActiveId);
+        } else {
+          setActiveId(String(convArr[0].otherUserId));
+        }
       }
-    };
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingConversations(false);
+    }
+  };
     fetchConversations();
     // eslint-disable-next-line
   }, []);
@@ -369,108 +378,86 @@ function deleteActiveConversation() {
   const idToDelete = active.id;
   setConversations((prev) => prev.filter((c) => c.id !== idToDelete));
   setDeleteOpen(false);
-
-  // If you need this setTimeout logic, it should reference defined variables
-  // Currently 'message' and 'otherUserId' are undefined
-  /*
-  setTimeout(() => {
-    setConversations((prev) => {
-      return prev.map((conv) => {
-        if (String(conv.otherUserId) === otherUserId) {
-          return {
-            ...conv,
-            name: message.senderName === user?.username ? message.recipientName : message.senderName,
-            otherUserName: message.senderName === user?.username ? message.recipientName : message.senderName,
-            roleTag: "Client",
-            preview: message.contents || "",
-            timeLabel: "Just now",
-          };
-        }
-        return conv;
-      });
-    });
-  }, 0);
-  */
 }
 
 // This appears to be a separate send message function
-function sendMessage(text: string) {
-  if (!active || !user) return;
+  function sendMessage() {
+    const text = chatText.trim();
+    if (!text || !active || !user) return;
 
-  // Check if WebSocket is connected
-  if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-    console.error("WebSocket is not connected");
-    alert("Connection lost. Please refresh the page.");
-    return;
-  }
+    // Check if WebSocket is connected
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error("[WebSocket] Not connected");
+      alert("Connection lost. Please refresh the page.");
+      return;
+    }
 
-  const myUserId =
-    typeof user.id === "object" && user.id !== null
-      ? (user.id as any).id || (user.id as any)._id || JSON.stringify(user.id)
-      : String(user.id);
+    const myUserId =
+      typeof user.id === "object" && user.id !== null
+        ? (user.id as any).id || (user.id as any)._id || JSON.stringify(user.id)
+        : String(user.id);
+    const recipientId =
+      typeof active.otherUserId === "object" && active.otherUserId !== null
+        ? (active.otherUserId as any).id ||
+          (active.otherUserId as any)._id ||
+          JSON.stringify(active.otherUserId)
+        : String(active.otherUserId);
 
-  const recipientId =
-    typeof active.otherUserId === "object" && active.otherUserId !== null
-      ? (active.otherUserId as any).id ||
-        (active.otherUserId as any)._id ||
-        JSON.stringify(active.otherUserId)
-      : String(active.otherUserId);
-
-  // Optimistically update UI
-  const tempId = `me-${Date.now()}`;
-  const newMessage = {
-    id: tempId,
-    from: "me" as const,
-    text,
-    time: "Just now",
-    messageType: "text",
-  };
-
-  setConversations((prev) =>
-    prev.map((c) =>
-      c.otherUserId === active.otherUserId
-        ? {
-            ...c,
-            messages: [...c.messages, newMessage],
-            preview: text,
-            timeLabel: "Just now",
-          }
-        : c
-    )
-  );
-
-  setActive((prev) => {
-    if (!prev) return prev;
-    return {
-      ...prev,
-      messages: [...prev.messages, newMessage],
-    };
-  });
-
-  setChatText("");
-
-  // Send via WebSocket
-  try {
-    const messagePayload = {
-      type: "MESSAGE",
-      payload: {
-        recipientId,
-        recipientName: active.otherUserName,
-        senderId: myUserId,
-        senderName: user.username,
-        contents: text,
-        messageType: "text",
-        gigId: (active as any).gigId || null,
-      },
+    // Optimistically update UI
+    const tempId = `me-${Date.now()}`;
+    const newMessage = {
+      id: tempId,
+      from: "me" as const,
+      text,
+      time: "Just now",
+      messageType: "text",
     };
 
-    console.log("Sending message:", messagePayload);
-    wsRef.current.send(JSON.stringify(messagePayload));
-  } catch (error) {
-    console.error("Failed to send message:", error);
-    alert("Failed to send message. Please try again.");
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.otherUserId === active.otherUserId
+          ? {
+              ...c,
+              messages: [...c.messages, newMessage],
+              preview: text,
+              timeLabel: "Just now",
+            }
+          : c
+      )
+    );
+
+    setActive((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        messages: [...prev.messages, newMessage],
+      };
+    });
+
+    setChatText("");
+
+    // Send via WebSocket
+    try {
+      const messagePayload = {
+        type: "MESSAGE",
+        payload: {
+          recipientId,
+          recipientName: active.otherUserName,
+          senderId: myUserId,
+          senderName: user.username,
+          contents: text,
+          messageType: "text",
+          gigId: (active as any).gigId || null,
+        },
+      };
+      console.log("[WebSocket] Sending message:", messagePayload);
+      wsRef.current.send(JSON.stringify(messagePayload));
+    } catch (error) {
+      console.error("[WebSocket] Failed to send message:", error);
+      alert("Failed to send message. Please try again.");
+    }
   }
-}
+
 
   return (
     <>
@@ -532,6 +519,7 @@ function sendMessage(text: string) {
               onSend={sendMessage}
               menuRef={menuRef}
               user={user}
+              messagesEndRef={messagesEndRef} 
             />
           </div>
         </div>

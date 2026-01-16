@@ -39,7 +39,14 @@ export default function MessagesPage() {
   const [active, setActive] = useState<ConversationWithId | undefined>(
     undefined
   );
-  // Removed unused loadingConversations and loadingMessages
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (active?.messages && active.messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [active?.messages]);
 
   // Fetch conversations from backend
   useEffect(() => {
@@ -511,6 +518,7 @@ export default function MessagesPage() {
               onSend={sendMessage}
               menuRef={menuRef}
               user={user}
+              messagesEndRef={messagesEndRef} 
             />
           </div>
         </div>

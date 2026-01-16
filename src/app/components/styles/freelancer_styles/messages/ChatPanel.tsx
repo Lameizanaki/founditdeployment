@@ -144,6 +144,7 @@ interface ChatPanelProps {
   menuRef: React.RefObject<HTMLDivElement | null>;
   user: any;
   onNewMessage?: (msg: any) => void; // callback to update parent
+  messagesEndRef?: React.RefObject<HTMLDivElement>;
 }
 
 export default function ChatPanel(props: ChatPanelProps) {
@@ -163,6 +164,7 @@ export default function ChatPanel(props: ChatPanelProps) {
     menuRef,
     user,
     onNewMessage,
+     messagesEndRef
   } = props;
   const [messages, setMessages] = React.useState(
     conversation ? conversation.messages : []
@@ -403,6 +405,7 @@ export default function ChatPanel(props: ChatPanelProps) {
                   </div>
                 );
               })}
+              <div ref={messagesEndRef} />
             </div>
           </div>
 

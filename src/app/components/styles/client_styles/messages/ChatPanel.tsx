@@ -142,6 +142,7 @@ interface ChatPanelProps {
   onSend: () => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
   user: any;
+  messagesEndRef?: React.RefObject<HTMLDivElement>;
 }
 
 export default function ChatPanel(props: ChatPanelProps) {
@@ -160,14 +161,14 @@ export default function ChatPanel(props: ChatPanelProps) {
     onSend,
     menuRef,
     user,
+    messagesEndRef,
   } = props;
   // const { user } = useAuth();
   const [messages, setMessages] = React.useState(
     conversation ? conversation.messages : []
   );
 
-  // Ref for auto-scroll to bottom
-  const bottomRef = useRef<HTMLDivElement>(null);
+
 
   // Debug: log conversation and messages
   useEffect(() => {
@@ -221,12 +222,6 @@ export default function ChatPanel(props: ChatPanelProps) {
     }
   }, [conversation]);
 
-  // Auto-scroll to bottom when messages change
-  useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
 
   return (
     <section className="bg-white border rounded-xl shadow-sm overflow-hidden h-[calc(100vh-220px)]">
@@ -429,7 +424,7 @@ export default function ChatPanel(props: ChatPanelProps) {
                     );
                   })}
                 </div>
-                <div ref={bottomRef} />
+                  <div ref={messagesEndRef} />
               </>
             )}
           </div>
