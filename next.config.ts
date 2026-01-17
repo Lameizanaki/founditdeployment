@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/chat/:path*",
-        destination: "http://localhost:8085/chat/:path*",
+        destination: "https://foundit-owxk.onrender.com/chat/:path*",
       },
     ];
   },
