@@ -13,6 +13,8 @@ import ModalShell from "@/app/components/styles/freelancer_styles/messages/Modal
 import ConfirmDeleteModal from "@/app/components/styles/freelancer_styles/messages/ConfirmDeleteModal";
 import ClientNavHeader from "@/app/components/styles/global_styles/client/header";
 import ClientFooter from "@/app/components/styles/global_styles/client/footer";
+import FreelancerNavHeader from "@/app/components/styles/global_styles/freelancer/header";
+import FreelancerFooter from "@/app/components/styles/global_styles/freelancer/footer";
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,
@@ -461,7 +463,7 @@ function deleteActiveConversation() {
 
   return (
     <>
-      <ClientNavHeader />
+      <FreelancerNavHeader />
       <main className="bg-gray-50 min-h-screen px-4 py-6">
         <div className="mx-auto max-w-6xl">
           {/* Back row */}
@@ -668,7 +670,7 @@ function deleteActiveConversation() {
           </div>
         </ModalShell>
       </main>
-      <ClientFooter />
+      <FreelancerFooter />
     </>
   );
 }

@@ -7,6 +7,20 @@ import ConversationsSidebar, {
   Conversation,
   Message,
 } from "@/app/components/styles/client_styles/messages/ConversationsSidebar";
+
+type BackendMessage = {
+  id: string;
+  senderName?: string;
+  recipientName?: string;
+  senderId?: string | number | { id: string | number };
+  recipientId?: string | number | { id: string | number };
+  contents?: string;
+  text?: string;
+  time: string;
+  messageType?: string;
+  gigId?: string | number | null;
+  contractOfferId?: string | number | null;
+};
 import ChatPanel from "@/app/components/styles/client_styles/messages/ChatPanel";
 // import ws from "@/app/lib/ws";
 import ModalShell from "@/app/components/styles/client_styles/messages/ModalShell";
@@ -59,37 +73,45 @@ export default function MessagesPage() {
         if (!res.ok) throw new Error("Failed to fetch conversations");
         const data = await res.json();
         const grouped: { [key: string]: ConversationWithId } = {};
-        
+
         (data as Message[]).forEach((msg) => {
           const myUsername = user?.username || localStorage.getItem("username");
           const myUserId = user?.id ? String(user.id) : null;
-          
+
           // Determine if current user is the sender
-          const isSender = msg.senderName === myUsername || String(msg.senderId) === myUserId;
-          
+          const isSender =
+            msg.senderName === myUsername || String(msg.senderId) === myUserId;
+
           // Extract the other user's ID
           const rawRecipientId = msg.recipientId;
           const rawSenderId = msg.senderId;
           const otherUserId = isSender
-            ? typeof rawRecipientId === "object" && rawRecipientId !== null && "id" in rawRecipientId
+            ? typeof rawRecipientId === "object" &&
+              rawRecipientId !== null &&
+              "id" in rawRecipientId
               ? String((rawRecipientId as { id: string | number }).id)
               : String(rawRecipientId)
-            : typeof rawSenderId === "object" && rawSenderId !== null && "id" in rawSenderId
+            : typeof rawSenderId === "object" &&
+              rawSenderId !== null &&
+              "id" in rawSenderId
             ? String((rawSenderId as { id: string | number }).id)
             : String(rawSenderId);
-          
+
           if (myUserId && otherUserId === myUserId) return;
-          
+
           // For CLIENT page: otherUserName should be the FREELANCER's name
           // If I'm the sender, the other person is the recipient (freelancer)
           // If I'm the recipient, the other person is the sender (freelancer)
           let otherUserName = isSender ? msg.senderName : msg.recipientName;
-          
+
           // Clean email domain
-          if (typeof otherUserName === "string" && otherUserName.includes("@gmail.com")) {
+          if (
+            typeof otherUserName === "string" &&
+            otherUserName.includes("@gmail.com")
+          ) {
             otherUserName = otherUserName.replace(/@gmail\.com$/i, "");
           }
-          
+
           if (!grouped[otherUserId]) {
             grouped[otherUserId] = {
               ...msg,
@@ -106,23 +128,26 @@ export default function MessagesPage() {
               messages: [],
             };
           }
-          
+
           grouped[otherUserId].messages.push({
             id: msg.id,
             from: isSender ? "me" : "them",
             text: msg.contents ?? msg.text ?? "",
             time: msg.time,
             messageType: msg.messageType,
-            gigId: msg.gigId || null,
+            gigId: msg.gigId ?? null,
+            contractOfferId: msg.contractOfferId ?? null,
+            status: msg.status ?? undefined,
           });
         });
-        
+
         const convArr = Object.values(grouped);
         setConversations(convArr);
-        
+
         if (convArr.length > 0 && !activeId) {
           const lastActiveId = localStorage.getItem("lastActiveChatId");
-          const found = lastActiveId && convArr.find((c) => c.otherUserId === lastActiveId);
+          const found =
+            lastActiveId && convArr.find((c) => c.otherUserId === lastActiveId);
           if (found) {
             setActiveId(lastActiveId);
           } else {
@@ -178,10 +203,12 @@ export default function MessagesPage() {
                     from: (msg.senderName === localStorage.getItem("username")
                       ? "me"
                       : "them") as "me" | "them",
-                    text: msg.contents || msg.text || "",
+                    text: msg.contents ?? msg.text ?? "",
                     time: msg.time,
                     messageType: msg.messageType,
-                    gigId: msg.gigId || null,
+                    gigId: msg.gigId ?? null,
+                    contractOfferId: msg.contractOfferId ?? null,
+                    status: msg.status ?? undefined,
                   }))
               : prev.messages || [];
           return {
@@ -518,7 +545,7 @@ export default function MessagesPage() {
               onSend={sendMessage}
               menuRef={menuRef}
               user={user}
-              messagesEndRef={messagesEndRef} 
+              messagesEndRef={messagesEndRef}
             />
           </div>
         </div>

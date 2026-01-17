@@ -672,7 +672,7 @@ export default function FreelancerHomepagePage() {
   // sidebar filters
   const [skillQuery, setSkillQuery] = useState("");
   const [budgetType, setBudgetType] = useState<BudgetType>("all");
-  const [budgetMax, setBudgetMax] = useState<number>(10000);
+  const [budgetMax, setBudgetMax] = useState<number>(5000); // Init value 50%
   const [deliveryTarget, setDeliveryTarget] = useState<DeliveryTarget>("all");
   const [selectedExperience, setSelectedExperience] = useState<Experience[]>(
     []

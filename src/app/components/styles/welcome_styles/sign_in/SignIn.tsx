@@ -57,8 +57,30 @@ export default function SignIn() {
       // Trigger auth context to load user data
       await checkAuth();
 
-      // Redirect to type_role page for users to select their role
+      // Use AuthContext user state for role check
       setTimeout(() => {
+        if (typeof window !== "undefined") {
+          // Decode JWT token from localStorage
+          const token = localStorage.getItem("token");
+          let isAdmin = false;
+          if (token) {
+            try {
+              const payload = JSON.parse(atob(token.split(".")[1]));
+              const authorities = payload?.authorities || [];
+              console.log("[SignIn] JWT authorities:", authorities);
+              isAdmin =
+                Array.isArray(authorities) &&
+                authorities.some((a: any) => a.authority === "ROLE_ADMIN");
+              console.log("[SignIn] isAdmin (JWT):", isAdmin);
+            } catch (e) {
+              console.log("[SignIn] JWT decode error:", e);
+            }
+          }
+          if (isAdmin) {
+            router.push("/page/admin/dashboard");
+            return;
+          }
+        }
         router.push("/page/type_role");
       }, 500);
     } catch (err: unknown) {

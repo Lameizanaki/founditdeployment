@@ -4,6 +4,9 @@ import { useMemo } from "react";
 import SubHeader from "./sub_header";
 import PaymentSuccessForm from "../payment_accept_delivery/payment_success_form";
 import { useRouter } from "next/navigation";
+import { getOrdersByClient, updateOrderStatus } from "@/app/lib/orderApi";
+import { useAuth } from "@/app/contexts/AuthContext";
+import authService from "@/app/services/authService";
 
 // ============================================================================
 // TYPES
@@ -208,8 +211,14 @@ const ActionItem = ({ action }: { action: OrderGigAction }) => {
 // ORDER GIG CARD COMPONENT
 // ============================================================================
 
-function OrderGigCard({ gig }: { gig: OrderGig }) {
-  const [showModal, setShowModal] = useState(false); 
+function OrderGigCard({
+  gig,
+  onOrderUpdated,
+}: {
+  gig: OrderGig;
+  onOrderUpdated: () => void;
+}) {
+  const [showModal, setShowModal] = useState(false);
   const computed = calcPercentFromAmounts(gig.currentAmount, gig.totalAmount);
   const percent = clampPercent(gig.progressPercent ?? computed);
   const percentText =
@@ -221,6 +230,18 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
   const total = gig.totalAmount ?? 0;
 
   const payment_success_form = useRouter();
+
+  // Accept delivery handler
+  const handleAcceptDelivery = async () => {
+    try {
+      await updateOrderStatus(Number(gig.id), "Completed");
+      onOrderUpdated(); // Refresh orders after update
+      setShowModal(false);
+      payment_success_form.push("/page/client/payment_accpet_delivery");
+    } catch (e) {
+      alert("Failed to accept delivery. Please try again.");
+    }
+  };
 
   // Determine if this gig needs special action buttons
   const isAwaitingApproval = gig.status === "Awaiting approval";
@@ -348,15 +369,26 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
                 onClick={() => setShowModal(true)}
                 className="flex items-center gap-x-2 px-3 py-1.5 mt-3 active:opacity-30 hover:cursor-pointer bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 active:bg-emerald-800 transition shadow-sm"
               >
-                <svg className="w-4 h-4 mt-0.5" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 10.0857V11.0057C20.9988 13.1621 20.3005 15.2604 19.0093 16.9875C17.7182 18.7147 15.9033 19.9782 13.8354 20.5896C11.7674 21.201 9.55726 21.1276 7.53447 20.3803C5.51168 19.633 3.78465 18.2518 2.61096 16.4428C1.43727 14.6338 0.879791 12.4938 1.02168 10.342C1.16356 8.19029 1.99721 6.14205 3.39828 4.5028C4.79935 2.86354 6.69279 1.72111 8.79619 1.24587C10.8996 0.770634 13.1003 0.988061 15.07 1.86572M21 3L11 13.01L8 10.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg
+                  className="w-4 h-4 mt-0.5"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 10.0857V11.0057C20.9988 13.1621 20.3005 15.2604 19.0093 16.9875C17.7182 18.7147 15.9033 19.9782 13.8354 20.5896C11.7674 21.201 9.55726 21.1276 7.53447 20.3803C5.51168 19.633 3.78465 18.2518 2.61096 16.4428C1.43727 14.6338 0.879791 12.4938 1.02168 10.342C1.16356 8.19029 1.99721 6.14205 3.39828 4.5028C4.79935 2.86354 6.69279 1.72111 8.79619 1.24587C10.8996 0.770634 13.1003 0.988061 15.07 1.86572M21 3L11 13.01L8 10.01"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 Accept delivery
               </p>
             )}
-          
+
             {/* Show "Message" button for all other statuses */}
-            {showModal  && (
+            {showModal && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
                   {/* Header */}
@@ -387,8 +419,8 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
                   {/* Content */}
                   <div className="px-6 pb-6">
                     <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                      Once you accept this delivery, the work will be marked as approved.
-                      You can still release payment later.
+                      Once you accept this delivery, the work will be marked as
+                      approved. You can still release payment later.
                     </p>
 
                     {/* Action ps */}
@@ -400,191 +432,22 @@ function OrderGigCard({ gig }: { gig: OrderGig }) {
                         Cancel
                       </p>
                       <p
-                        onClick={() => {
-                          setShowModal(false);
-                          payment_success_form.push('/page/client/payment_accpet_delivery');
-                        }}
+                        onClick={handleAcceptDelivery}
                         className="flex-1 text-center active:opacity-30 cursor-pointer px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition"
                       >
                         Accept delivery
                       </p>
                     </div>
                   </div>
-
                 </div>
               </div>
             )}
-
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-// ============================================================================
-// EXAMPLE DATA
-// ============================================================================
-
-const exampleGigs: OrderGig[] = [
-  // 1. Active - Normal ongoing gig
-  {
-    id: "1",
-    title: "Mobile App Development - iOS & Android",
-    author: "Maria Santos",
-    authorRole: "Full-stack mobile developer",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Contract" },
-      { icon: <DefaultClockIcon />, text: "Due Jan 15, 2026" },
-      { text: "Updated 2 hours ago" },
-    ],
-    status: "Active",
-    currentAmount: 6200,
-    totalAmount: 12000,
-    rateType: "hourly",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-31T09:30:00"),
-    dueDate: new Date("2026-01-15"),
-  },
-
-  // 2. Awaiting approval - Matches your screenshot perfectly
-  {
-    id: "2",
-    title: "E-commerce Dashboard Redesign",
-    author: "John Doe",
-    authorRole: "Senior UI/UX Designer",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Milestone 2: High-fidelity mockups" },
-      { icon: <DefaultClockIcon />, text: "Nov 15, 2025" },
-      { text: "Updated 5 minutes ago" },
-    ],
-    status: "Awaiting approval",
-    currentAmount: 3200,
-    totalAmount: 8000,
-    rateType: "funded in escrow",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-31T11:55:00"),
-    dueDate: new Date("2026-01-10"),
-  },
-
-  // 3. Completed
-  {
-    id: "3",
-    title: "SEO Audit + Content Plan (3 months)",
-    author: "Sophia Lee",
-    authorRole: "SEO Specialist",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Contract" },
-      { icon: <DefaultClockIcon />, text: "Completed on time" },
-      { text: "Updated Dec 20, 2025" },
-    ],
-    status: "Completed",
-    currentAmount: 15000,
-    totalAmount: 15000,
-    rateType: "fixed price",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-20T14:00:00"),
-  },
-
-  // 4. Active with progress override
-  {
-    id: "4",
-    title: "Data Dashboard (React + API Integration)",
-    author: "Kevin Tran",
-    authorRole: "Frontend Engineer",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Milestone" },
-      { icon: <DefaultClockIcon />, text: "Due Jan 5, 2026" },
-      { text: "Updated 30 minutes ago" },
-    ],
-    status: "Active",
-    progressPercent: 72,
-    currentAmount: 3600,
-    totalAmount: 5000,
-    rateType: "milestone",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-31T11:30:00"),
-    dueDate: new Date("2026-01-05"),
-  },
-
-  // 5. Revisions - Needs changes (yellow badge)
-  {
-    id: "5",
-    title: "Brand Identity & Logo Design",
-    author: "Emma Chen",
-    authorRole: "Graphic Designer",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Fixed price" },
-      { icon: <DefaultClockIcon />, text: "Revisions requested" },
-      { text: "Updated 1 day ago" },
-    ],
-    status: "Revisions",
-    currentAmount: 1800,
-    totalAmount: 2000,
-    rateType: "fixed",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-30T16:45:00"),
-    dueDate: new Date("2026-01-08"),
-  },
-
-  // 6. Issues - Has problems (red badge + counts in "Issues" tab)
-  {
-    id: "6",
-    title: "Backend API Development (Node.js + PostgreSQL)",
-    author: "Alex Rivera",
-    authorRole: "Backend Developer",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Contract" },
-      { icon: <DefaultClockIcon />, text: "Due Jan 20, 2026" },
-      { text: "Updated 4 hours ago" },
-    ],
-    status: "Active",
-    currentAmount: 4500,
-    totalAmount: 9000,
-    rateType: "hourly",
-    hasIssues: true, // This will show in "Issues" tab and can have red badge if you map status to "Issues"
-    updatedAt: new Date("2025-12-31T08:00:00"),
-    dueDate: new Date("2026-01-20"),
-  },
-
-  // 7. Another Revisions example
-  {
-    id: "7",
-    title: "Social Media Content Calendar (Q1 2026)",
-    author: "Liam Park",
-    authorRole: "Content Strategist",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Monthly retainer" },
-      { icon: <DefaultClockIcon />, text: "Feedback pending" },
-      { text: "Updated yesterday" },
-    ],
-    status: "Revisions",
-    currentAmount: 1200,
-    totalAmount: 3000,
-    rateType: "monthly",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-30T10:20:00"),
-  },
-
-  // 8. One more Completed for balance
-  {
-    id: "8",
-    title: "Website Migration to Next.js",
-    author: "Olivia Grant",
-    authorRole: "Full-stack Developer",
-    meta: [
-      { icon: <DefaultDocIcon />, text: "Project" },
-      { icon: <DefaultClockIcon />, text: "Completed ahead of schedule" },
-      { text: "Finalized Dec 15, 2025" },
-    ],
-    status: "Completed",
-    currentAmount: 8000,
-    totalAmount: 8000,
-    rateType: "fixed",
-    hasIssues: false,
-    updatedAt: new Date("2025-12-15T12:00:00"),
-  },
-];
 
 // ============================================================================
 // MAIN ORDERS PAGE COMPONENT
@@ -594,28 +457,64 @@ export default function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const [sortBy, setSortBy] = useState("recently_updated");
+  const [clientOrders, setClientOrders] = useState<OrderGig[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const clientId = user?.id;
+  const token = authService.getToken();
 
-  // Compute dynamic tab counts
+  // Add a refresh function for orders
+  const refreshOrders = async () => {
+    setLoading(true);
+    try {
+      const orders = await getOrdersByClient(clientId, token);
+      const mappedOrders = orders.map((order: any) => ({
+        id: order.id,
+        title: order.projectTitle,
+        author: order.freelancer?.name || "Unknown Freelancer",
+        authorRole: "Freelancer",
+        meta: [
+          { icon: <DefaultDocIcon />, text: order.status },
+          { icon: <DefaultClockIcon />, text: order.createdAt },
+        ],
+        status: order.status,
+        currentAmount: order.amount,
+        totalAmount: order.totalAmount,
+        rateType: "fixed",
+        hasIssues: false,
+        updatedAt: new Date(order.updatedAt),
+        dueDate: order.dueDate ? new Date(order.dueDate) : undefined,
+      }));
+      setClientOrders(mappedOrders);
+    } catch (e) {
+      setClientOrders([]);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    refreshOrders();
+  }, [clientId]);
+
+  // Compute dynamic tab counts from clientOrders
   const tabCounts = useMemo(() => {
     const counts = {
-      All: exampleGigs.length,
+      All: clientOrders.length,
       Active: 0,
       Revisions: 0,
       "Awaiting approval": 0,
       Completed: 0,
       Issues: 0,
     };
-
-    exampleGigs.forEach((gig) => {
+    clientOrders.forEach((gig) => {
       if (gig.status === "Active") counts.Active++;
       if (gig.status === "Revisions") counts.Revisions++;
       if (gig.status === "Awaiting approval") counts["Awaiting approval"]++;
       if (gig.status === "Completed") counts.Completed++;
       if (gig.hasIssues) counts.Issues++;
     });
-
     return counts;
-  }, []);
+  }, [clientOrders]);
 
   // Define tabs
   const tabs = useMemo<Tab[]>(
@@ -632,18 +531,18 @@ export default function OrdersPage() {
 
   // Filter gigs based on active tab
   const filteredGigs = useMemo(() => {
-    return exampleGigs.filter((gig) => {
+    return clientOrders.filter((gig) => {
       if (activeTab === "All") return true;
       if (activeTab === "Active") return gig.status === "Active";
       if (activeTab === "Completed") return gig.status === "Completed";
       if (activeTab === "Awaiting approval")
         return gig.status === "Awaiting approval";
-      if (activeTab === "Revisions") return gig.status === "Revisions"; // Fixed!
+      if (activeTab === "Revisions") return gig.status === "Revisions";
       if (activeTab === "Issues")
         return gig.hasIssues === true || gig.status === "Issues";
       return false;
     });
-  }, [activeTab]);
+  }, [activeTab, clientOrders]);
 
   // Sort gigs based on sortBy
   const sortedGigs = useMemo(() => {
@@ -676,12 +575,15 @@ export default function OrdersPage() {
         sortBy={sortBy}
         onSortChange={setSortBy}
       />
-
       {/* Orders List */}
       <div className="w-full mx-auto px-3 py-6">
         <div className="flex flex-col gap-4">
           {sortedGigs.map((gig) => (
-            <OrderGigCard key={gig.id} gig={gig} />
+            <OrderGigCard
+              key={gig.id}
+              gig={gig}
+              onOrderUpdated={refreshOrders}
+            />
           ))}
         </div>
       </div>

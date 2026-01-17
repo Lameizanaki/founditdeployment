@@ -88,6 +88,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       // After successful login, check auth to get user data
       await checkAuth();
+      // Redirect admin users with @gmail email to admin dashboard
+      if (
+        isAuthenticated &&
+        user?.role === "ADMIN" &&
+        typeof user.email === "string" &&
+        user.email.endsWith("@gmail.com")
+      ) {
+        router.push("/page/admin/dashboard");
+      }
     } catch (error) {
       setIsLoading(false);
       throw error;

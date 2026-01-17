@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ws from "@/app/lib/ws";
 // import { useAuth } from "@/app/contexts/AuthContext";
 import MoreMenu from "@/app/components/styles/client_styles/messages/MoreMenu";
 import type { Conversation } from "./ConversationsSidebar";
 import ProposalOfferCard from "./ProposalOfferCard";
 import { useRouter } from "next/navigation";
-
-
 
 function handleKeyboardActivate(
   e: React.KeyboardEvent,
@@ -171,8 +169,10 @@ export default function ChatPanel(props: ChatPanelProps) {
   const [messages, setMessages] = React.useState(
     conversation ? conversation.messages : []
   );
-
-
+  // Toast state for proposal status update
+  const [toast, setToast] = useState<null | { status: string; by: string }>(
+    null
+  );
 
   // Debug: log conversation and messages
   useEffect(() => {
@@ -201,9 +201,19 @@ export default function ChatPanel(props: ChatPanelProps) {
               text: msg.contents,
               time: msg.time || new Date().toLocaleTimeString(),
               messageType: msg.messageType || undefined,
+              gigId: msg.gigId || null,
+              contractOfferId: msg.contractOfferId || msg.proposalId || null,
+              status: msg.status || undefined,
             },
           ]);
         }
+      }
+      // Listen for proposal status update (for freelancer)
+      if (event.type === "PROPOSAL_STATUS_UPDATE") {
+        const { status, by } = event.payload || {};
+        setToast({ status, by });
+        // Hide toast after 4 seconds
+        setTimeout(() => setToast(null), 4000);
       }
     });
     return () => ws.disconnect();
@@ -226,9 +236,16 @@ export default function ChatPanel(props: ChatPanelProps) {
     }
   }, [conversation]);
 
-
   return (
     <section className="bg-white border rounded-xl shadow-sm overflow-hidden h-[calc(100vh-220px)]">
+      {/* Toast for proposal status update */}
+      {toast && (
+        <div className="fixed top-6 left-1/2 z-50 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in">
+          <span>
+            Proposal was <b>{toast.status}</b> by <b>{toast.by}</b>
+          </span>
+        </div>
+      )}
       {conversation ? (
         <div className="h-full flex flex-col">
           {/* Sticky header */}
@@ -389,28 +406,63 @@ export default function ChatPanel(props: ChatPanelProps) {
                               milestones,
                               status: m.status || status,
                             }}
-                            
                             declined={(m.status || status) === "Declined"}
                             accepted={(m.status || status) === "Accepted"}
-                            
-                            onAccept={((m.status || status) === "Accepted" || (m.status || status) === "Accepted") ? undefined : () => {
-                              setMessages((prevMsgs) =>
-                                prevMsgs.map((msg) =>
-                                  msg.id === m.id
-                                    ? { ...msg, status: "Accepted" }
-                                    : msg
-                                )
-                              );
-                            }}
-                            onDecline={((m.status || status) === "Declined" || (m.status || status) === "Accepted") ? undefined : () => {
-                              setMessages((prevMsgs) =>
-                                prevMsgs.map((msg) =>
-                                  msg.id === m.id
-                                    ? { ...msg, status: "Declined" }
-                                    : msg
-                                )
-                              );
-                            }}
+                            onAccept={
+                              (m.status || status) === "Accepted"
+                                ? undefined
+                                : () => {
+                                    setMessages((prevMsgs) =>
+                                      prevMsgs.map((msg) =>
+                                        msg.id === m.id
+                                          ? { ...msg, status: "Accepted" }
+                                          : msg
+                                      )
+                                    );
+                                    // Send PROPOSAL_ACTION event to backend via WebSocket using ws utility
+                                    console.log(
+                                      "[DEBUG] About to send PROPOSAL_ACTION: contractOfferId=",
+                                      m.contractOfferId,
+                                      "full message=",
+                                      m
+                                    );
+                                    const proposalActionPayload = {
+                                      type: "PROPOSAL_ACTION",
+                                      payload: {
+                                        proposalId: m.contractOfferId, // use actual contractOfferId from backend
+                                        action: "accept",
+                                        gigId: m.gigId || null, // pass gigId if available
+                                        // add more fields if needed
+                                      },
+                                    };
+                                    ws.send(proposalActionPayload);
+                                    console.log(
+                                      "[WebSocket] Sent PROPOSAL_ACTION via ws.send:",
+                                      proposalActionPayload
+                                    );
+                                    // Trigger order refresh if available
+                                    if (
+                                      typeof window !== "undefined" &&
+                                      window.refreshOrders
+                                    ) {
+                                      window.refreshOrders();
+                                    }
+                                  }
+                            }
+                            onDecline={
+                              (m.status || status) === "Declined" ||
+                              (m.status || status) === "Accepted"
+                                ? undefined
+                                : () => {
+                                    setMessages((prevMsgs) =>
+                                      prevMsgs.map((msg) =>
+                                        msg.id === m.id
+                                          ? { ...msg, status: "Declined" }
+                                          : msg
+                                      )
+                                    );
+                                  }
+                            }
                           />
                         </div>
                       );
@@ -448,7 +500,7 @@ export default function ChatPanel(props: ChatPanelProps) {
                     );
                   })}
                 </div>
-                  <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} />
               </>
             )}
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ws from "@/app/lib/ws";
 import { useAuth } from "@/app/contexts/AuthContext";
 import MoreMenu from "@/app/components/styles/client_styles/messages/MoreMenu";
@@ -164,10 +164,14 @@ export default function ChatPanel(props: ChatPanelProps) {
     menuRef,
     user,
     onNewMessage,
-     messagesEndRef
+    messagesEndRef,
   } = props;
   const [messages, setMessages] = React.useState(
     conversation ? conversation.messages : []
+  );
+  // Toast state for proposal status update
+  const [toast, setToast] = useState<null | { status: string; by: string }>(
+    null
   );
   const conversationIdRef = useRef(conversation ? conversation.id : null);
 
@@ -201,6 +205,13 @@ export default function ChatPanel(props: ChatPanelProps) {
           });
         }
       }
+      // Listen for proposal status update (for freelancer)
+      if (event.type === "PROPOSAL_STATUS_UPDATE") {
+        const { status, by } = event.payload || {};
+        setToast({ status, by });
+        // Hide toast after 4 seconds
+        setTimeout(() => setToast(null), 4000);
+      }
     });
     return () => ws.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,6 +225,14 @@ export default function ChatPanel(props: ChatPanelProps) {
 
   return (
     <section className="bg-white border rounded-xl shadow-sm overflow-hidden h-[calc(100vh-220px)]">
+      {/* Toast for proposal status update */}
+      {toast && (
+        <div className="fixed top-6 left-1/2 z-50 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in">
+          <span>
+            Proposal was <b>{toast.status}</b> by <b>{toast.by}</b>
+          </span>
+        </div>
+      )}
       {conversation ? (
         <div className="h-full flex flex-col">
           {/* Sticky header */}

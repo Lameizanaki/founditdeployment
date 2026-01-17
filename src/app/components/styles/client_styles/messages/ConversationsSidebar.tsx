@@ -14,6 +14,7 @@ export type Message = {
   senderId?: string | number | { id: string | number };
   recipientId?: string | number | { id: string | number };
   contents?: string;
+  contractOfferId?: string | number | null;
 };
 
 export type Conversation = {
