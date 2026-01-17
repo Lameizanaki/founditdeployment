@@ -48,7 +48,7 @@ import {
   IconGithub,
   IconFigma,
   IconSlack,
-} from "@/app/components/styles/freelancer_styles/setting/icon";
+} from "@/app/components/styles/freelancer_styles/setting/icons";
 
 function CardWrap({
   title,

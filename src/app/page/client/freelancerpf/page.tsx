@@ -12,7 +12,7 @@ import ClientNavHeader from "@/app/components/styles/global_styles/client/header
 import ClientFooter from "@/app/components/styles/client_styles/setting/setting_footer";
 
 interface GigData {
-  id: number | string;
+  id: number;
   freelancerName: string;
   shortBio: string;
   description: string;

@@ -143,7 +143,7 @@ interface ChatPanelProps {
   menuRef: React.RefObject<HTMLDivElement | null>;
   user: any;
   onNewMessage?: (msg: any) => void; // callback to update parent
-  messagesEndRef?: React.RefObject<HTMLDivElement>;
+  messagesEndRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ChatPanel(props: ChatPanelProps) {

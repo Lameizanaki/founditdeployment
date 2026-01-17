@@ -110,7 +110,6 @@ export default function MessagesPage() {
                       from: senderId === myUserId ? "me" : "them",
                       text: message.contents || "",
                       time: message.time || new Date().toISOString(),
-                      messageType: message.messageType || "text",
                     },
                   ],
                 };
@@ -130,7 +129,6 @@ export default function MessagesPage() {
                   from: senderId === myUserId ? "me" : "them",
                   text: message.contents || "",
                   time: message.time || new Date().toISOString(),
-                  messageType: message.messageType || "text",
                 },
               ],
             };
@@ -228,7 +226,6 @@ export default function MessagesPage() {
           from: isSender ? "me" : "them",
           text: msg.contents || "",
           time: msg.time,
-          messageType: msg.messageType,
         });
       });
 
@@ -309,7 +306,6 @@ export default function MessagesPage() {
                   : "them",
               text: msg.contents,
               time: msg.time,
-              messageType: msg.messageType,
             })),
           };
         });

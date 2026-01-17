@@ -143,7 +143,7 @@ interface ChatPanelProps {
   onSend: () => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
   user: any;
-  messagesEndRef?: React.RefObject<HTMLDivElement>;
+  messagesEndRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ChatPanel(props: ChatPanelProps) {

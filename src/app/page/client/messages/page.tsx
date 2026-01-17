@@ -137,7 +137,6 @@ export default function MessagesPage() {
             messageType: msg.messageType,
             gigId: msg.gigId ?? null,
             contractOfferId: msg.contractOfferId ?? null,
-            status: msg.status ?? undefined,
           });
         });
 
@@ -208,7 +207,6 @@ export default function MessagesPage() {
                     messageType: msg.messageType,
                     gigId: msg.gigId ?? null,
                     contractOfferId: msg.contractOfferId ?? null,
-                    status: msg.status ?? undefined,
                   }))
               : prev.messages || [];
           return {

@@ -91,12 +91,12 @@ const OrdersIdPage: React.FC = () => {
     <div className="w-full min-h-screen bg-[#F9FAFB]">
       <ClientNavHeader />
       <SubHeaderOrderId
-        orderId={orderData.orderId}
-        projectTitle={orderData.projectTitle}
-        teamMembers={orderData.teamMembers}
-        status={orderData.status}
-        deadline={orderData.deadline}
-        nda={orderData.nda}
+        orderId={orderData.orderId as string}
+        projectTitle={orderData.projectTitle as string}
+        teamMembers={orderData.teamMembers as any[]}
+        status={orderData.status as any}
+        deadline={orderData.deadline as string}
+        nda={orderData.nda as boolean}
         selectedMemberId={selectedMemberId}
         onMemberSelect={setSelectedMemberId}
         onBackClick={() => console.log("Back")}
@@ -109,10 +109,10 @@ const OrdersIdPage: React.FC = () => {
           </div>
           <div className="lg:col-span-1">
             <RightOrderId
-              teamMembers={orderData.teamMembers}
-              orderOverview={orderData.orderOverview}
-              paymentSummary={orderData.paymentSummary}
-              quickLinks={orderData.quickLinks}
+              teamMembers={orderData.teamMembers as any}
+              orderOverview={orderData.orderOverview as any}
+              paymentSummary={orderData.paymentSummary as any}
+              quickLinks={orderData.quickLinks as any}
             />
           </div>
         </div>
