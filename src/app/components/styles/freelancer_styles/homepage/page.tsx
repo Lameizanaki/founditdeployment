@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { ChevronDown, Filter, Heart, ThumbsDown, Menu, X } from "lucide-react";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 type BudgetType = "all" | "fixed" | "hourly";
 type Experience = "Entry" | "Intermediate" | "Expert";
@@ -718,7 +719,7 @@ export default function FreelancerHomepagePage() {
         }
 
         const response = await fetch(
-          "http://localhost:8085/gigs/client/public?page=0&size=50",
+          `${API_ENDPOINTS.GIGS_CLIENT_PUBLIC}?page=0&size=50`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

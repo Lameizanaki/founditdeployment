@@ -1,5 +1,6 @@
-// API base URL - update this based on your backend configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085";
+import { API_ENDPOINTS } from "@/app/config/api";
+
+const API_BASE_URL = API_ENDPOINTS.BASE_URL;
 
 export interface LoginRequest {
   username: string;

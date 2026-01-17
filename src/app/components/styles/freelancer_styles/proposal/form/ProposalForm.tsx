@@ -3,17 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { FileText, CheckCircle2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import authService from "@/app/services/authService";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { API_ENDPOINTS } from "@/app/config/api";
 import Loading from "../../../global_styles/loading/loading";
 
 export default function ProposalForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [coverLetter, setCoverLetter] = useState("");
-  const [rate, setRate] = useState("");
-  const [deliveryTime, setDeliveryTime] = useState("");
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showAcceptedBox, setShowAcceptedBox] = useState(false);
@@ -41,7 +39,7 @@ export default function ProposalForm() {
           setLoading(false);
           return;
         }
-        const url = `http://localhost:8085/gigs/client/public/${jobId}`;
+        const url = `${API_ENDPOINTS.GIGS_CLIENT_PUBLIC}/${jobId}`;
         console.log("Fetching job from", url, "with token", token);
         const response = await fetch(url, {
           headers: {
@@ -106,16 +104,40 @@ export default function ProposalForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    if (!coverLetter.trim()) {
+      alert("Please enter a cover letter");
+      return;
+    }
+    
     try {
       const token = localStorage.getItem("token");
+      const senderId = localStorage.getItem("userId");
+      
+      if (!token) {
+        alert("You must be logged in to send a proposal");
+        router.push("/page/sign_in");
+        return;
+      }
+      
+      if (!job) {
+        alert("Job information not loaded");
+        return;
+      }
+      
+      console.log("Job data:", job);
+      console.log("SenderId from localStorage:", senderId);
+      
       const formData = new URLSearchParams();
-      formData.append("senderId", (user?.id || "1").toString());
-      formData.append("recipientId", job?.clientId?.toString() || "1");
+      formData.append("senderId", senderId || "");
+      formData.append("recipientId", (job?.userId || job?.clientId || "").toString());
+      formData.append("gigId", jobId || "");
       formData.append("coverLetter", coverLetter);
-      formData.append("rate", rate);
-      formData.append("deliveryTime", deliveryTime);
 
-      const response = await fetch("http://localhost:8085/chat/sendProposal", {
+      console.log("Sending proposal with data:", Object.fromEntries(formData));
+
+      const response = await fetch(API_ENDPOINTS.SEND_PROPOSAL, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -123,15 +145,27 @@ export default function ProposalForm() {
         },
         body: formData,
       });
+      
       if (response.ok) {
-        
+        setShowAcceptedBox(true);
+        setTimeout(() => {
           router.push("/page/freelancer/application");
+        }, 2000);
       } else {
-        alert("Failed to send proposal");
+        const errorText = await response.text();
+        console.error("Failed to send proposal. Status:", response.status);
+        console.error("Error response:", errorText);
+        console.error("Data that was sent:", {
+          senderId: senderId,
+          recipientId: (job?.userId || job?.clientId || "").toString(),
+          gigId: jobId,
+          coverLetter: coverLetter.substring(0, 50) + "..."
+        });
+        alert(`Failed to send proposal (${response.status}): ${errorText}`);
       }
     } catch (error) {
       console.error("Error sending proposal:", error);
-      alert("Error sending proposal");
+      alert(`Error sending proposal: ${error}`);
     }
   };
 

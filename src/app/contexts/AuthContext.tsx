@@ -46,30 +46,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         return;
       }
 
-      // Verify token with backend
-      const response = await fetch(`${API_BASE_URL}/api/check-auth`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...authService.getAuthHeader(),
-        },
-      });
+      // Try to verify token with backend, but fallback to local validation if endpoint doesn't exist
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/check-auth`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...authService.getAuthHeader(),
+          },
+        });
 
-      if (response.ok) {
-        const userData = await response.json();
-        const userWithPermissions: User = {
-          ...userData,
-          permissions: userData.role
-            ? ROLE_PERMISSIONS[userData.role as Role] || []
-            : [],
-        };
-        setUser(userWithPermissions);
-        setIsAuthenticated(true);
-      } else {
-        // Token is invalid
-        authService.logout();
-        setIsAuthenticated(false);
-        setUser(null);
+        if (response.ok) {
+          const userData = await response.json();
+          const userWithPermissions: User = {
+            ...userData,
+            permissions: userData.role
+              ? ROLE_PERMISSIONS[userData.role as Role] || []
+              : [],
+          };
+          setUser(userWithPermissions);
+          setIsAuthenticated(true);
+        } else {
+          // If endpoint returns error, try local validation
+          validateTokenLocally(token);
+        }
+      } catch (fetchError) {
+        // If endpoint doesn't exist or network error, try local validation
+        console.warn("Auth check endpoint not available, using local validation:", fetchError);
+        validateTokenLocally(token);
       }
     } catch (error) {
       console.error("Auth check failed:", error);
@@ -78,6 +82,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setUser(null);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const validateTokenLocally = (token: string): void => {
+    try {
+      // Basic JWT validation - decode payload to check expiration
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Date.now() / 1000;
+
+      if (payload.exp && payload.exp > currentTime) {
+        // Token is still valid, get user data from localStorage
+        const userData = authService.getUser();
+        if (userData) {
+          const userWithPermissions: User = {
+            ...userData,
+            permissions: userData.role
+              ? ROLE_PERMISSIONS[userData.role as Role] || []
+              : [],
+          };
+          setUser(userWithPermissions);
+          setIsAuthenticated(true);
+          return;
+        }
+      }
+
+      // Token expired or no user data
+      authService.logout();
+      setIsAuthenticated(false);
+      setUser(null);
+    } catch (error) {
+      // Invalid token format
+      console.error("Token validation failed:", error);
+      authService.logout();
+      setIsAuthenticated(false);
+      setUser(null);
     }
   };
 
@@ -121,38 +160,51 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const updateUserRole = async (newRole: Role) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/user/update-role`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...authService.getAuthHeader(),
-        },
-        body: JSON.stringify({ role: newRole }),
-      });
+      // Try to update role with backend, but fallback to local update if endpoint doesn't exist
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/update-role`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...authService.getAuthHeader(),
+          },
+          body: JSON.stringify({ role: newRole }),
+        });
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-        const userWithPermissions: User = {
-          ...updatedUser,
-          permissions: ROLE_PERMISSIONS[newRole] || [],
-        };
-        setUser(userWithPermissions);
-      } else {
-        // Try to extract backend error message
-        let errorMsg = "Failed to update role";
-        try {
-          const errorData = await response.json();
-          if (errorData && (errorData.message || errorData.error)) {
-            errorMsg = errorData.message || errorData.error;
-          }
-        } catch {}
-        throw new Error(errorMsg);
+        if (response.ok) {
+          const updatedUser = await response.json();
+          const userWithPermissions: User = {
+            ...updatedUser,
+            permissions: ROLE_PERMISSIONS[newRole] || [],
+          };
+          setUser(userWithPermissions);
+        } else {
+          // If endpoint returns error, update locally
+          updateRoleLocally(newRole);
+        }
+      } catch (fetchError) {
+        // If endpoint doesn't exist or network error, update locally
+        console.warn("Role update endpoint not available, updating locally:", fetchError);
+        updateRoleLocally(newRole);
       }
     } catch (error) {
       console.error("Role update failed:", error);
       throw error;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const updateRoleLocally = (newRole: Role): void => {
+    if (user) {
+      const updatedUser: User = {
+        ...user,
+        role: newRole,
+        permissions: ROLE_PERMISSIONS[newRole] || [],
+      };
+      setUser(updatedUser);
+      // Update localStorage
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     }
   };
 

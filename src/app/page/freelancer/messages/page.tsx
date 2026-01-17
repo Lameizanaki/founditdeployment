@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { API_ENDPOINTS } from "@/app/config/api";
 import ConversationsSidebar, {
   Conversation,
   Message as SidebarMessage,
@@ -170,7 +171,7 @@ export default function MessagesPage() {
     setLoadingConversations(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8085/chat/conversations", {
+      const res = await fetch(API_ENDPOINTS.CHAT_CONVERSATIONS, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch conversations");
@@ -274,9 +275,7 @@ export default function MessagesPage() {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://localhost:8085/chat/messages?otherUserId=${encodeURIComponent(
-            safeActiveId
-          )}`,
+          API_ENDPOINTS.CHAT_MESSAGES(safeActiveId),
           {
             headers: { Authorization: `Bearer ${token}` },
           }

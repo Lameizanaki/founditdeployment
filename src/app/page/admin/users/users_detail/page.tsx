@@ -46,7 +46,7 @@ export default function AdminUsersDetailPage() {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
-    };
+    }; 
   }, [sidebarOpen]);
 
   return (

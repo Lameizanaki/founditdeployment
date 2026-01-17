@@ -30,8 +30,9 @@ export default function TalentPageContent() {
         const token = localStorage.getItem("token");
 
         // Fetch freelancer gigs only
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085";
         const freelancerResponse = await fetch(
-          "http://localhost:8085/gigs/freelancer/client-view?limit=50",
+          `${API_BASE_URL}/gigs/freelancer/client-view?limit=50`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -67,6 +68,8 @@ export default function TalentPageContent() {
           );
 
           mappedTalents = [...mappedTalents, ...freelancerTalents];
+        } else {
+          console.error("Server error fetching gigs:", await freelancerResponse.text());
         }
 
         console.log(
@@ -77,7 +80,12 @@ export default function TalentPageContent() {
         );
         setTalents(mappedTalents);
       } catch (error) {
-        console.error("Error fetching gigs:", error);
+        if (error instanceof TypeError && error.message === "Failed to fetch") {
+          // Network error - backend server not running (expected in development)
+          console.warn("Backend server not available. Running in offline mode.");
+        } else {
+          console.error("Error fetching gigs:", error);
+        }
         setTalents([]);
       } finally {
         setLoading(false);

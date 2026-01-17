@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 // Types for backend integration
 interface JobDetails {
@@ -84,7 +85,7 @@ function ProposalForm() {
     }
     setLoadingJob(true);
     setJobError(null);
-    fetch(`/gigs/client/public/${jobId}`)
+    fetch(`${API_ENDPOINTS.GIGS_CLIENT_PUBLIC}/${jobId}`)
       .then(async (res) => {
         if (!res.ok) throw new Error("Job not found");
         const data = await res.json();
@@ -246,7 +247,7 @@ function ProposalForm() {
     form.append("recipientId", recipientId);
     form.append("gigId", gigId);
     form.append("coverLetter", formData.coverLetter);
-    fetch("http://localhost:8085/chat/sendProposal", {
+    fetch(API_ENDPOINTS.SEND_PROPOSAL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

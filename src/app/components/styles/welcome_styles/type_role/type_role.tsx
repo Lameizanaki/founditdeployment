@@ -193,24 +193,32 @@ function TypeRole() {
         return;
       }
 
-      const statusResponse = await fetch("http://localhost:8085/ekyc/status", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Check if user is already verified (with fallback for missing endpoint)
+      try {
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085";
+        const statusResponse = await fetch(`${API_BASE_URL}/ekyc/status`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (statusResponse.ok) {
-        const statusData = await statusResponse.json();
-        if (statusData.verified) {
-          const homeRoutes: Record<Role, string> = {
-            [Role.ADMIN]: "/dashboard",
-            [Role.CLIENT]: "/page/client/home",
-            [Role.FREELANCER]: "/page/freelancer/home",
-            [Role.SELLER]: "/page/seller/home",
-          };
-          router.push(homeRoutes[mappedRole]);
-          return;
+        if (statusResponse.ok) {
+          const statusData = await statusResponse.json();
+          if (statusData.verified) {
+            const homeRoutes: Record<Role, string> = {
+              [Role.ADMIN]: "/dashboard",
+              [Role.CLIENT]: "/page/client/home",
+              [Role.FREELANCER]: "/page/freelancer/home",
+              [Role.SELLER]: "/page/seller/home",
+            };
+            router.push(homeRoutes[mappedRole]);
+            return;
+          }
         }
+      } catch (verificationError) {
+        // If ekyc/status endpoint is not available, assume user is not verified
+        // and redirect to verification page
+        console.warn("Verification status check failed, assuming user needs verification:", verificationError);
       }
       // Not verified, redirect based on role
       if (mappedRole === Role.CLIENT) {

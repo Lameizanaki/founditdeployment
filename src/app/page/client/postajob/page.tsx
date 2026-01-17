@@ -235,6 +235,8 @@ export default function PostJobPage() {
         return;
       }
 
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085";
+
       // Calculate delivery time
       let deliveryTime = deliveryKey;
       if (deliveryKey === "custom" && customDays) {
@@ -302,7 +304,7 @@ export default function PostJobPage() {
         referenceFiles: referenceFilesData,
       };
 
-      const response = await fetch("http://localhost:8085/gigs/client/create", {
+      const response = await fetch(`${API_BASE_URL}/gigs/client/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -315,11 +317,16 @@ export default function PostJobPage() {
         router.push("/page/client/home");
       } else {
         const error = await response.text();
+        console.error("Server error:", error);
         alert(`Failed to post job: ${error}`);
       }
     } catch (error) {
-      console.error("Error posting job:", error);
-      alert("An error occurred while posting the job");
+      console.error("Network error:", error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        alert("Network error: Unable to connect to the server. Please check if the backend is running and try again.");
+      } else {
+        alert("An error occurred while posting the job. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

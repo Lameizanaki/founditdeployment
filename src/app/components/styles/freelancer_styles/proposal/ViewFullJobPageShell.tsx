@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 import ViewFullJobHeader from "@/app/components/styles/client_styles/application/ViewFullJobHeader";
 import JobDescriptionCard from "@/app/components/styles/client_styles/application/JobDescriptionCard";
@@ -54,7 +55,7 @@ export default function ViewFullJobPageShell() {
         const token = localStorage.getItem("token");
         console.log(`[ViewFullJobPageShell] Fetching job with id: ${jobId}`);
         const res = await fetch(
-          `http://localhost:8085/gigs/client/public/${jobId}`,
+          `${API_ENDPOINTS.GIGS_CLIENT_PUBLIC}/${jobId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
