@@ -54,6 +54,7 @@ function CardWrap({
   title,
   children,
   right,
+  
 }: {
   title?: string;
   right?: React.ReactNode;
@@ -105,6 +106,7 @@ function Input({
         inputMode={inputMode}
         pattern={pattern}
       />
+      
     </div>
   );
 }
