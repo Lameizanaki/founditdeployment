@@ -110,7 +110,7 @@ const SettingRightSide7Com1: React.FC = () => {
           <div className="flex items-center mt-2 gap-x-5">
             <div className="w-[90%] h-2 bg-gray-200 rounded-md">
               <div
-                className={`h-2 rounded-md ${passwordStrengthClass[passwordStrengthLabel]}`}
+                className={`h-2 rounded-md ${(passwordStrengthClass as any)[passwordStrengthLabel]}`}
                 style={{ width: `${strengthPercentage}%` }} // Dynamic width
               />
             </div>

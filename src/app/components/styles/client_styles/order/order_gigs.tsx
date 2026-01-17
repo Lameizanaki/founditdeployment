@@ -467,7 +467,7 @@ export default function OrdersPage() {
   const refreshOrders = async () => {
     setLoading(true);
     try {
-      const orders = await getOrdersByClient(clientId, token);
+      const orders = await getOrdersByClient(Number(clientId), token || undefined);
       const mappedOrders = orders.map((order: any) => ({
         id: order.id,
         title: order.projectTitle,

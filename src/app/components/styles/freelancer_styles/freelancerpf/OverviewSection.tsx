@@ -1,6 +1,6 @@
 import { CheckCircle } from "lucide-react";
 
-export default function OverviewSection({ gigData }) {
+export default function OverviewSection({ gigData }: { gigData: any }) {
   return (
     <>
       {/* LEFT */}

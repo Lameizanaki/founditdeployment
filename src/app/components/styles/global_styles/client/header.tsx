@@ -40,10 +40,17 @@ function RoleSwitchModal({
   targetRole,
   onConfirm,
   isLoading,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  currentRole: string;
+  targetRole: string;
+  onConfirm: () => void;
+  isLoading: boolean;
 }) {
   if (!isOpen) return null;
 
-  const roleColors = {
+  const roleColors: Record<string, { primary: string; secondary: string; text: string }> = {
     client: { primary: "#10B981", secondary: "#D1FAE5", text: "#10B981" },
     freelancer: { primary: "#6366F1", secondary: "#E0E7FF", text: "#6366F1" },
     seller: { primary: "#F59E0B", secondary: "#FEF3C7", text: "#F59E0B" },
@@ -192,7 +199,7 @@ export default function ClientNavHeader() {
   const [searchLoading, setSearchLoading] = useState(false);
 
   // Global search handler
-  const handleGlobalSearch = async (e) => {
+  const handleGlobalSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setSearchLoading(true);
@@ -238,10 +245,10 @@ export default function ClientNavHeader() {
   // Hide dropdown on outside click
   useEffect(() => {
     if (!showSearchDropdown) return;
-    const handler = (e) => {
+    const handler = (e: MouseEvent) => {
       if (
-        !e.target.closest(".global-search-dropdown") &&
-        !e.target.closest(".global-search-input")
+        !(e.target as HTMLElement)?.closest(".global-search-dropdown") &&
+        !(e.target as HTMLElement)?.closest(".global-search-input")
       ) {
         setShowSearchDropdown(false);
       }
@@ -256,8 +263,8 @@ export default function ClientNavHeader() {
   const [targetRole, setTargetRole] = useState("");
   const [isRoleSwitching, setIsRoleSwitching] = useState(false);
 
-  const jobsRef = useRef(null);
-  const userRef = useRef(null);
+  const jobsRef = useRef<HTMLDivElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
 
   // Simulate role switch with loading
   const handleRoleSwitch = async () => {
@@ -302,11 +309,11 @@ export default function ClientNavHeader() {
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (jobsRef.current && !jobsRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (jobsRef.current && !jobsRef.current.contains(event.target as Node)) {
         setIsJobsDropdownOpen(false);
       }
-      if (userRef.current && !userRef.current.contains(event.target)) {
+      if (userRef.current && !userRef.current.contains(event.target as Node)) {
         setIsUserDropdownOpen(false);
       }
     };
@@ -317,7 +324,7 @@ export default function ClientNavHeader() {
 
   const router = useRouter();
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path: string) => {
     setIsUserDropdownOpen(false);
     setIsJobsDropdownOpen(false);
     if (path === "/logout") {

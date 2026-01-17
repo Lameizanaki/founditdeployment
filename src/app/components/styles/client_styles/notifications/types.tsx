@@ -1,5 +1,5 @@
 import type React from "react";
-import { IconBell } from "@/app/components/styles/admin/Icon";
+import { IconBell } from "@/app/components/styles/admin_styles/Icon";
 import { ImCoinDollar } from "react-icons/im";
 import { IconMessage } from "../application/icons";
 
@@ -213,4 +213,3 @@ export function getTypeIcon(
       };
   }
 }
-

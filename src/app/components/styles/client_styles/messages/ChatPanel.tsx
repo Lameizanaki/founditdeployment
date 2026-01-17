@@ -184,7 +184,7 @@ export default function ChatPanel(props: ChatPanelProps) {
   // Connect to WebSocket for real-time chat
   useEffect(() => {
     if (!user?.id) return;
-    ws.connect(user.id, (event) => {
+    ws.connect(user.id, (event: any) => {
       if (event.type === "MESSAGE") {
         const msg = event.payload;
         if (
@@ -404,12 +404,12 @@ export default function ChatPanel(props: ChatPanelProps) {
                               type,
                               budget,
                               milestones,
-                              status: m.status || status,
+                            status: (m as any).status || status,
                             }}
-                            declined={(m.status || status) === "Declined"}
-                            accepted={(m.status || status) === "Accepted"}
+                            declined={((m as any).status || status) === "Declined"}
+                            accepted={((m as any).status || status) === "Accepted"}
                             onAccept={
-                              (m.status || status) === "Accepted"
+                              ((m as any).status || status) === "Accepted"
                                 ? undefined
                                 : () => {
                                     setMessages((prevMsgs) =>
@@ -443,15 +443,15 @@ export default function ChatPanel(props: ChatPanelProps) {
                                     // Trigger order refresh if available
                                     if (
                                       typeof window !== "undefined" &&
-                                      window.refreshOrders
+                                      (window as any).refreshOrders
                                     ) {
-                                      window.refreshOrders();
+                                      (window as any).refreshOrders();
                                     }
                                   }
                             }
                             onDecline={
-                              (m.status || status) === "Declined" ||
-                              (m.status || status) === "Accepted"
+                              ((m as any).status || status) === "Declined" ||
+                              ((m as any).status || status) === "Accepted"
                                 ? undefined
                                 : () => {
                                     setMessages((prevMsgs) =>

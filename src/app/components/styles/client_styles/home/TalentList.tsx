@@ -137,10 +137,10 @@ export default function TalentList({
                   <p className="text-sm text-gray-600">{talent.title}</p>
                 </div>
               </div>
-              <button onClick={() => toggleFavorite(talent.id)}>
+              <button onClick={() => toggleFavorite(Number(talent.id))}>
                 <Heart
                   className={`w-6 h-6 ${
-                    favorites.includes(talent.id)
+                    favorites.includes(Number(talent.id))
                       ? "fill-red-500 text-red-500"
                       : "text-gray-400"
                   }`}

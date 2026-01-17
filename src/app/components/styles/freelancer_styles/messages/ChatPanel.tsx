@@ -97,7 +97,6 @@ function BellMutedIcon() {
       <path
         d="M9 21a3 3 0 0 0 6 0"
         stroke="currentColor"
-        YE
         strokeWidth="1.6"
         fill="none"
         strokeLinecap="round"
@@ -178,7 +177,7 @@ export default function ChatPanel(props: ChatPanelProps) {
   // Connect to WebSocket for real-time chat
   useEffect(() => {
     if (!user?.id) return;
-    ws.connect(user.id, (event) => {
+    ws.connect(user.id, (event: any) => {
       if (event.type === "MESSAGE") {
         const msg = event.payload;
         // Always call parent callback to update conversation/messages state
@@ -201,7 +200,7 @@ export default function ChatPanel(props: ChatPanelProps) {
         ) {
           setMessages((prev) => {
             if (prev.some((m) => m.id === newMsg.id)) return prev;
-            return [...prev, newMsg];
+            return [...prev, newMsg as any];
           });
         }
       }
@@ -348,7 +347,7 @@ export default function ChatPanel(props: ChatPanelProps) {
             <div className="space-y-4">
               {messages.slice().map((m) => {
                 // If this is a proposal message, render the ProposalOfferCard UI
-                if (m.messageType === "proposal") {
+                if ((m as any).messageType === "proposal") {
                   // Parse proposal data from m.text
                   // Example: "Proposal: [coverLetter] | Rate: [rate] | Delivery: [deliveryTime] days"
                   let jobTitle = "Proposal";

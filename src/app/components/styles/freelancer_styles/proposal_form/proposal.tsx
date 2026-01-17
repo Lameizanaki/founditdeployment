@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 // Types for backend integration
 interface JobDetails {
   id: string | number;
+  clientId: string;
   title: string;
   postedBy: {
     name: string;
@@ -90,6 +91,7 @@ function ProposalForm() {
         // Map backend data to JobDetails shape
         setJobDetails({
           id: data.id,
+          clientId: data.clientId || "",
           title: data.title,
           postedBy: {
             name: data.clientName || "Client",
@@ -233,18 +235,17 @@ function ProposalForm() {
   };
 
   const handleSubmit = () => {
+    if (!jobDetails) return;
     setIsSubmitting(true);
     const token = localStorage.getItem("token");
     const senderId = localStorage.getItem("userId");
     const recipientId = jobDetails.clientId;
-    const gigId = jobDetails.id;
+    const gigId = jobDetails.id.toString();
     const form = new URLSearchParams();
     form.append("senderId", senderId || "");
     form.append("recipientId", recipientId);
     form.append("gigId", gigId);
     form.append("coverLetter", formData.coverLetter);
-    form.append("rate", formData.proposedBudget?.toString() || "");
-    form.append("deliveryTime", formData.deliveryDays?.toString() || "");
     fetch("http://localhost:8085/chat/sendProposal", {
       method: "POST",
       headers: {
@@ -488,9 +489,8 @@ function ProposalForm() {
               </div>
             </div>
           </div>
-        )}
 
-        {/* Cover Letter Card */}
+          {/* Cover Letter Card */}
         <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] mb-6 p-1">
           <div className="p-5 sm:p-6">
             <p className="font-['Arial:Regular',sans-serif] leading-4 text-[#1a1a1a] text-base mb-1">
@@ -1172,9 +1172,10 @@ function ProposalForm() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+        )}
     </div>
   );
-};
+}
 
 export default ProposalForm;

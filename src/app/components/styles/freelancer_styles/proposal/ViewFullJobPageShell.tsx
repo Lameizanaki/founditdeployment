@@ -183,7 +183,7 @@ export default function ViewFullJobPageShell() {
                       competitionPercent: 0,
                     }
                   }
-                  jobId={jobId}
+                  jobId={jobId || undefined}
                 />
               </div>
             </aside>
